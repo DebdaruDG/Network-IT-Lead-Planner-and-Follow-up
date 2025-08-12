@@ -145,8 +145,8 @@ class AddLeadScreen extends ConsumerWidget {
                               children: [
                                 // Step number circle
                                 Container(
-                                  height: 28,
-                                  width: 28,
+                                  height: 24,
+                                  width: 24,
                                   decoration: BoxDecoration(
                                     color:
                                         isActive
@@ -175,9 +175,9 @@ class AddLeadScreen extends ConsumerWidget {
                                               : const Color(0xFF233B7A),
                                       fontWeight:
                                           isActive
-                                              ? FontWeight.w600
+                                              ? FontWeight.w500
                                               : FontWeight.w400,
-                                      fontSize: 14,
+                                      fontSize: 13,
                                     ),
                                   ),
                                 ),
@@ -188,7 +188,7 @@ class AddLeadScreen extends ConsumerWidget {
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500,
-                                    color: const Color(0xFF98A2B3),
+                                    color: Colors.grey.shade800,
                                   ),
                                 ),
                               ],
