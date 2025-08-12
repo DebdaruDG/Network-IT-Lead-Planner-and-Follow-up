@@ -1,0 +1,499 @@
+I would like to rephrase - 
+
+Also based on this .html file content :- 
+
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NetworkIt · Leads</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --brand:#233B7A; /* deep indigo */
+      --accent:#4F80FF; /* gentle blue */
+      --ink:#0f172a; /* slate-900 */
+    }
+    body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial}
+    .brand-gradient{background:linear-gradient(135deg,var(--brand),#0B1D46)}
+    .card{ @apply bg-white/90 backdrop-blur border border-slate-200 rounded-2xl shadow-sm; }
+    .btn{
+	  display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+	  padding:.5rem 1rem; border-radius:0.75rem;
+	  font-size:.875rem; font-weight:600; line-height:1;
+	  transition:all .15s ease; cursor:pointer;
+	}
+	.btn:focus{ outline:2px solid transparent; outline-offset:2px; }
+    .btn-primary{
+	  color:#fff; background:#0f172a; border:1px solid transparent;
+	}
+	.btn-primary:hover{ filter:brightness(.95); }
+	.btn-ghost{
+	  color:#334155; background:#fff; border:1px solid rgba(148,163,184,.6);
+	}
+	.btn-ghost:hover{ background:#f8fafc; }
+    .chip{ @apply inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium; }
+    .navtab-active{ color:var(--ink); font-weight:600; }
+    .hidden-el{ display:none; }
+    .step-active{ background:#f1f5ff; border-left:3px solid var(--accent); }
+  </style>
+</head>
+<body class="min-h-full bg-slate-50 text-slate-900">
+  <!-- Topbar -->
+  <header class="brand-gradient text-white">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="h-9 w-9 rounded-xl bg-white/15 ring-1 ring-white/20 flex items-center justify-center font-bold">N</div>
+          <div class="text-lg font-semibold tracking-tight" style="font-family:Manrope,Inter">NetworkIt</div>
+          <nav class="ml-6 hidden sm:flex items-center gap-5 text-sm">
+            <button class="navlink navtab-active" data-viewbtn="dashboard">Dashboard</button>
+            <button class="navlink opacity-90 hover:opacity-100" data-viewbtn="journey">Journey</button>
+          </nav>
+        </div>
+        <div class="flex items-center gap-3">
+          <button 
+			  class="btn border-none bg-white/15 text-white hover:bg-white/25 rounded-xl px-4 py-2 text-sm font-semibold shadow-sm"
+			  data-viewbtn="journey" 
+			  id="addLeadTop">
+			  + Add Lead
+			</button>
+
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- DASHBOARD -->
+    <section data-view="dashboard">
+      <!-- Summary cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="card p-5">
+          <div class="text-xs text-slate-500">Active Leads</div>
+          <div class="mt-2 text-2xl font-semibold">12</div>
+          <div class="mt-3 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+            <div class="h-full bg-indigo-600 rounded-full" style="width: 62%;"></div>
+          </div>
+          <div class="mt-2 text-xs text-slate-500">62% have a live plan</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs text-slate-500">Avg. Responsiveness</div>
+          <div class="mt-2 text-2xl font-semibold">Fast</div>
+          <div class="mt-1 text-xs text-slate-500">Median reply in 18h</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs text-slate-500">Tasks Due Today</div>
+          <div class="mt-2 text-2xl font-semibold">7</div>
+          <div class="mt-1 text-xs text-slate-500">3 Email · 2 LI · 2 Calls</div>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs text-slate-500">This Week</div>
+          <div class="mt-2 text-2xl font-semibold">68%</div>
+          <div class="mt-1 text-xs text-slate-500">Plan completion rate</div>
+        </div>
+      </div>
+
+      <!-- Lead table & “Add Lead” -->
+      <div class="card p-5">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Leads</h2>
+          <button class="btn btn-primary" data-viewbtn="journey">+ Add Lead</button>
+        </div>
+
+        <div class="mt-4 overflow-x-auto">
+          <table class="min-w-full text-sm">
+            <thead>
+              <tr class="text-left text-slate-500">
+                <th class="py-2 pr-4">Lead</th>
+                <th class="py-2 pr-4">Goal</th>
+                <th class="py-2 pr-4">Progress</th>
+                <th class="py-2 pr-4">Responsiveness</th>
+                <th class="py-2 pr-4">Next Step</th>
+                <th class="py-2 pr-4"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Sample row -->
+              <tr class="border-t">
+                <td class="py-3 pr-4">
+                  <div class="font-medium">R. Patel</div>
+                  <div class="text-xs text-slate-500">InoChem · Ops Director</div>
+                </td>
+                <td class="py-3 pr-4">Book a meeting</td>
+                <td class="py-3 pr-4">
+                  <div class="w-40 h-2 bg-slate-200 rounded-full">
+                    <div class="h-2 bg-indigo-600 rounded-full" style="width: 40%;"></div>
+                  </div>
+                </td>
+                <td class="py-3 pr-4">
+                  <span class="chip border-emerald-200 text-emerald-700">Replied in 1d</span>
+                </td>
+                <td class="py-3 pr-4">LinkedIn message · Tomorrow</td>
+                <td class="py-3 pr-0">
+                  <button class="btn btn-ghost" data-viewbtn="journey">Open</button>
+                </td>
+              </tr>
+              <tr class="border-t">
+                <td class="py-3 pr-4">
+                  <div class="font-medium">A. Khan</div>
+                  <div class="text-xs text-slate-500">FPI · AI Lead</div>
+                </td>
+                <td class="py-3 pr-4">Share proposal</td>
+                <td class="py-3 pr-4">
+                  <div class="w-40 h-2 bg-slate-200 rounded-full">
+                    <div class="h-2 bg-indigo-600 rounded-full" style="width: 75%;"></div>
+                  </div>
+                </td>
+                <td class="py-3 pr-4">
+                  <span class="chip border-amber-200 text-amber-700">Slow · 4d</span>
+                </td>
+                <td class="py-3 pr-4">Email · Today</td>
+                <td class="py-3 pr-0">
+                  <button class="btn btn-ghost" data-viewbtn="journey">Open</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-4 text-xs text-slate-500">
+          Responsiveness scale: <span class="chip border-emerald-200 text-emerald-700">Fast &lt; 24h</span>
+          <span class="chip border-amber-200 text-amber-700">Slow ≥ 72h</span>
+          <span class="chip border-slate-200 text-slate-600">Unknown</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- JOURNEY -->
+    <section data-view="journey" class="hidden-el">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Steps -->
+        <aside class="lg:col-span-3">
+          <div class="card p-3">
+            <div class="px-2 py-2 text-sm font-semibold">Journey</div>
+            <ol class="text-sm">
+              <li><button data-stepbtn="0" class="w-full text-left px-3 py-3 rounded-lg flex items-center gap-3 step step-active">
+                <span class="w-6 h-6 rounded-full bg-indigo-700 text-white text-xs flex items-center justify-center">1</span> Add Lead
+              </button></li>
+              <li><button data-stepbtn="1" class="w-full text-left px-3 py-3 rounded-lg flex items-center gap-3 step hover:bg-slate-50">
+                <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs flex items-center justify-center">2</span> Select Goal
+              </button></li>
+              <li><button data-stepbtn="2" class="w-full text-left px-3 py-3 rounded-lg flex items-center gap-3 step hover:bg-slate-50">
+                <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs flex items-center justify-center">3</span> Generate Plan
+              </button></li>
+              <li><button data-stepbtn="3" class="w-full text-left px-3 py-3 rounded-lg flex items-center gap-3 step hover:bg-slate-50">
+                <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs flex items-center justify-center">4</span> Select Instructions
+              </button></li>
+              <li><button data-stepbtn="4" class="w-full text-left px-3 py-3 rounded-lg flex items-center gap-3 step hover:bg-slate-50">
+                <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs flex items-center justify-center">5</span> Execute Tasks
+              </button></li>
+              <li><button data-stepbtn="5" class="w-full text-left px-3 py-3 rounded-lg flex items-center gap-3 step hover:bg-slate-50">
+                <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs flex items-center justify-center">6</span> Track Progress
+              </button></li>
+            </ol>
+          </div>
+          <div class="card mt-4 p-4">
+            <div class="text-sm font-semibold">Lead context (mock)</div>
+            <p class="text-xs text-slate-600 mt-2">Company, role, notes can live here.</p>
+          </div>
+        </aside>
+
+        <!-- Panels -->
+        <section class="lg:col-span-9">
+          <!-- Step 0: Add Lead -->
+          <div data-step="0" class="panel card p-6">
+            <h2 class="text-xl font-semibold">Add a new lead</h2>
+            <p class="text-sm text-slate-600 mt-1">Start the journey by saving a lead.</p>
+
+            <div class="grid sm:grid-cols-2 gap-4 mt-6">
+              <div>
+                <label class="text-xs text-slate-600">Lead name</label>
+                <input class="mt-1 w-full border rounded-xl px-3 py-2" placeholder="e.g., Jane Cooper" />
+              </div>
+              <div>
+                <label class="text-xs text-slate-600">Company</label>
+                <input class="mt-1 w-full border rounded-xl px-3 py-2" placeholder="e.g., AOC" />
+              </div>
+              <div>
+                <label class="text-xs text-slate-600">Email</label>
+                <input class="mt-1 w-full border rounded-xl px-3 py-2" placeholder="name@company.com" />
+              </div>
+              <div>
+                <label class="text-xs text-slate-600">LinkedIn URL</label>
+                <input class="mt-1 w-full border rounded-xl px-3 py-2" placeholder="https://linkedin.com/in/..." />
+              </div>
+            </div>
+
+            <div class="mt-8 flex justify-end">
+              <button class="btn btn-primary" data-next>Save & Continue</button>
+            </div>
+          </div>
+
+          <!-- Step 1: Select Goal -->
+          <div data-step="1" class="panel card p-6 hidden-el">
+            <h2 class="text-xl font-semibold">Select a goal</h2>
+            <p class="text-sm text-slate-600 mt-1">What do we want to achieve?</p>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-6">
+              <label class="border rounded-2xl p-4 hover:border-indigo-300 cursor-pointer flex gap-3">
+                <input type="radio" name="goal" class="mt-1" />
+                <div><div class="font-medium">Book a meeting</div><div class="text-xs text-slate-500">Calendar event</div></div>
+              </label>
+              <label class="border rounded-2xl p-4 hover:border-indigo-300 cursor-pointer flex gap-3">
+                <input type="radio" name="goal" class="mt-1" />
+                <div><div class="font-medium">Get a reply</div><div class="text-xs text-slate-500">Positive response</div></div>
+              </label>
+              <label class="border rounded-2xl p-4 hover:border-indigo-300 cursor-pointer flex gap-3">
+                <input type="radio" name="goal" class="mt-1" />
+                <div><div class="font-medium">Share proposal</div><div class="text-xs text-slate-500">Formal document</div></div>
+              </label>
+              <label class="border rounded-2xl p-4 hover:border-indigo-300 cursor-pointer flex gap-3">
+                <input type="radio" name="goal" class="mt-1" />
+                <div><div class="font-medium">Close deal</div><div class="text-xs text-slate-500">Convert to customer</div></div>
+              </label>
+              <label class="border rounded-2xl p-4 hover:border-indigo-300 cursor-pointer flex gap-3">
+                <input type="radio" name="goal" class="mt-1" />
+                <div><div class="font-medium">Other</div><div class="text-xs text-slate-500">Custom target</div></div>
+              </label>
+            </div>
+
+            <div class="mt-6 flex items-center gap-3">
+              <label class="text-sm">Duration (days)</label>
+              <input type="number" min="1" value="7" class="w-24 border rounded-xl px-3 py-2" />
+            </div>
+
+            <div class="mt-8 flex justify-between">
+              <button class="btn btn-ghost" data-prev>Back</button>
+              <button class="btn btn-primary" data-next>Generate plan</button>
+            </div>
+          </div>
+
+          <!-- Step 2: Generate Plan -->
+          <div data-step="2" class="panel card p-6 hidden-el">
+            <h2 class="text-xl font-semibold">Plan generation</h2>
+            <p class="text-sm text-slate-600 mt-1">Evenly spaced steps over the chosen duration.</p>
+
+            <div class="mt-6 grid gap-3">
+              <div class="border rounded-2xl p-4">
+                <div class="font-medium">Choose step types</div>
+                <div class="mt-3 flex flex-wrap gap-2">
+                  <label class="chip border-slate-300"><input type="checkbox" class="mr-2">Phone Call</label>
+                  <label class="chip border-slate-300"><input type="checkbox" class="mr-2">LinkedIn Message</label>
+                  <label class="chip border-slate-300"><input type="checkbox" class="mr-2">Email</label>
+                </div>
+              </div>
+              <div class="border rounded-2xl p-4">
+                <div class="font-medium mb-2">Preview (mock)</div>
+                <ul class="text-sm list-disc pl-5 space-y-1">
+                  <li>Day 1 – Email</li>
+                  <li>Day 3 – LinkedIn Message</li>
+                  <li>Day 5 – Phone Call</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="mt-8 flex justify-between">
+              <button class="btn btn-ghost" data-prev>Back</button>
+              <button class="btn btn-primary" data-next>Continue</button>
+            </div>
+          </div>
+
+          <!-- Step 3: Select Instructions -->
+          <div data-step="3" class="panel card p-6 hidden-el">
+            <h2 class="text-xl font-semibold">Select instructions</h2>
+            <p class="text-sm text-slate-600 mt-1">Pick a template for each step.</p>
+
+            <div class="mt-6 grid sm:grid-cols-3 gap-4">
+              <div class="border rounded-2xl p-4">
+                <div class="font-medium">Email templates</div>
+                <select class="mt-3 w-full border rounded-xl px-3 py-2 text-sm">
+                  <option>Share a news</option><option>Comment on company activity</option>
+                  <option>Share a case study</option><option>Ask for meeting</option>
+                </select>
+                <div class="mt-3 text-xs text-slate-500">Preview placeholder…</div>
+              </div>
+              <div class="border rounded-2xl p-4">
+                <div class="font-medium">LinkedIn templates</div>
+                <select class="mt-3 w-full border rounded-xl px-3 py-2 text-sm">
+                  <option>Warm intro</option><option>Insight share</option><option>Value drop</option>
+                </select>
+                <div class="mt-3 text-xs text-slate-500">Preview placeholder…</div>
+              </div>
+              <div class="border rounded-2xl p-4">
+                <div class="font-medium">Call talking points</div>
+                <select class="mt-3 w-full border rounded-xl px-3 py-2 text-sm">
+                  <option>Wish on an occasion</option>
+                  <option>Something interesting happened</option>
+                  <option>Just checking how are you?</option>
+                </select>
+                <div class="mt-3 text-xs text-slate-500">Preview placeholder…</div>
+              </div>
+            </div>
+
+            <div class="mt-8 flex justify-between">
+              <button class="btn btn-ghost" data-prev>Back</button>
+              <button class="btn btn-primary" data-next>Continue</button>
+            </div>
+          </div>
+
+          <!-- Step 4: Execute Tasks -->
+          <div data-step="4" class="panel card p-6 hidden-el">
+            <h2 class="text-xl font-semibold">Execute tasks</h2>
+            <p class="text-sm text-slate-600 mt-1">Email and LinkedIn show “sent” (simulated). Calls show “Call Now”.</p>
+
+            <div class="mt-6 space-y-3">
+              <div class="border rounded-2xl p-4 flex items-center justify-between">
+                <div>
+                  <div class="font-medium">Email · Day 1</div>
+                  <div class="text-xs text-slate-500">Template: Share a news</div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="chip border-slate-300">Pending</span>
+                  <button class="btn btn-primary">Send (mock)</button>
+                </div>
+              </div>
+              <div class="border rounded-2xl p-4 flex items-center justify-between">
+                <div>
+                  <div class="font-medium">LinkedIn · Day 3</div>
+                  <div class="text-xs text-slate-500">Template: Value drop</div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="chip border-slate-300">Pending</span>
+                  <button class="btn btn-primary">Send (mock)</button>
+                </div>
+              </div>
+              <div class="border rounded-2xl p-4 flex items-center justify-between">
+                <div>
+                  <div class="font-medium">Phone Call · Day 5</div>
+                  <div class="text-xs text-slate-500">Talking points: Just checking</div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="chip border-slate-300">Pending</span>
+                  <button class="btn btn-primary">Call Now</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-8 flex justify-between">
+              <button class="btn btn-ghost" data-prev>Back</button>
+              <button class="btn btn-primary" data-next>Continue</button>
+            </div>
+          </div>
+
+          <!-- Step 5: Track Progress -->
+          <div data-step="5" class="panel card p-6 hidden-el">
+            <h2 class="text-xl font-semibold">Track progress</h2>
+            <p class="text-sm text-slate-600 mt-1">Simple progress and responsiveness view (mock).</p>
+
+            <div class="mt-6 grid sm:grid-cols-2 gap-4">
+              <div class="border rounded-2xl p-4">
+                <div class="font-medium">Plan completion</div>
+                <div class="mt-3 w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                  <div class="bg-indigo-700 h-3 rounded-full" style="width: 33%;"></div>
+                </div>
+                <div class="mt-2 text-xs text-slate-500">1 of 3 tasks completed</div>
+              </div>
+              <div class="border rounded-2xl p-4">
+                <div class="font-medium">Lead responsiveness</div>
+                <div class="mt-3 flex items-center gap-3">
+                  <span class="chip border-emerald-200 text-emerald-700">Fast</span>
+                  <span class="text-xs text-slate-500">Replied in 18h (mock)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-6 overflow-x-auto">
+              <table class="min-w-full text-sm">
+                <thead>
+                  <tr class="text-left text-slate-500">
+                    <th class="py-2 pr-4">When</th>
+                    <th class="py-2 pr-4">Type</th>
+                    <th class="py-2 pr-4">Detail</th>
+                    <th class="py-2 pr-4">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-t">
+                    <td class="py-3 pr-4">Day 1</td>
+                    <td class="py-3 pr-4">Email</td>
+                    <td class="py-3 pr-4">Share a news</td>
+                    <td class="py-3 pr-4"><span class="chip border-emerald-200 text-emerald-700">Sent (mock)</span></td>
+                  </tr>
+                  <tr class="border-t">
+                    <td class="py-3 pr-4">Day 3</td>
+                    <td class="py-3 pr-4">LinkedIn</td>
+                    <td class="py-3 pr-4">Value drop</td>
+                    <td class="py-3 pr-4"><span class="chip border-slate-300">Pending</span></td>
+                  </tr>
+                  <tr class="border-t">
+                    <td class="py-3 pr-4">Day 5</td>
+                    <td class="py-3 pr-4">Phone Call</td>
+                    <td class="py-3 pr-4">Just checking</td>
+                    <td class="py-3 pr-4"><span class="chip border-slate-300">Pending</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="mt-8 flex justify-between">
+              <button class="btn btn-ghost" data-prev>Back</button>
+              <button class="btn btn-primary" data-viewbtn="dashboard">Finish</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <!-- Minimal navigation JS -->
+  <script>
+    const views = [...document.querySelectorAll('[data-view]')];
+    const panels = [...document.querySelectorAll('[data-step]')];
+    const steps  = [...document.querySelectorAll('[data-stepbtn]')];
+    let view = 'dashboard';
+    let step = 0;
+
+    function renderView(){
+      views.forEach(v=> v.classList.toggle('hidden-el', v.getAttribute('data-view')!==view));
+      document.querySelectorAll('[data-viewbtn]').forEach(b=>{
+        const isActive = b.getAttribute('data-viewbtn')===view;
+        b.classList.toggle('navtab-active', isActive);
+      });
+      if(view==='journey'){ renderSteps(); }
+    }
+    function renderSteps(){
+      panels.forEach((p,i)=> p.classList.toggle('hidden-el', i!==step));
+      document.querySelectorAll('.step').forEach((el,i)=>{
+        el.classList.toggle('step-active', i===step);
+      });
+    }
+    renderView();
+
+    document.body.addEventListener('click', e=>{
+      const next = e.target.closest('[data-next]');
+      const prev = e.target.closest('[data-prev]');
+      const gotoStep = e.target.closest('[data-stepbtn]');
+      const gotoView = e.target.closest('[data-viewbtn]');
+
+      if(gotoView){
+        view = gotoView.getAttribute('data-viewbtn');
+        if(view==='journey') step = 0; // journey starts with Add Lead
+        renderView();
+      }
+      if(next){ step = Math.min(step+1, panels.length-1); renderSteps(); }
+      if(prev){ step = Math.max(step-1, 0); renderSteps(); }
+      if(gotoStep){ step = Number(gotoStep.getAttribute('data-stepbtn')); renderSteps(); }
+    });
+
+    // Header add-lead button should open journey
+    document.getElementById('addLeadTop')?.addEventListener('click', ()=>{ view='journey'; step=0; renderView(); });
+  </script>
+</body>
+</html>
+
