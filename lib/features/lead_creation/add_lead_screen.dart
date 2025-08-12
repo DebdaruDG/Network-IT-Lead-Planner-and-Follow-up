@@ -17,7 +17,50 @@ class AddLeadScreen extends ConsumerWidget {
     final currentStep = ref.watch(leadStepProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Lead Journey")),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF233B7A),
+        actionsPadding: EdgeInsets.only(
+          right: MediaQuery.of(context).size.width * 0.1,
+        ),
+        title: Container(
+          padding: EdgeInsets.only(
+            left: MediaQuery.of(context).size.width * 0.1,
+          ),
+          child: Row(
+            children: [
+              Container(
+                height: 36,
+                width: 36,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                alignment: Alignment.center,
+                child: const Text(
+                  "N",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontFamily: "Manrope",
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                "NetworkIt",
+                style: TextStyle(
+                  fontFamily: "Manrope",
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20,
+                  color: Colors.white,
+                  letterSpacing: 0.15,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Stepper(
         type: StepperType.vertical,
         currentStep: currentStep,

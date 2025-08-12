@@ -12,33 +12,46 @@ class DashboardScreen extends StatelessWidget {
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         backgroundColor: const Color(0xFF233B7A),
-        title: Row(
-          children: [
-            Container(
-              height: 36,
-              width: 36,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                "N",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+        actionsPadding: EdgeInsets.only(
+          right: MediaQuery.of(context).size.width * 0.1,
+        ),
+        title: Container(
+          padding: EdgeInsets.only(
+            left: MediaQuery.of(context).size.width * 0.1,
+          ),
+          child: Row(
+            children: [
+              Container(
+                height: 36,
+                width: 36,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                alignment: Alignment.center,
+                child: const Text(
+                  "N",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontFamily: "Manrope",
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 8),
-            const Text(
-              "NetworkIt",
-              style: TextStyle(
-                fontFamily: "Manrope",
-                fontWeight: FontWeight.w600,
+              const SizedBox(width: 8),
+              const Text(
+                "NetworkIt",
+                style: TextStyle(
+                  fontFamily: "Manrope",
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20,
+                  color: Colors.white,
+                  letterSpacing: 0.15,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         actions: [
           FilledButton.tonal(
@@ -54,8 +67,11 @@ class DashboardScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
+      body: Container(
         padding: const EdgeInsets.all(16),
+        margin: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.width * 0.1,
+        ),
         child: Column(
           children: [
             // Summary cards
