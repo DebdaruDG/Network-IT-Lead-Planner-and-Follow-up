@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'features/lead_creation/add_lead_screen.dart';
+import 'core/config/app_routes.dart';
 // import 'features/dashboard/dashboard_screen.dart'; // uncomment when dashboard is ready
 
 class MyApp extends StatelessWidget {
@@ -7,7 +7,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Lead Follow-Up Planner',
       theme: ThemeData(
@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF233B7A)),
         fontFamily: 'Inter', // Matches your HTML’s default font
       ),
-      home: const AddLeadScreen(),
+      routerConfig: appRouter,
     );
   }
 }
