@@ -14,6 +14,41 @@ class LeadsTable extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Title Row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Leads",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF0F172A),
+                ),
+              ),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: const Color(0xFF0F172A),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                onPressed: () {
+                  // Navigate to Add Lead page
+                  context.go(AppRoutes.leadCreation);
+                },
+                child: const Text(
+                  "+ Add Lead",
+                  style: TextStyle(fontSize: 14, color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
           // Table Header
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
