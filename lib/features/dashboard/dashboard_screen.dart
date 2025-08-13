@@ -142,9 +142,9 @@ class SummaryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
+        // color: Colors.white.withOpacity(0.9),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFCBD5E1)),
+        // border: Border.all(color: const Color(0xFFCBD5E1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,7 +162,7 @@ class SummaryCard extends StatelessWidget {
             const SizedBox(height: 8),
             LinearProgressIndicator(
               value: progress,
-              color: const Color(0xFF4F80FF),
+              color: Color(0xFF4F46E5),
               backgroundColor: const Color(0xFFE2E8F0),
               borderRadius: BorderRadius.circular(8),
             ),
