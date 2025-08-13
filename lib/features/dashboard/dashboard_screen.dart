@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/config/app_routes.dart';
+import 'leads_table.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -108,14 +109,16 @@ class DashboardScreen extends StatelessWidget {
             const SizedBox(height: 16),
             // Leads table placeholder
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFFCBD5E1)),
-                ),
-                child: const Center(child: Text("Leads Table Placeholder")),
-              ),
+              child: LeadsTable(),
+
+              // Container(
+              //   decoration: BoxDecoration(
+              //     // color: Colors.white.withOpacity(0.9),
+              //     borderRadius: BorderRadius.circular(16),
+              //     // border: Border.all(color: const Color(0xFFCBD5E1)),
+              //   ),
+              //   child: const Center(child: Text("Leads Table Placeholder")),
+              // ),
             ),
           ],
         ),
