@@ -126,7 +126,7 @@ class AddLeadScreen extends ConsumerWidget {
                     ),
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.7,
+                    height: MediaQuery.of(context).size.height * 0.4,
                     child: ListView.builder(
                       itemCount: steps.length,
                       itemBuilder: (context, index) {
@@ -141,13 +141,11 @@ class AddLeadScreen extends ConsumerWidget {
                             decoration: BoxDecoration(
                               color:
                                   isActive
-                                      ? const Color(0xFF4338CA).withOpacity(
-                                        0.05,
-                                      ) // light purple highlight
+                                      ? const Color(
+                                        0xFF4338CA,
+                                      ).withOpacity(0.05)
                                       : Colors.transparent,
-                              borderRadius: BorderRadius.circular(
-                                8,
-                              ), // rounded background
+                              borderRadius: BorderRadius.circular(4),
                             ),
                             child: Stack(
                               children: [
@@ -227,6 +225,40 @@ class AddLeadScreen extends ConsumerWidget {
                           ),
                         );
                       },
+                    ),
+                  ),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Lead Context (mock)',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "Manrope",
+                            color: Color(0xFF1D2939),
+                            letterSpacing: 0.35,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Company, Role, Notes can live here.',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: "Manrope",
+                            color: Colors.grey.shade700,
+                            letterSpacing: 0.25,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
