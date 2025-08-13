@@ -70,7 +70,7 @@ class DashboardScreen extends StatelessWidget {
       body: Container(
         padding: const EdgeInsets.all(16),
         margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.1,
+          horizontal: MediaQuery.of(context).size.width * 0.09,
         ),
         child: Column(
           children: [
@@ -82,10 +82,27 @@ class DashboardScreen extends StatelessWidget {
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
               children: const [
-                SummaryCard(title: "Active Leads", value: "12", progress: 0.62),
-                SummaryCard(title: "Avg. Responsiveness", value: "Fast"),
-                SummaryCard(title: "Tasks Due Today", value: "7"),
-                SummaryCard(title: "This Week", value: "68%"),
+                SummaryCard(
+                  title: "Active Leads",
+                  value: "12",
+                  progress: 0.62,
+                  subtitle: '62% have a plan',
+                ),
+                SummaryCard(
+                  title: "Avg. Responsiveness",
+                  value: "Fast",
+                  subtitle: 'Median reply in 18h',
+                ),
+                SummaryCard(
+                  title: "Tasks Due Today",
+                  value: "7",
+                  subtitle: '3 Email - 2 LI - 2 Calls',
+                ),
+                SummaryCard(
+                  title: "This Week",
+                  value: "68%",
+                  subtitle: 'Plan completion rate',
+                ),
               ],
             ),
             const SizedBox(height: 16),
@@ -111,11 +128,13 @@ class SummaryCard extends StatelessWidget {
   final String title;
   final String value;
   final double? progress;
+  final String? subtitle;
   const SummaryCard({
     super.key,
     required this.title,
     required this.value,
     this.progress,
+    this.subtitle,
   });
 
   @override
@@ -146,6 +165,13 @@ class SummaryCard extends StatelessWidget {
               color: const Color(0xFF4F80FF),
               backgroundColor: const Color(0xFFE2E8F0),
               borderRadius: BorderRadius.circular(8),
+            ),
+          ],
+          if ((subtitle ?? '').isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(
+              subtitle ?? '',
+              style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
             ),
           ],
         ],
