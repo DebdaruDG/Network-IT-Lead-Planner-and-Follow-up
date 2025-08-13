@@ -30,7 +30,59 @@ class Step5ExecuteTasks extends StatelessWidget {
           () {}, // Placeholder for Call Now action
           isPhoneCall: true,
         ),
+        const SizedBox(height: 16), // Increased spacing to match image
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            goBackButton(() {
+              // Placeholder for go back action
+            }),
+            continueButton(() {
+              // Placeholder for continue action
+            }),
+          ],
+        ),
       ],
+    );
+  }
+
+  Widget continueButton(VoidCallback onPressed) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF1E293B),
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      ),
+      child: const Text(
+        "Continue",
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+          fontFamily: 'Roboto', // Match image font style
+        ),
+      ),
+    );
+  }
+
+  Widget goBackButton(VoidCallback onPressed) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: const Color(0xFF1E293B),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      ),
+      child: const Text(
+        "Go Back",
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+          fontFamily: 'Roboto',
+        ),
+      ),
     );
   }
 
