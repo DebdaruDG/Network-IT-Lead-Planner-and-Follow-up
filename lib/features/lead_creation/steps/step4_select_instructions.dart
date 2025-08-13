@@ -51,7 +51,6 @@ class Step4Instructions extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: const Color(0xFFCBD5E1), width: 1),
       ),
@@ -67,31 +66,34 @@ class Step4Instructions extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          DropdownButtonFormField<String>(
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(24),
-                borderSide: BorderSide(
-                  color: Colors.grey.shade300,
-                  width: 0.35,
-                  strokeAlign: 0.2,
+          SizedBox(
+            height: 36,
+            child: DropdownButtonFormField<String>(
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  borderSide: BorderSide(
+                    color: Colors.grey.shade300,
+                    width: 0.35,
+                    strokeAlign: 0.2,
+                  ),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
                 ),
               ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 8,
-              ),
+              dropdownColor: Colors.white,
+              icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF1E293B)),
+              style: const TextStyle(fontSize: 14, color: Color(0xFF1E293B)),
+              items:
+                  options
+                      .map((o) => DropdownMenuItem(value: o, child: Text(o)))
+                      .toList(),
+              onChanged: (_) {},
             ),
-            dropdownColor: Colors.white,
-            icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF1E293B)),
-            style: const TextStyle(fontSize: 14, color: Color(0xFF1E293B)),
-            items:
-                options
-                    .map((o) => DropdownMenuItem(value: o, child: Text(o)))
-                    .toList(),
-            onChanged: (_) {},
           ),
           const SizedBox(height: 8),
           const Text(
