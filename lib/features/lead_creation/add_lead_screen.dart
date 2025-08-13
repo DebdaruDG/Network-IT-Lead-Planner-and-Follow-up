@@ -276,9 +276,11 @@ class AddLeadScreen extends ConsumerWidget {
                     Text(
                       steps[currentStep],
                       style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                         color: Color(0xFF1D2939),
+                        letterSpacing: 0.35,
+                        fontFamily: "Manrope",
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -309,8 +311,9 @@ class AddLeadScreen extends ConsumerWidget {
                         child: const Text(
                           "Save & Continue",
                           style: TextStyle(
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w400,
                             fontSize: 14,
+                            color: Colors.white,
                           ),
                         ),
                       ),
