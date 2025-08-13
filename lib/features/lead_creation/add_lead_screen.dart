@@ -4,10 +4,10 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/config/app_routes.dart';
 import 'lead_creation_provider.dart';
-import 'steps/step1_lead_details.dart';
+import 'steps/step1_add_lead.dart';
 import 'steps/step2_select_goal.dart';
 import 'steps/step3_plan_setup.dart';
-import 'steps/step4_contact_info.dart';
+import 'steps/step4_select_instructions.dart';
 import 'steps/step5_plan_steps.dart';
 import 'steps/step6_plan_overview.dart';
 
