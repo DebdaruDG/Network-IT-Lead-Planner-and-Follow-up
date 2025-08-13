@@ -98,6 +98,7 @@ class AddLeadScreen extends ConsumerWidget {
       body: Container(
         margin: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.1,
+          vertical: MediaQuery.of(context).size.height * 0.05,
         ),
         child: Row(
           children: [
@@ -109,18 +110,18 @@ class AddLeadScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
+                  Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
-                      vertical: 6,
+                      vertical: 8,
                     ),
                     child: Text(
                       'Journey',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
                         fontFamily: "Manrope",
-                        color: const Color(0xFF1D2939),
+                        color: Color(0xFF1D2939),
                       ),
                     ),
                   ),
@@ -136,59 +137,89 @@ class AddLeadScreen extends ConsumerWidget {
                           onTap: () {
                             ref.read(leadStepProvider.notifier).state = index;
                           },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color:
+                                  isActive
+                                      ? const Color(0xFF4338CA).withOpacity(
+                                        0.05,
+                                      ) // light purple highlight
+                                      : Colors.transparent,
+                              borderRadius: BorderRadius.circular(
+                                8,
+                              ), // rounded background
                             ),
-                            child: Row(
+                            child: Stack(
                               children: [
-                                // Step number circle
-                                Container(
-                                  height: 24,
-                                  width: 24,
-                                  decoration: BoxDecoration(
-                                    color:
-                                        isActive
-                                            ? const Color(0xFF233B7A)
-                                            : isCompleted
-                                            ? const Color(
-                                              0xFF233B7A,
-                                            ).withOpacity(0.1)
-                                            : Colors.grey.shade200,
-                                    borderRadius: BorderRadius.circular(14),
-                                    border: Border.all(
-                                      color:
-                                          isActive
-                                              ? const Color(0xFF233B7A)
-                                              : Colors.grey.shade200,
-                                      width: 1.5,
+                                // Left ribbon
+                                if (isActive)
+                                  Positioned(
+                                    // left: 2, // small inset from the tile edge
+                                    top: 2,
+                                    bottom: 2,
+                                    child: Container(
+                                      width: 3, // thin ribbon
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF4338CA),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          bottomLeft: Radius.circular(20),
+                                        ), // fully rounded ends
+                                      ),
                                     ),
                                   ),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    "${index + 1}",
-                                    style: TextStyle(
-                                      color:
-                                          isActive
-                                              ? Colors.white
-                                              : const Color(0xFF233B7A),
-                                      fontWeight:
-                                          isActive
-                                              ? FontWeight.w500
-                                              : FontWeight.w400,
-                                      fontSize: 13,
-                                    ),
+
+                                // Main content
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 10,
                                   ),
-                                ),
-                                const SizedBox(width: 12),
-                                // Step title
-                                Text(
-                                  steps[index],
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey.shade800,
+                                  child: Row(
+                                    children: [
+                                      // Step number circle
+                                      Container(
+                                        height: 24,
+                                        width: 24,
+                                        decoration: BoxDecoration(
+                                          color:
+                                              isActive
+                                                  ? const Color(0xFF4338CA)
+                                                  : isCompleted
+                                                  ? const Color(
+                                                    0xFF4338CA,
+                                                  ).withOpacity(0.1)
+                                                  : Colors.grey.shade200,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "${index + 1}",
+                                          style: TextStyle(
+                                            color:
+                                                isActive
+                                                    ? Colors.white
+                                                    : const Color(0xFF4338CA),
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      // Step title
+                                      Text(
+                                        steps[index],
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500,
+                                          color:
+                                              isActive
+                                                  ? Colors
+                                                      .black // black for active text
+                                                  : Colors.grey.shade800,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
