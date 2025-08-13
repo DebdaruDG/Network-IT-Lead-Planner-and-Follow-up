@@ -32,7 +32,6 @@ class _Step3PlanSetupState extends State<Step3PlanSetup> {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: const Color(0xFFCBD5E1)),
           ),
@@ -67,7 +66,6 @@ class _Step3PlanSetupState extends State<Step3PlanSetup> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: const Color(0xFFCBD5E1)),
           ),
@@ -108,10 +106,13 @@ class _Step3PlanSetupState extends State<Step3PlanSetup> {
   Widget _choiceChip(String label) {
     final bool isSelected = _selectedTypes.contains(label);
     return FilterChip(
+      color: WidgetStateProperty.all(
+        isSelected ? const Color(0xFF4338CA) : Colors.white,
+      ),
       label: Text(
         label,
         style: TextStyle(
-          color: isSelected ? Colors.white : const Color(0xFF1E293B),
+          color: isSelected ? Colors.white : const Color(0xFF4338CA),
         ),
       ),
       selected: isSelected,
@@ -127,12 +128,7 @@ class _Step3PlanSetupState extends State<Step3PlanSetup> {
       backgroundColor: isSelected ? const Color(0xFF3B82F6) : Colors.white,
       selectedColor: const Color(0xFF3B82F6),
       checkmarkColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: BorderSide(
-          color: isSelected ? const Color(0xFF3B82F6) : const Color(0xFFE5E7EB),
-        ),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
     );
   }
 
@@ -140,7 +136,7 @@ class _Step3PlanSetupState extends State<Step3PlanSetup> {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF1E293B),
+        backgroundColor: Color(0xFF1E293B),
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -161,7 +157,7 @@ class _Step3PlanSetupState extends State<Step3PlanSetup> {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF1E293B),
+        foregroundColor: Color(0xFF1E293B),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         side: const BorderSide(color: Color(0xFF1E293B)),
