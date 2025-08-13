@@ -36,6 +36,15 @@ class AddLeadScreen extends ConsumerWidget {
       const Step6TrackProgress(),
     ];
 
+    final subtitles = [
+      "Start the journey by saving a lead.",
+      "What do we want to achieve?",
+      "Evenly spaced steps over the chosen duration.",
+      "Pick a template for each step.",
+      "Email and LinkedIn show 'sent' (simulated). Calls show 'Call Now'",
+      "Simple progress and responsive view (mock).",
+    ];
+
     return Scaffold(
       backgroundColor: const Color(0xFFF9FBFD),
       appBar: AppBar(
@@ -284,9 +293,12 @@ class AddLeadScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      "Start the journey by saving a lead.",
-                      style: TextStyle(fontSize: 14, color: Color(0xFF667085)),
+                    Text(
+                      subtitles[currentStep], // Use dynamic subtitle
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF667085),
+                      ),
                     ),
                     const SizedBox(height: 24),
                     Expanded(child: stepWidgets[currentStep]),
