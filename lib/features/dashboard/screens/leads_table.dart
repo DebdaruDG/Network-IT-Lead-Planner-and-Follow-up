@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/config/app_routes.dart';
+import '../../../core/config/app_routes.dart';
 
 class LeadsTable extends StatelessWidget {
   const LeadsTable({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/config/app_routes.dart';
+import '../../../core/config/app_routes.dart';
 import 'leads_table.dart';
 
 class DashboardScreen extends StatelessWidget {

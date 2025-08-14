@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/dashboard/dashboard_screen.dart';
+import '../../features/dashboard/screens/dashboard_screen.dart';
 import '../../features/lead_creation/add_lead_screen.dart';
 
 /// Named route paths
