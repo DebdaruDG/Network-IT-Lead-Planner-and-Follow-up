@@ -7,7 +7,7 @@ import '../../features/lead_creation/add_lead_screen.dart';
 
 /// Named route paths
 class AppRoutes {
-  static const dashboard = '/';
+  static const dashboard = '/dashboard';
   static const leadCreation = '/lead-creation';
   static const login = '/login';
 }
