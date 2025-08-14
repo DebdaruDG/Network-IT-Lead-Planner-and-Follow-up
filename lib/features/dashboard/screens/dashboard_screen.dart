@@ -66,6 +66,35 @@ class DashboardScreen extends StatelessWidget {
             onPressed: () => context.go(AppRoutes.leadCreation),
             child: const Text("+ Add Lead"),
           ),
+          const SizedBox(width: 16),
+          Tooltip(
+            message: "Sign out",
+            waitDuration: const Duration(milliseconds: 500),
+            child: FilledButton.tonal(
+              style: FilledButton.styleFrom(
+                backgroundColor: Colors.white.withOpacity(0.15),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+              ),
+              onPressed: () => context.go(AppRoutes.login),
+              child: const Row(
+                children: [
+                  Icon(Icons.logout, size: 18, color: Colors.white),
+                  SizedBox(width: 6),
+                  Text(
+                    "Sign out",
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
       body: Container(
