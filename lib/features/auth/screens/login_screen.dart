@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import '../../../core/config/app_routes.dart';
 import '../../../core/widgets/auth_textfield.dart';
@@ -9,7 +10,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryBlue = const Color(0xFF001BCE); // Exact blue from design
+    final primaryBlue = const Color(0xFF001BCE);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -59,20 +60,29 @@ class LoginScreen extends StatelessWidget {
                   child: SingleChildScrollView(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const SizedBox(height: 40),
-                        Text(
-                          "Login",
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: primaryBlue,
+                        Center(
+                          child: Text(
+                            "Login",
+                            style: GoogleFonts.poppins(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w600,
+                              color: primaryBlue,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 4),
-                        const Text(
-                          "Lead Follow Up Planner",
-                          style: TextStyle(fontSize: 14, color: Colors.grey),
+                        Center(
+                          child: Text(
+                            "Lead Follow Up Planner",
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey,
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 30),
 
@@ -81,13 +91,12 @@ class LoginScreen extends StatelessWidget {
                           Buttons.google,
                           text: "Sign in with Google",
                           onPressed: () => context.go(AppRoutes.dashboard),
-                          elevation: 0, // flat look
+                          elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(24),
-                            side: const BorderSide(
-                              color: Color(0xFFDADCE0), // light grey border
-                            ),
+                            side: const BorderSide(color: Color(0xFFDADCE0)),
                           ),
+                          padding: const EdgeInsets.symmetric(vertical: 4),
                         ),
                         const SizedBox(height: 10),
                         Row(
@@ -95,9 +104,18 @@ class LoginScreen extends StatelessWidget {
                             Expanded(
                               child: Divider(color: Colors.grey.shade300),
                             ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              child: Text("or sign in with Email"),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
+                              child: Text(
+                                "or sign in with Email",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.grey,
+                                ),
+                              ),
                             ),
                             Expanded(
                               child: Divider(color: Colors.grey.shade300),
@@ -106,12 +124,15 @@ class LoginScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 20),
 
+                        // Email Field
                         AuthTextField(
                           label: "Email",
                           hintText: "mail@website.com",
                           isRequired: true,
                         ),
                         const SizedBox(height: 15),
+
+                        // Password Field
                         AuthTextField(
                           label: "Password",
                           hintText: "Min. 8 character",
@@ -127,15 +148,25 @@ class LoginScreen extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Checkbox(value: true, onChanged: (v) {}),
-                                const Text("Remember me"),
+                                Checkbox(
+                                  value: true,
+                                  onChanged: (v) {},
+                                  activeColor: primaryBlue,
+                                ),
+                                Text(
+                                  "Remember me",
+                                  style: GoogleFonts.poppins(fontSize: 13),
+                                ),
                               ],
                             ),
                             TextButton(
                               onPressed: () {},
                               child: Text(
                                 "Forgot password?",
-                                style: TextStyle(color: primaryBlue),
+                                style: GoogleFonts.poppins(
+                                  color: primaryBlue,
+                                  fontSize: 13,
+                                ),
                               ),
                             ),
                           ],
@@ -154,9 +185,13 @@ class LoginScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(30),
                               ),
                             ),
-                            child: const Text(
+                            child: Text(
                               "Login",
-                              style: TextStyle(fontSize: 16),
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
@@ -166,14 +201,18 @@ class LoginScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text("Not registered yet? "),
+                            Text(
+                              "Not registered yet? ",
+                              style: GoogleFonts.poppins(fontSize: 13),
+                            ),
                             GestureDetector(
                               onTap: () {},
                               child: Text(
                                 "Create an Account",
-                                style: TextStyle(
+                                style: GoogleFonts.poppins(
                                   color: primaryBlue,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
                                 ),
                               ),
                             ),
