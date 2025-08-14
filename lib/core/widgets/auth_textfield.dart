@@ -19,6 +19,8 @@ class AuthTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const themeBlue = Color(0xFF001BCE);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -67,7 +69,7 @@ class AuthTextField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30),
-              borderSide: const BorderSide(color: Colors.purple, width: 1.5),
+              borderSide: const BorderSide(color: themeBlue, width: 1.5),
             ),
           ),
         ),
