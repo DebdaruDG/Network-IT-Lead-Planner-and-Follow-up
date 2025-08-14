@@ -37,7 +37,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         "Login Successful",
         subtitle: updatedAuthState.data['Message'],
       );
-      context.go(AppRoutes.dashboard);
+
+      // Delay before navigation to let the toast be visible
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) {
+          context.go(AppRoutes.dashboard);
+        }
+      });
     } else if (updatedAuthState.error != null) {
       AppToast.failure(
         context,
