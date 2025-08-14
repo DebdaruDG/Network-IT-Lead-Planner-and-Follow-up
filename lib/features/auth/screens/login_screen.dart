@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 import '../../../core/config/app_routes.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -10,17 +11,18 @@ class LoginScreen extends StatelessWidget {
     final primaryBlue = const Color(0xFF001BCE); // Exact blue from design
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: Container(
-          width: 900, // fixed width for web/desktop
-          height: 600,
+          width: MediaQuery.of(context).size.width * 0.75,
+          height: MediaQuery.of(context).size.height * 0.75,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.05),
-                blurRadius: 15,
+                blurRadius: 5,
                 offset: const Offset(0, 5),
               ),
             ],
@@ -40,8 +42,9 @@ class LoginScreen extends StatelessWidget {
                   ),
                   child: Center(
                     child: Image.asset(
-                      'assets/network_icon.png', // your left graphic
+                      'Images/logo.png',
                       width: 250,
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -73,26 +76,12 @@ class LoginScreen extends StatelessWidget {
                         const SizedBox(height: 30),
 
                         // Google Sign-in Button
-                        SizedBox(
-                          width: double.infinity,
-                          height: 48,
-                          child: OutlinedButton.icon(
-                            onPressed: () {},
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: Colors.grey.shade300),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                            ),
-                            icon: Image.asset(
-                              'assets/google_logo.png',
-                              height: 20,
-                            ),
-                            label: const Text(
-                              "Sign in with Google",
-                              style: TextStyle(color: Colors.black87),
-                            ),
-                          ),
+                        SignInButton(
+                          elevation: 0,
+                          padding: EdgeInsets.all(8),
+                          // shape: ,
+                          Buttons.google, // exact Google sign-in button
+                          onPressed: () => context.go(AppRoutes.dashboard),
                         ),
                         const SizedBox(height: 10),
                         Row(
