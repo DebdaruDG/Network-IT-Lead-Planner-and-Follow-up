@@ -90,13 +90,22 @@ class LoginScreen extends StatelessWidget {
                         SignInButton(
                           Buttons.google,
                           text: "Sign in with Google",
+                          textStyle: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade900,
+                          ),
                           onPressed: () => context.go(AppRoutes.dashboard),
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(24),
                             side: const BorderSide(color: Color(0xFFDADCE0)),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          padding: const EdgeInsets.only(
+                            top: 8,
+                            bottom: 8,
+                            right: 24,
+                          ),
                         ),
                         const SizedBox(height: 10),
                         Row(
