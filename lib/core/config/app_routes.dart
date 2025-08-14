@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/auth/screens/login_screen.dart';
 import '../../features/dashboard/screens/dashboard_screen.dart';
 import '../../features/lead_creation/add_lead_screen.dart';
 
@@ -8,11 +9,12 @@ import '../../features/lead_creation/add_lead_screen.dart';
 class AppRoutes {
   static const dashboard = '/';
   static const leadCreation = '/lead-creation';
+  static const login = '/login';
 }
 
 /// GoRouter configuration
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRoutes.dashboard,
+  initialLocation: AppRoutes.login,
   routes: [
     GoRoute(
       path: AppRoutes.dashboard,
@@ -21,6 +23,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.leadCreation,
       builder: (context, state) => const AddLeadScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.login,
+      builder: (context, state) => const LoginScreen(),
     ),
   ],
   errorBuilder:
