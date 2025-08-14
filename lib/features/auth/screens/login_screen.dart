@@ -21,21 +21,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   void _handleLogin() async {
     final authNotifier = ref.read(authViewModelProvider.notifier);
+    final authState = ref.read(authViewModelProvider);
+
+    // Prevent multiple taps while loading
+    if (authState.isLoading) return;
 
     await authNotifier.loginWithEmail(_emailController.text.trim());
 
-    final authState = ref.read(authViewModelProvider);
+    final updatedAuthState = ref.read(authViewModelProvider);
 
-    if (authState.data != null && authState.data['Success'] == true) {
-      // ✅ Navigate to Dashboard on success
+    if (updatedAuthState.data != null &&
+        updatedAuthState.data['Success'] == true) {
       context.go(AppRoutes.dashboard);
-    } else if (authState.error != null) {
+    } else if (updatedAuthState.error != null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text(authState.error!)));
+      ).showSnackBar(SnackBar(content: Text(updatedAuthState.error!)));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(authState.data?['Message'] ?? 'Login failed')),
+        SnackBar(
+          content: Text(updatedAuthState.data?['Message'] ?? 'Login failed'),
+        ),
       );
     }
   }
@@ -213,28 +219,40 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         width: double.infinity,
                         height: 48,
                         child: ElevatedButton(
-                          onPressed: authState.isLoading ? null : _handleLogin,
+                          onPressed: _handleLogin,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryBlue,
+                            backgroundColor: primaryBlue, // Always blue
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child:
-                              authState.isLoading
-                                  ? const CircularProgressIndicator(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "Login",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              if (authState.isLoading) ...[
+                                const SizedBox(width: 12),
+                                const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
                                     valueColor: AlwaysStoppedAnimation<Color>(
                                       Colors.white,
                                     ),
-                                  )
-                                  : Text(
-                                    "Login",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white,
-                                    ),
                                   ),
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
