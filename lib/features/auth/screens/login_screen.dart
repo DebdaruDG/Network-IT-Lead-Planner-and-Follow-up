@@ -1,16 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import '../../../core/config/app_routes.dart';
 import '../../../core/widgets/auth_textfield.dart';
+import '../data_handling/auth_view_model.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final Color primaryBlue = const Color(0xFF001BCE);
+
+  void _handleLogin() async {
+    final authNotifier = ref.read(authViewModelProvider.notifier);
+
+    await authNotifier.loginWithEmail(_emailController.text.trim());
+
+    final authState = ref.read(authViewModelProvider);
+
+    if (authState.data != null && authState.data['Success'] == true) {
+      // ✅ Navigate to Dashboard on success
+      context.go(AppRoutes.dashboard);
+    } else if (authState.error != null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(authState.error!)));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(authState.data?['Message'] ?? 'Login failed')),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final primaryBlue = const Color(0xFF001BCE);
+    final authState = ref.watch(authViewModelProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -56,16 +88,9 @@ class LoginScreen extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    40,
-                    20,
-                    40,
-                    40,
-                  ), // Less top, more bottom
+                  padding: const EdgeInsets.fromLTRB(40, 20, 40, 40),
                   child: Column(
-                    mainAxisAlignment:
-                        MainAxisAlignment.center, // Vertically centered
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(height: 20),
                       Center(
@@ -100,7 +125,7 @@ class LoginScreen extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           color: Colors.grey.shade900,
                         ),
-                        onPressed: () => context.go(AppRoutes.dashboard),
+                        onPressed: () {},
                         elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24),
@@ -112,6 +137,7 @@ class LoginScreen extends StatelessWidget {
                           right: 24,
                         ),
                       ),
+
                       const SizedBox(height: 10),
                       Row(
                         children: [
@@ -137,17 +163,18 @@ class LoginScreen extends StatelessWidget {
                         label: "Email",
                         hintText: "mail@website.com",
                         isRequired: true,
+                        controller: _emailController,
                       ),
                       const SizedBox(height: 15),
 
                       // Password Field
                       AuthTextField(
                         label: "Password",
-                        hintText: "Min. 8 character",
+                        hintText: "Min. 8 characters",
                         isRequired: true,
                         obscureText: true,
+                        controller: _passwordController,
                       ),
-
                       const SizedBox(height: 10),
 
                       // Remember me + Forgot Password
@@ -186,21 +213,28 @@ class LoginScreen extends StatelessWidget {
                         width: double.infinity,
                         height: 48,
                         child: ElevatedButton(
-                          onPressed: () => context.go(AppRoutes.dashboard),
+                          onPressed: authState.isLoading ? null : _handleLogin,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primaryBlue,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child: Text(
-                            "Login",
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                            ),
-                          ),
+                          child:
+                              authState.isLoading
+                                  ? const CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                  )
+                                  : Text(
+                                    "Login",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                         ),
                       ),
                       const SizedBox(height: 20),
