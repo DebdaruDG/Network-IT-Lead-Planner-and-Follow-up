@@ -137,18 +137,7 @@ class DashboardScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             // Leads table placeholder
-            Expanded(
-              child: LeadsTable(),
-
-              // Container(
-              //   decoration: BoxDecoration(
-              //     // color: Colors.white.withOpacity(0.9),
-              //     borderRadius: BorderRadius.circular(16),
-              //     // border: Border.all(color: const Color(0xFFCBD5E1)),
-              //   ),
-              //   child: const Center(child: Text("Leads Table Placeholder")),
-              // ),
-            ),
+            Expanded(child: LeadsTable()),
           ],
         ),
       ),
