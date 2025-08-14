@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import '../config/environment.dart';
 
 class ApiService {
   final Dio _dio = Dio(BaseOptions(baseUrl: 'Environment.apiBaseUrl'));
