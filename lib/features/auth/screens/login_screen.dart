@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import '../../../core/config/app_routes.dart';
+import '../../../core/widgets/auth_textfield.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -77,11 +78,16 @@ class LoginScreen extends StatelessWidget {
 
                         // Google Sign-in Button
                         SignInButton(
-                          elevation: 0,
-                          padding: EdgeInsets.all(8),
-                          // shape: ,
-                          Buttons.google, // exact Google sign-in button
+                          Buttons.google,
+                          text: "Sign in with Google",
                           onPressed: () => context.go(AppRoutes.dashboard),
+                          elevation: 0, // flat look
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            side: const BorderSide(
+                              color: Color(0xFFDADCE0), // light grey border
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 10),
                         Row(
@@ -100,33 +106,19 @@ class LoginScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 20),
 
-                        // Email Field
-                        TextField(
-                          decoration: InputDecoration(
-                            hintText: 'Email',
-                            filled: true,
-                            fillColor: Colors.grey.shade100,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
+                        AuthTextField(
+                          label: "Email",
+                          hintText: "mail@website.com",
+                          isRequired: true,
                         ),
                         const SizedBox(height: 15),
-
-                        // Password Field
-                        TextField(
+                        AuthTextField(
+                          label: "Password",
+                          hintText: "Min. 8 character",
+                          isRequired: true,
                           obscureText: true,
-                          decoration: InputDecoration(
-                            hintText: 'Password',
-                            filled: true,
-                            fillColor: Colors.grey.shade100,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
                         ),
+
                         const SizedBox(height: 10),
 
                         // Remember me + Forgot Password
