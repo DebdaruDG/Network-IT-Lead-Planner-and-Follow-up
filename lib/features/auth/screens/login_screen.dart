@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import '../../../core/config/app_routes.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/auth_textfield.dart';
 import '../data_handling/auth_view_model.dart';
 
@@ -23,7 +24,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final authNotifier = ref.read(authViewModelProvider.notifier);
     final authState = ref.read(authViewModelProvider);
 
-    // Prevent multiple taps while loading
     if (authState.isLoading) return;
 
     await authNotifier.loginWithEmail(_emailController.text.trim());
@@ -32,16 +32,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     if (updatedAuthState.data != null &&
         updatedAuthState.data['Success'] == true) {
+      AppToast.success(
+        context,
+        "Login Successful",
+        subtitle: updatedAuthState.data['Message'],
+      );
       context.go(AppRoutes.dashboard);
     } else if (updatedAuthState.error != null) {
-      ScaffoldMessenger.of(
+      AppToast.failure(
         context,
-      ).showSnackBar(SnackBar(content: Text(updatedAuthState.error!)));
+        "Login Failed",
+        subtitle: updatedAuthState.error!,
+      );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(updatedAuthState.data?['Message'] ?? 'Login failed'),
-        ),
+      AppToast.warning(
+        context,
+        "Login Failed",
+        subtitle: updatedAuthState.data?['Message'] ?? 'Please try again.',
       );
     }
   }
@@ -221,7 +228,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         child: ElevatedButton(
                           onPressed: _handleLogin,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryBlue, // Always blue
+                            backgroundColor: primaryBlue,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
                             ),
