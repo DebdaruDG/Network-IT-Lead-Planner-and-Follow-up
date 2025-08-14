@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/config/app_routes.dart';
+import '../../auth/data_handling/auth_view_model.dart';
 import 'leads_table.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
@@ -63,7 +65,11 @@ class DashboardScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            onPressed: () => context.go(AppRoutes.leadCreation),
+            onPressed: () {
+              final authNotifier = ref.read(authViewModelProvider.notifier);
+              authNotifier.resetUIState();
+              context.go(AppRoutes.leadCreation);
+            },
             child: const Text("+ Add Lead"),
           ),
           const SizedBox(width: 16),
@@ -82,7 +88,11 @@ class DashboardScreen extends StatelessWidget {
                   vertical: 8,
                 ),
               ),
-              onPressed: () => context.go(AppRoutes.login),
+              onPressed: () {
+                final authNotifier = ref.read(authViewModelProvider.notifier);
+                authNotifier.resetUIState(); // reset UI state on sign out
+                context.go(AppRoutes.login); // navigate to login screen
+              },
               child: const Row(
                 children: [
                   Icon(Icons.logout, size: 18, color: Colors.white),
