@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../lead_creation_provider.dart';
+import '../step_utils.dart';
 
 class Step3PlanSetup extends ConsumerStatefulWidget {
   const Step3PlanSetup({super.key});
@@ -110,10 +111,10 @@ class _Step3PlanSetupState extends ConsumerState<Step3PlanSetup> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _backButton(() {
+            StepUtils().backButton(() {
               ref.read(leadStepProvider.notifier).previousStep();
             }),
-            _continueButton(() {
+            StepUtils().continueButton(() {
               ref.read(leadStepProvider.notifier).nextStep();
               // Later: Save selected step types into provider/state
             }),
@@ -147,47 +148,6 @@ class _Step3PlanSetupState extends ConsumerState<Step3PlanSetup> {
       selectedColor: const Color(0xFF3B82F6),
       checkmarkColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-    );
-  }
-
-  Widget _continueButton(VoidCallback onPressed) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF1E293B),
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      ),
-      child: const Text(
-        "Continue",
-        style: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          fontFamily: 'Roboto',
-        ),
-      ),
-    );
-  }
-
-  Widget _backButton(VoidCallback onPressed) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF1E293B),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        side: const BorderSide(color: Color(0xFF1E293B)),
-      ),
-      child: const Text(
-        "Back",
-        style: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          fontFamily: 'Roboto',
-        ),
-      ),
     );
   }
 }

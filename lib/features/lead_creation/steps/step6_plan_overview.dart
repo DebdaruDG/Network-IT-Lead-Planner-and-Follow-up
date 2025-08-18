@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../lead_creation_provider.dart';
+import '../step_utils.dart';
 
 class Step6TrackProgress extends ConsumerStatefulWidget {
   const Step6TrackProgress({super.key});
@@ -42,8 +43,8 @@ class _Step6TrackProgressState extends ConsumerState<Step6TrackProgress> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            backButton(() => stepNotifier.previousStep()),
-            finishButton(() {
+            StepUtils().backButton(() => stepNotifier.previousStep()),
+            StepUtils().finishButton(() {
               // You could reset or show summary screen
               debugPrint("Finish clicked!");
             }),
@@ -101,42 +102,6 @@ class _Step6TrackProgressState extends ConsumerState<Step6TrackProgress> {
       ),
     );
   }
-
-  Widget finishButton(VoidCallback onPressed) => ElevatedButton(
-    onPressed: onPressed,
-    style: ElevatedButton.styleFrom(
-      backgroundColor: const Color(0xFF1E293B),
-      foregroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-    ),
-    child: const Text(
-      "Finish",
-      style: TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w500,
-        fontFamily: 'Roboto',
-      ),
-    ),
-  );
-
-  Widget backButton(VoidCallback onPressed) => OutlinedButton(
-    onPressed: onPressed,
-    style: OutlinedButton.styleFrom(
-      side: const BorderSide(color: Color(0xFF1E293B)),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-    ),
-    child: const Text(
-      "Back",
-      style: TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.w500,
-        color: Color(0xFF1E293B),
-        fontFamily: 'Roboto',
-      ),
-    ),
-  );
 
   Widget taskList() {
     return Container(

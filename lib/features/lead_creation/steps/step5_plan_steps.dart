@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../lead_creation_provider.dart';
+import '../step_utils.dart';
 
 class Step5ExecuteTasks extends ConsumerStatefulWidget {
   const Step5ExecuteTasks({super.key});
@@ -44,51 +45,11 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            goBackButton(() => stepNotifier.previousStep()),
-            continueButton(() => stepNotifier.nextStep()),
+            StepUtils().backButton(() => stepNotifier.previousStep()),
+            StepUtils().continueButton(() => stepNotifier.nextStep()),
           ],
         ),
       ],
-    );
-  }
-
-  Widget continueButton(VoidCallback onPressed) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF1E293B),
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      ),
-      child: const Text(
-        "Continue",
-        style: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          fontFamily: 'Roboto',
-        ),
-      ),
-    );
-  }
-
-  Widget goBackButton(VoidCallback onPressed) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF1E293B),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      ),
-      child: const Text(
-        "Go Back",
-        style: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          fontFamily: 'Roboto',
-        ),
-      ),
     );
   }
 
