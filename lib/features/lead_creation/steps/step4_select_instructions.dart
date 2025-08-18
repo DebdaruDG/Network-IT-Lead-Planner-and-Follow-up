@@ -74,12 +74,13 @@ class _Step4InstructionsState extends ConsumerState<Step4Instructions> {
           Text(
             title,
             style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              fontSize: 18,
               color: Color(0xFF1E293B),
+              letterSpacing: 0.25,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           SizedBox(
             height: 36,
             child: DropdownButtonFormField<String>(
@@ -87,11 +88,15 @@ class _Step4InstructionsState extends ConsumerState<Step4Instructions> {
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(16),
                   borderSide: BorderSide(
                     color: Colors.grey.shade300,
-                    width: 0.35,
+                    width: 0.1,
                   ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(color: Color(0xFF1E293B), width: 0.2),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
@@ -108,10 +113,10 @@ class _Step4InstructionsState extends ConsumerState<Step4Instructions> {
               onChanged: (_) {},
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           const Text(
             "Preview placeholder...",
-            style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+            style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
           ),
         ],
       ),
