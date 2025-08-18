@@ -3,7 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Networkit</title>
+  <title>Network-IT</title>
+  <link rel="icon" href="/assets/Images/logo.png" type="image/png">
+  <meta name="description" content="Network-IT empowers individuals and small businesses to enhance their LinkedIn presence with AI-driven tools for content creation, scheduling, trend analysis, lead generation, and follow-up.">
+  <meta name="keywords" content="Network-IT, LinkedIn marketing, AI content creation, auto-scheduling, trend analysis, lead generation, small business branding, digital presence">
+  <meta name="author" content="Network-IT Team">
+  <meta property="og:title" content="Network-IT - AI-Powered LinkedIn Growth">
+  <meta property="og:description" content="Boost your LinkedIn presence with Network-IT's AI tools for content creation, scheduling, and lead management. Perfect for individuals and small businesses.">
+  <meta property="og:image" content="/assets/Images/logo.png">
+  <meta property="og:url" content="https://networkit.com">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Network-IT - AI-Powered LinkedIn Growth">
+  <meta name="twitter:description" content="Boost your LinkedIn presence with Network-IT's AI tools for content creation, scheduling, and lead management.">
+  <meta name="twitter:image" content="/assets/Images/logo.png">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js"></script>
@@ -33,7 +46,7 @@
         client_id: '360353546496-4scetak43ivrit8vjj2g01pia1eg9iiq.apps.googleusercontent.com',
         callback: handleCredentialResponse,
       });
-    };
+    };  
 
     window.addEventListener('message', function (event) {
       if (event.data === 'triggerGoogleSignIn') {
