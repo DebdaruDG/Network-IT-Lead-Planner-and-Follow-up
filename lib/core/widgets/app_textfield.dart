@@ -33,7 +33,6 @@ class AppTextField extends StatelessWidget {
           controller: controller,
           keyboardType: keyboardType,
           decoration: InputDecoration(
-            labelText: label,
             hintText: hint,
             hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 15),
             filled: true,

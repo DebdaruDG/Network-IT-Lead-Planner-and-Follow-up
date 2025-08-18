@@ -20,7 +20,7 @@ class AddLeadScreen extends ConsumerWidget {
     final currentStep = ref.watch(leadStepProvider);
 
     final steps = [
-      "Add Lead",
+      "Add a new Lead",
       "Select Goal",
       "Generate Plan",
       "Select Instructions",
@@ -121,9 +121,11 @@ class AddLeadScreen extends ConsumerWidget {
                                     top: 2,
                                     bottom: 2,
                                     child: Container(
-                                      width: 3,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFF4338CA),
+                                      width: 2.75,
+                                      decoration: BoxDecoration(
+                                        color: Color(
+                                          0xFF4338CA,
+                                        ).withOpacity(0.8),
                                         borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(20),
                                           bottomLeft: Radius.circular(20),
@@ -227,7 +229,10 @@ class AddLeadScreen extends ConsumerWidget {
             Expanded(
               child: Container(
                 color: const Color(0xFFF8FAFC),
-                padding: const EdgeInsets.all(32.0),
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 32,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
