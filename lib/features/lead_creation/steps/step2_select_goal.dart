@@ -29,27 +29,32 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Wrap(
           spacing: 12,
           runSpacing: 12,
           children:
               _goals.map((goal) {
-                return SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.28,
-                  child: _goalCard(
-                    goal["title"]!,
-                    goal["subtitle"]!,
-                    _selectedGoal == goal["title"],
-                    (selected) {
-                      if (selected) {
-                        setState(() {
-                          _selectedGoal = goal["title"]!;
-                        });
-                      }
-                    },
-                  ),
+                return LayoutBuilder(
+                  builder: (context, constraints) {
+                    double cardWidth = (constraints.maxWidth - 12 * 2) / 3;
+                    return SizedBox(
+                      width: cardWidth,
+                      child: _goalCard(
+                        goal["title"]!,
+                        goal["subtitle"]!,
+                        _selectedGoal == goal["title"],
+                        (selected) {
+                          if (selected) {
+                            setState(() {
+                              _selectedGoal = goal["title"]!;
+                            });
+                          }
+                        },
+                      ),
+                    );
+                  },
                 );
               }).toList(),
         ),
