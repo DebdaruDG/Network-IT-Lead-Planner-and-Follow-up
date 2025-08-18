@@ -1,11 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import '../../../core/services/api_service.dart';
+import '../../../core/services/firebase/auth_service.dart';
 
-/// Enum for UI state control
 enum LoginUIState { form, success, error }
 
-/// States for Auth
 class AuthState {
   final bool isLoading;
   final String? error;
@@ -39,6 +39,7 @@ class AuthViewModel extends StateNotifier<AuthState> {
   final ApiService _apiService;
 
   AuthViewModel(this._apiService) : super(const AuthState());
+  final AuthService _authService = AuthService();
 
   Future<void> loginWithEmail(String email) async {
     state = state.copyWith(
@@ -80,6 +81,44 @@ class AuthViewModel extends StateNotifier<AuthState> {
       state = state.copyWith(
         isLoading: false,
         error: e.toString(),
+        uiState: LoginUIState.error,
+      );
+    }
+  }
+
+  Future<void> loginWithGoogle() async {
+    state = state.copyWith(
+      isLoading: true,
+      error: null,
+      uiState: LoginUIState.form,
+    );
+
+    try {
+      final hasAccess = await _authService.signInWithGoogleAndCheckAccess();
+      if (hasAccess) {
+        state = state.copyWith(
+          isLoading: false,
+          data: {'Success': true, 'Message': 'Google Sign-In Successful'},
+          uiState: LoginUIState.success,
+        );
+      } else {
+        state = state.copyWith(
+          isLoading: false,
+          error: 'Access denied or user not found',
+          uiState: LoginUIState.error,
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'cancelled-popup-request' ||
+          e.code == 'popup-closed-by-user') {
+        // just log and return gracefully
+        return;
+      }
+      rethrow;
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Google Sign-In failed: $e',
         uiState: LoginUIState.error,
       );
     }

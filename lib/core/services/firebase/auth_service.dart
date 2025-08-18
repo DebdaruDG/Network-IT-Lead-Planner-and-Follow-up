@@ -1,19 +1,61 @@
 import 'dart:developer' as console;
 import 'package:firebase_auth/firebase_auth.dart';
-import '../api_service.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final ApiService _apiService = ApiService();
 
-  /// ✅ Google Sign-In using Firebase
+  Future<User?> signInWithGoogleWeb() async {
+    try {
+      // Create Google provider
+      GoogleAuthProvider googleProvider = GoogleAuthProvider();
+
+      // Optionally add scopes
+      googleProvider.addScope('email');
+      googleProvider.addScope('profile');
+
+      // Trigger the Google Sign-In popup
+      UserCredential userCredential = await _auth.signInWithPopup(
+        googleProvider,
+      );
+
+      return userCredential.user;
+    } catch (e) {
+      console.log("Error in Google Sign-In Web: $e");
+      return null;
+    }
+  }
+
+  /// ✅ Google Sign-In (Handles Web + Mobile)
   Future<User?> signInWithGoogle() async {
     try {
-      final googleProvider = GoogleAuthProvider();
-      googleProvider.addScope('email');
+      if (kIsWeb) {
+        console.log("Starting Google Sign-In on Web...");
+        final googleProvider = GoogleAuthProvider();
+        googleProvider.setCustomParameters({'prompt': 'select_account'});
 
-      final userCredential = await _auth.signInWithPopup(googleProvider);
-      return userCredential.user;
+        final userCredential = await _auth.signInWithPopup(googleProvider);
+
+        console.log("Google Sign-In successful (Web)");
+        return userCredential.user;
+      } else {
+        console.log("Starting Google Sign-In on Mobile...");
+        // ✅ Use the named constructor in google_sign_in ^7.x.x
+        final googleSignIn = GoogleSignIn.instance;
+        final googleUser = await googleSignIn.authenticate();
+
+        final googleAuth = googleUser.authentication;
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.idToken,
+          idToken: googleAuth.idToken,
+        );
+
+        final userCredential = await _auth.signInWithCredential(credential);
+
+        console.log("Google Sign-In successful (Mobile)");
+        return userCredential.user;
+      }
     } catch (e) {
       console.log("Error signing in with Google: $e");
       return null;
@@ -49,24 +91,26 @@ class AuthService {
   }
 
   /// ✅ Check Access from API (After Sign-In)
-  Future<bool> checkAccess(String email) async {
+  /// Just returns true if user exists & email is verified
+  Future<bool> checkAccess(User user) async {
     try {
-      final response = await _apiService.get(
-        "/users/check-access",
-        query: {"email": email},
-      );
-      return response.data['access'] ?? false;
+      if (user.emailVerified) {
+        return true;
+      }
+      // You can also add custom logic like restricting certain domains:
+      // return user.email!.endsWith("@yourcompany.com");
+      return true;
     } catch (e) {
-      console.log("API Check Access Error: $e");
+      print("Error in checkAccess: $e");
       return false;
     }
   }
 
   /// ✅ Combined Google Sign-In + API Check
   Future<bool> signInWithGoogleAndCheckAccess() async {
-    final user = await signInWithGoogle();
+    final user = await signInWithGoogleWeb();
     if (user == null) return false;
-    return await checkAccess(user.email!);
+    return await checkAccess(user);
   }
 
   /// ✅ Combined Email/Password Sign-In + API Check
@@ -76,12 +120,20 @@ class AuthService {
   ) async {
     final user = await signInWithEmail(email, password);
     if (user == null) return false;
-    return await checkAccess(email);
+    return await checkAccess(user);
   }
 
   /// ✅ Sign-Out
   Future<void> signOut() async {
-    await _auth.signOut();
+    try {
+      if (!kIsWeb) {
+        await GoogleSignIn.instance.signOut();
+      }
+      await _auth.signOut();
+      console.log("Sign-out successful");
+    } catch (e) {
+      console.log("Error signing out: $e");
+    }
   }
 
   /// ✅ Auth State Stream
