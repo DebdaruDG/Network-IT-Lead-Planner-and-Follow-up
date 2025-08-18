@@ -84,7 +84,7 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide(
                       color: Colors.grey.shade300,
-                      width: 0.5,
+                      width: 0.25,
                     ),
                   ),
                   contentPadding: const EdgeInsets.symmetric(

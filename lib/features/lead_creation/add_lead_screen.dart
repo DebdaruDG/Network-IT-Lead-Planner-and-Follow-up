@@ -20,7 +20,7 @@ class AddLeadScreen extends ConsumerWidget {
     final currentStep = ref.watch(leadStepProvider);
 
     final steps = [
-      "Add a new Lead",
+      "Add Lead",
       "Select Goal",
       "Generate Plan",
       "Select Instructions",
@@ -36,7 +36,14 @@ class AddLeadScreen extends ConsumerWidget {
       const Step5ExecuteTasks(),
       const Step6TrackProgress(),
     ];
-
+    final titles = [
+      "Add a new lead",
+      "Select a goal",
+      "Plan generation",
+      "Plan generation",
+      "Execute tasks",
+      "Track progress",
+    ];
     final subtitles = [
       "Start the journey by saving a lead.",
       "What do we want to achieve?",
@@ -230,23 +237,23 @@ class AddLeadScreen extends ConsumerWidget {
               child: Container(
                 color: const Color(0xFFF8FAFC),
                 margin: const EdgeInsets.symmetric(
-                  horizontal: 32,
+                  horizontal: 48,
                   vertical: 32,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      steps[currentStep],
+                      titles[currentStep],
                       style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
                         color: Color(0xFF1D2939),
-                        letterSpacing: 0.35,
+                        letterSpacing: 0.1,
                         fontFamily: "Manrope",
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     Text(
                       subtitles[currentStep],
                       style: const TextStyle(

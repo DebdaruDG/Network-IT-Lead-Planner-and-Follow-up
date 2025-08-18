@@ -38,7 +38,7 @@ class _Step3PlanSetupState extends ConsumerState<Step3PlanSetup> {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFCBD5E1)),
+            border: Border.all(color: const Color(0xFFCBD5E1), width: 0.5),
           ),
           padding: const EdgeInsets.all(16),
           width: double.infinity,
@@ -72,7 +72,7 @@ class _Step3PlanSetupState extends ConsumerState<Step3PlanSetup> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFCBD5E1)),
+            border: Border.all(color: const Color(0xFFCBD5E1), width: 0.5),
           ),
           width: double.infinity,
           child: Column(
@@ -147,7 +147,13 @@ class _Step3PlanSetupState extends ConsumerState<Step3PlanSetup> {
       backgroundColor: Colors.white,
       selectedColor: const Color(0xFF3B82F6),
       checkmarkColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(
+          color: isSelected ? Colors.transparent : const Color(0xFF4338CA),
+        ),
+      ),
+      elevation: isSelected ? 2 : 0,
     );
   }
 }
