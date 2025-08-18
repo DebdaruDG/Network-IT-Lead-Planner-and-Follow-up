@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/config/app_routes.dart';
+import '../../core/utils/nav_bar.dart';
 import 'lead_creation_provider.dart';
 import 'steps/step1_add_lead.dart';
 import 'steps/step2_select_goal.dart';
@@ -47,50 +48,10 @@ class AddLeadScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF9FBFD),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF233B7A),
-        actionsPadding: EdgeInsets.only(
-          right: MediaQuery.of(context).size.width * 0.1,
-        ),
-        title: Container(
-          padding: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width * 0.1,
-          ),
-          child: Row(
-            children: [
-              Container(
-                height: 36,
-                width: 36,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                alignment: Alignment.center,
-                child: const Text(
-                  "N",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontFamily: "Manrope",
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                "NetworkIt",
-                style: TextStyle(
-                  fontFamily: "Manrope",
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20,
-                  color: Colors.white,
-                  letterSpacing: 0.15,
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: [
+      appBar: NetworkItAppBar(
+        title: "NetworkIt",
+        showAddLead: false,
+        extraActions: [
           FilledButton.tonal(
             style: FilledButton.styleFrom(
               backgroundColor: Colors.white.withOpacity(0.15),
@@ -100,7 +61,7 @@ class AddLeadScreen extends ConsumerWidget {
               ),
             ),
             onPressed: () => context.go(AppRoutes.dashboard),
-            child: const Text("Go Back"),
+            child: Text("Go Back"),
           ),
         ],
       ),

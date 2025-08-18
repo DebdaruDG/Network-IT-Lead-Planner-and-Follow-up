@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
-import '../../../core/config/app_routes.dart';
-import '../../auth/data_handling/auth_view_model.dart';
+import '../../../core/utils/nav_bar.dart';
 import 'leads_table.dart';
 
 class DashboardScreen extends ConsumerWidget {
@@ -13,100 +10,7 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF233B7A),
-        actionsPadding: EdgeInsets.only(
-          right: MediaQuery.of(context).size.width * 0.1,
-        ),
-        title: Container(
-          padding: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width * 0.1,
-          ),
-          child: Row(
-            children: [
-              Container(
-                height: 36,
-                width: 36,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                alignment: Alignment.center,
-                child: const Text(
-                  "N",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontFamily: "Manrope",
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                "NetworkIt",
-                style: TextStyle(
-                  fontFamily: "Manrope",
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20,
-                  color: Colors.white,
-                  letterSpacing: 0.15,
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          FilledButton.tonal(
-            style: FilledButton.styleFrom(
-              backgroundColor: Colors.white.withOpacity(0.15),
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            onPressed: () {
-              final authNotifier = ref.read(authViewModelProvider.notifier);
-              authNotifier.resetUIState();
-              context.go(AppRoutes.leadCreation);
-            },
-            child: const Text("+ Add Lead"),
-          ),
-          const SizedBox(width: 16),
-          Tooltip(
-            message: "Sign out",
-            waitDuration: const Duration(milliseconds: 500),
-            child: FilledButton.tonal(
-              style: FilledButton.styleFrom(
-                backgroundColor: Colors.white.withOpacity(0.15),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-              ),
-              onPressed: () {
-                final authNotifier = ref.read(authViewModelProvider.notifier);
-                authNotifier.resetUIState(); // reset UI state on sign out
-                context.go(AppRoutes.login); // navigate to login screen
-              },
-              child: const Row(
-                children: [
-                  Icon(Icons.logout, size: 18, color: Colors.white),
-                  SizedBox(width: 6),
-                  Text(
-                    "Sign out",
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+      appBar: const NetworkItAppBar(title: "NetworkIt", showAddLead: true),
       body: Container(
         padding: const EdgeInsets.all(16),
         margin: EdgeInsets.symmetric(
