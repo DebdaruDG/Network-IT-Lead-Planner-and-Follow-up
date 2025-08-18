@@ -101,7 +101,7 @@ class AuthService {
       // return user.email!.endsWith("@yourcompany.com");
       return true;
     } catch (e) {
-      print("Error in checkAccess: $e");
+      console.log("Error in checkAccess: $e");
       return false;
     }
   }

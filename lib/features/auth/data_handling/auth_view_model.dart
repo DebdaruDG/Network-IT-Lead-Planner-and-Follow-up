@@ -124,6 +124,24 @@ class AuthViewModel extends StateNotifier<AuthState> {
     }
   }
 
+  Future<void> signOut() async {
+    try {
+      await _authService.signOut();
+      state = state.copyWith(
+        isLoading: false,
+        error: null,
+        data: null,
+        uiState: LoginUIState.form,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Sign-out failed: $e',
+        uiState: LoginUIState.error,
+      );
+    }
+  }
+
   void resetUIState() {
     state = state.copyWith(uiState: LoginUIState.form, error: null);
   }

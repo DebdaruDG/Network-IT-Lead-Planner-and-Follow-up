@@ -96,8 +96,9 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   vertical: 8,
                 ),
               ),
-              onPressed: () {
+              onPressed: () async {
                 final authNotifier = ref.read(authViewModelProvider.notifier);
+                await authNotifier.signOut();
                 authNotifier.resetUIState();
                 context.go(AppRoutes.login);
               },
