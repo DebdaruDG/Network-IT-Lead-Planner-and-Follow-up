@@ -59,46 +59,41 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
               }).toList(),
         ),
         const SizedBox(height: 20),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: Colors.white,
-            border: Border.all(color: const Color(0xFFCBD5E1)),
-          ),
-          child: Row(
-            children: [
-              const Text(
-                "Duration (days): ",
-                style: TextStyle(fontSize: 14, color: Color(0xFF1E293B)),
-              ),
-              const SizedBox(width: 8),
-              SizedBox(
-                width: 70,
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
+        Row(
+          children: [
+            const Text(
+              "Duration (days): ",
+              style: TextStyle(fontSize: 14, color: Color(0xFF1E293B)),
+            ),
+            const SizedBox(width: 8),
+            SizedBox(
+              width: 50,
+              child: TextField(
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade300,
+                      width: 0.5,
                     ),
                   ),
-                  controller: TextEditingController(text: _duration.toString()),
-                  onChanged: (value) {
-                    setState(() {
-                      _duration = int.tryParse(value) ?? 10;
-                    });
-                  },
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                 ),
+                controller: TextEditingController(text: _duration.toString()),
+                onChanged: (value) {
+                  setState(() {
+                    _duration = int.tryParse(value) ?? 10;
+                  });
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         const SizedBox(height: 24),
         Row(
@@ -138,21 +133,25 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
                 isHovered ? const Color(0xFF3B82F6) : const Color(0xFFCBD5E1),
             width: 0.7,
           ),
-          color: Colors.white,
+          color: const Color(0xFFF9FBFD),
         ),
         child: InkWell(
           onTap: () => onChanged(true),
           borderRadius: BorderRadius.circular(12),
           child: Row(
             children: [
-              Radio<String>(
-                value: title,
-                groupValue: _selectedGoal,
-                onChanged: (value) {
-                  if (value != null) onChanged(true);
-                },
-                activeColor: const Color(0xFF3B82F6),
+              Transform.scale(
+                scale: 0.8,
+                child: Radio<String>(
+                  value: title,
+                  groupValue: _selectedGoal,
+                  onChanged: (value) {
+                    if (value != null) onChanged(true);
+                  },
+                  activeColor: const Color(0xFF3B82F6),
+                ),
               ),
+              const SizedBox(width: 4),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -160,15 +159,19 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
                     title,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
-                      fontSize: 14,
+                      fontSize: 15,
                       color: Color(0xFF1E293B),
+                      letterSpacing: 0.2,
                     ),
                   ),
+                  const SizedBox(height: 2),
                   Text(
                     subtitle,
                     style: const TextStyle(
                       fontSize: 12,
+                      fontWeight: FontWeight.w400,
                       color: Color(0xFF64748B),
+                      letterSpacing: 0.1,
                     ),
                   ),
                 ],
