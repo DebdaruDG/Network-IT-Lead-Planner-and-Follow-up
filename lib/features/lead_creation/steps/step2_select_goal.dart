@@ -23,10 +23,13 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
     {"title": "Other", "subtitle": "Custom target"},
   ];
 
+  final Set<String> _hoveredGoals = {};
+
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Wrap(
           spacing: 12,
@@ -101,7 +104,6 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
             }),
             StepUtils().generatePlanButton(() {
               ref.read(leadStepProvider.notifier).nextStep();
-              // Later: Save selected goal + duration to provider/state
             }),
           ],
         ),
@@ -115,49 +117,59 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
     bool isSelected,
     ValueChanged<bool> onChanged,
   ) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isSelected ? const Color(0xFF3B82F6) : const Color(0xFFCBD5E1),
-          width: isSelected ? 2 : 1,
+    final isHovered = _hoveredGoals.contains(title);
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hoveredGoals.add(title)),
+      onExit: (_) => setState(() => _hoveredGoals.remove(title)),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color:
+                isHovered ? const Color(0xFF3B82F6) : const Color(0xFFCBD5E1),
+            width: 0.7,
+          ),
+          color: Colors.white,
         ),
-        color: isSelected ? const Color(0xFFEFF6FF) : Colors.white,
-      ),
-      child: InkWell(
-        onTap: () => onChanged(true),
-        child: Row(
-          children: [
-            Radio<String>(
-              value: title,
-              groupValue: _selectedGoal,
-              onChanged: (value) {
-                if (value != null) onChanged(true);
-              },
-              activeColor: const Color(0xFF3B82F6),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: Color(0xFF1E293B),
+        child: InkWell(
+          onTap: () => onChanged(true),
+          borderRadius: BorderRadius.circular(12),
+          child: Row(
+            children: [
+              Radio<String>(
+                value: title,
+                groupValue: _selectedGoal,
+                onChanged: (value) {
+                  if (value != null) onChanged(true);
+                },
+                activeColor: const Color(0xFF3B82F6),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Color(0xFF1E293B),
+                    ),
                   ),
-                ),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFF64748B),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF64748B),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
