@@ -51,15 +51,18 @@ class _Step3PlanSetupState extends ConsumerState<Step3PlanSetup> {
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
                   color: Color(0xFF1E293B),
+                  letterSpacing: 0.35,
                 ),
               ),
               const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  _choiceChip("Phone Call"),
-                  _choiceChip("LinkedIn Message"),
-                  _choiceChip("Email"),
+                  _checkboxItem("Phone Call"),
+                  const SizedBox(width: 16),
+                  _checkboxItem("LinkedIn Message"),
+                  const SizedBox(width: 16),
+                  _checkboxItem("Email"),
                 ],
               ),
             ],
@@ -77,6 +80,7 @@ class _Step3PlanSetupState extends ConsumerState<Step3PlanSetup> {
           width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const Text(
                 "Preview (mock)",
@@ -89,6 +93,7 @@ class _Step3PlanSetupState extends ConsumerState<Step3PlanSetup> {
               const SizedBox(height: 8),
               ...activeSteps.map(
                 (step) => Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     const Icon(Icons.circle, size: 6, color: Color(0xFF1E293B)),
                     const SizedBox(width: 8),
@@ -124,36 +129,34 @@ class _Step3PlanSetupState extends ConsumerState<Step3PlanSetup> {
     );
   }
 
-  Widget _choiceChip(String label) {
-    final bool isSelected = _selectedTypes.contains(label);
-    return FilterChip(
-      label: Text(
-        label,
-        style: TextStyle(
-          color: isSelected ? Colors.white : const Color(0xFF4338CA),
-          fontWeight: FontWeight.w500,
+  Widget _checkboxItem(String label) {
+    return Row(
+      children: [
+        Transform.scale(
+          scale: 0.75,
+          child: Checkbox(
+            value: _selectedTypes.contains(label),
+            onChanged: (bool? value) {
+              setState(() {
+                if (value == true) {
+                  _selectedTypes.add(label);
+                } else {
+                  _selectedTypes.remove(label);
+                }
+              });
+            },
+            activeColor: const Color(0xFF3B82F6),
+            checkColor: Colors.white,
+          ),
         ),
-      ),
-      selected: isSelected,
-      onSelected: (bool selected) {
-        setState(() {
-          if (selected) {
-            _selectedTypes.add(label);
-          } else {
-            _selectedTypes.remove(label);
-          }
-        });
-      },
-      backgroundColor: Colors.white,
-      selectedColor: const Color(0xFF3B82F6),
-      checkmarkColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: BorderSide(
-          color: isSelected ? Colors.transparent : const Color(0xFF4338CA),
+        Text(
+          label,
+          style: const TextStyle(
+            color: Color(0xFF1E293B),
+            fontWeight: FontWeight.w500,
+          ),
         ),
-      ),
-      elevation: isSelected ? 2 : 0,
+      ],
     );
   }
 }
