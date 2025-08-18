@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinbox/flutter_spinbox.dart';
 
 import '../lead_creation_provider.dart';
 import '../step_utils.dart';
@@ -67,9 +68,15 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
             ),
             const SizedBox(width: 8),
             SizedBox(
-              width: 50,
-              child: TextField(
-                keyboardType: TextInputType.number,
+              width: 80, // adjust width if needed
+              child: SpinBox(
+                min: 1,
+                max: 365,
+                value: _duration.toDouble(),
+                step: 1,
+                spacing: 0, // spacing between number and buttons
+                incrementIcon: const Icon(Icons.arrow_drop_up, size: 20),
+                decrementIcon: const Icon(Icons.arrow_drop_down, size: 20),
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
@@ -81,14 +88,17 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
                     ),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
+                    horizontal: 8,
+                    vertical: 4,
                   ),
                 ),
-                controller: TextEditingController(text: _duration.toString()),
+                textStyle: const TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF1E293B),
+                ),
                 onChanged: (value) {
                   setState(() {
-                    _duration = int.tryParse(value) ?? 10;
+                    _duration = value.toInt();
                   });
                 },
               ),
