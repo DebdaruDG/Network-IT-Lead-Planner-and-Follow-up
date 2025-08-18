@@ -41,8 +41,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/Images/
-    - assets/Images/background.png
-    - assets/Images/logo.png
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  - assets/Images/
+  - assets/Images/background.png
+  - assets/Images/logo.png
