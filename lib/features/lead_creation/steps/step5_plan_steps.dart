@@ -1,45 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Step5ExecuteTasks extends StatelessWidget {
+import '../lead_creation_provider.dart';
+
+class Step5ExecuteTasks extends ConsumerStatefulWidget {
   const Step5ExecuteTasks({super.key});
 
   @override
+  ConsumerState<Step5ExecuteTasks> createState() => _Step5ExecuteTasksState();
+}
+
+class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
+  @override
   Widget build(BuildContext context) {
+    final stepNotifier = ref.read(leadStepProvider.notifier);
+
     return Column(
       children: [
         taskCard(
           "Email · Day 1",
           "Template: Share a news",
           "Pending",
-          () {}, // Placeholder for Send action
+          () {},
           isPhoneCall: false,
         ),
-        const SizedBox(height: 16), // Increased spacing to match image
+        const SizedBox(height: 16),
         taskCard(
           "LinkedIn · Day 3",
           "Template: Value drop",
           "Pending",
-          () {}, // Placeholder for Send action
+          () {},
           isPhoneCall: false,
         ),
-        const SizedBox(height: 16), // Increased spacing to match image
+        const SizedBox(height: 16),
         taskCard(
           "Phone Call · Day 5",
           "Talking points: Just checking",
           "Pending",
-          () {}, // Placeholder for Call Now action
+          () {},
           isPhoneCall: true,
         ),
-        const SizedBox(height: 16), // Increased spacing to match image
+        const SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            goBackButton(() {
-              // Placeholder for go back action
-            }),
-            continueButton(() {
-              // Placeholder for continue action
-            }),
+            goBackButton(() => stepNotifier.previousStep()),
+            continueButton(() => stepNotifier.nextStep()),
           ],
         ),
       ],
@@ -60,7 +66,7 @@ class Step5ExecuteTasks extends StatelessWidget {
         style: TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.w500,
-          fontFamily: 'Roboto', // Match image font style
+          fontFamily: 'Roboto',
         ),
       ),
     );
@@ -94,7 +100,7 @@ class Step5ExecuteTasks extends StatelessWidget {
     required bool isPhoneCall,
   }) {
     return Container(
-      padding: const EdgeInsets.all(16), // Increased padding to match image
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: const Color(0xFFCBD5E1)),
         borderRadius: BorderRadius.circular(20),
@@ -114,9 +120,7 @@ class Step5ExecuteTasks extends StatelessWidget {
                   letterSpacing: 0.2,
                 ),
               ),
-              const SizedBox(
-                height: 4,
-              ), // Added spacing between title and subtitle
+              const SizedBox(height: 4),
               Text(
                 subtitle,
                 style: const TextStyle(
@@ -136,16 +140,15 @@ class Step5ExecuteTasks extends StatelessWidget {
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
                   color: Color(0xFF64748B),
-                  fontFamily: 'Roboto', // Match image font style
+                  fontFamily: 'Roboto',
                 ),
               ),
-              const SizedBox(width: 16), // Increased spacing to match image
+              const SizedBox(width: 16),
               ElevatedButton(
                 onPressed: onPressed,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1E293B),
                   foregroundColor: Colors.white,
-                  side: BorderSide(color: Colors.transparent),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -159,7 +162,7 @@ class Step5ExecuteTasks extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    fontFamily: 'Roboto', // Match image font style
+                    fontFamily: 'Roboto',
                   ),
                 ),
               ),

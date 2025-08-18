@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Step3PlanSetup extends StatefulWidget {
+import '../lead_creation_provider.dart';
+
+class Step3PlanSetup extends ConsumerStatefulWidget {
   const Step3PlanSetup({super.key});
 
   @override
-  State<Step3PlanSetup> createState() => _Step3PlanSetupState();
+  ConsumerState<Step3PlanSetup> createState() => _Step3PlanSetupState();
 }
 
-class _Step3PlanSetupState extends State<Step3PlanSetup> {
+class _Step3PlanSetupState extends ConsumerState<Step3PlanSetup> {
   final Set<String> _selectedTypes = {
     'Phone Call',
     'LinkedIn Message',
@@ -30,6 +33,7 @@ class _Step3PlanSetupState extends State<Step3PlanSetup> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Step type selection
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
@@ -38,7 +42,6 @@ class _Step3PlanSetupState extends State<Step3PlanSetup> {
           padding: const EdgeInsets.all(16),
           width: double.infinity,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
@@ -58,11 +61,12 @@ class _Step3PlanSetupState extends State<Step3PlanSetup> {
                   _choiceChip("Email"),
                 ],
               ),
-              const SizedBox(height: 20),
             ],
           ),
         ),
         const SizedBox(height: 16),
+
+        // Preview
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -83,21 +87,37 @@ class _Step3PlanSetupState extends State<Step3PlanSetup> {
               ),
               const SizedBox(height: 8),
               ...activeSteps.map(
-                (step) => Text(
-                  "• Day ${step['day']} - ${step['type']}",
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF1E293B),
-                  ),
+                (step) => Row(
+                  children: [
+                    const Icon(Icons.circle, size: 6, color: Color(0xFF1E293B)),
+                    const SizedBox(width: 8),
+                    Text(
+                      "Day ${step['day']} - ${step['type']}",
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF1E293B),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
         ),
         const SizedBox(height: 24),
+
+        // Navigation buttons
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [_backButton(() {}), _continueButton(() {})],
+          children: [
+            _backButton(() {
+              ref.read(leadStepProvider.notifier).previousStep();
+            }),
+            _continueButton(() {
+              ref.read(leadStepProvider.notifier).nextStep();
+              // Later: Save selected step types into provider/state
+            }),
+          ],
         ),
       ],
     );
@@ -106,13 +126,11 @@ class _Step3PlanSetupState extends State<Step3PlanSetup> {
   Widget _choiceChip(String label) {
     final bool isSelected = _selectedTypes.contains(label);
     return FilterChip(
-      color: WidgetStateProperty.all(
-        isSelected ? const Color(0xFF4338CA) : Colors.white,
-      ),
       label: Text(
         label,
         style: TextStyle(
           color: isSelected ? Colors.white : const Color(0xFF4338CA),
+          fontWeight: FontWeight.w500,
         ),
       ),
       selected: isSelected,
@@ -125,7 +143,7 @@ class _Step3PlanSetupState extends State<Step3PlanSetup> {
           }
         });
       },
-      backgroundColor: isSelected ? const Color(0xFF3B82F6) : Colors.white,
+      backgroundColor: Colors.white,
       selectedColor: const Color(0xFF3B82F6),
       checkmarkColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -136,7 +154,7 @@ class _Step3PlanSetupState extends State<Step3PlanSetup> {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xFF1E293B),
+        backgroundColor: const Color(0xFF1E293B),
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -157,7 +175,7 @@ class _Step3PlanSetupState extends State<Step3PlanSetup> {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
-        foregroundColor: Color(0xFF1E293B),
+        foregroundColor: const Color(0xFF1E293B),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         side: const BorderSide(color: Color(0xFF1E293B)),

@@ -1,97 +1,71 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Step2GoalSelection extends StatefulWidget {
+import '../lead_creation_provider.dart';
+
+class Step2GoalSelection extends ConsumerStatefulWidget {
   const Step2GoalSelection({super.key});
 
   @override
-  State<Step2GoalSelection> createState() => _Step2GoalSelectionState();
+  ConsumerState<Step2GoalSelection> createState() => _Step2GoalSelectionState();
 }
 
-class _Step2GoalSelectionState extends State<Step2GoalSelection> {
-  bool _bookMeeting = true;
-  bool _getReply = false;
-  bool _shareProposal = false;
-  bool _closeDeal = false;
-  bool _other = false;
+class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
+  String _selectedGoal = "Book a meeting";
   int _duration = 10;
+
+  final List<Map<String, String>> _goals = [
+    {"title": "Book a meeting", "subtitle": "Calendar event"},
+    {"title": "Get a reply", "subtitle": "Positive response"},
+    {"title": "Share proposal", "subtitle": "Formal document"},
+    {"title": "Close deal", "subtitle": "Convert to customer"},
+    {"title": "Other", "subtitle": "Custom target"},
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children:
+              _goals.map((goal) {
+                return SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.28,
                   child: _goalCard(
-                    "Book a meeting",
-                    "Calendar event",
-                    _bookMeeting,
-                    (value) {
-                      setState(() => _bookMeeting = value);
+                    goal["title"]!,
+                    goal["subtitle"]!,
+                    _selectedGoal == goal["title"],
+                    (selected) {
+                      if (selected) {
+                        setState(() {
+                          _selectedGoal = goal["title"]!;
+                        });
+                      }
                     },
                   ),
-                ),
-                Expanded(
-                  child: _goalCard(
-                    "Get a reply",
-                    "Positive response",
-                    _getReply,
-                    (value) {
-                      setState(() => _getReply = value);
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: _goalCard(
-                    "Share proposal",
-                    "Formal document",
-                    _shareProposal,
-                    (value) {
-                      setState(() => _shareProposal = value);
-                    },
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Expanded(
-                  child: _goalCard(
-                    "Close deal",
-                    "Convert to customer",
-                    _closeDeal,
-                    (value) {
-                      setState(() => _closeDeal = value);
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: _goalCard("Other", "Custom target", _other, (value) {
-                    setState(() => _other = value);
-                  }),
-                ),
-              ],
-            ),
-          ],
+                );
+              }).toList(),
         ),
         const SizedBox(height: 20),
         Container(
           padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: Colors.white,
+            border: Border.all(color: const Color(0xFFCBD5E1)),
+          ),
           child: Row(
             children: [
               const Text(
-                "Duration (days)",
+                "Duration (days): ",
                 style: TextStyle(fontSize: 14, color: Color(0xFF1E293B)),
               ),
               const SizedBox(width: 8),
               SizedBox(
-                width: 60,
+                width: 70,
                 child: TextField(
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
@@ -99,7 +73,7 @@ class _Step2GoalSelectionState extends State<Step2GoalSelection> {
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
+                      borderSide: BorderSide(color: Colors.grey.shade300),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 12,
@@ -120,7 +94,15 @@ class _Step2GoalSelectionState extends State<Step2GoalSelection> {
         const SizedBox(height: 24),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [_backButton(() {}), _generatePlanButton(() {})],
+          children: [
+            _backButton(() {
+              ref.read(leadStepProvider.notifier).previousStep();
+            }),
+            _generatePlanButton(() {
+              ref.read(leadStepProvider.notifier).nextStep();
+              // Later: Save selected goal + duration to provider/state
+            }),
+          ],
         ),
       ],
     );
@@ -134,52 +116,48 @@ class _Step2GoalSelectionState extends State<Step2GoalSelection> {
   ) {
     return Container(
       padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFCBD5E1)),
+        border: Border.all(
+          color: isSelected ? const Color(0xFF3B82F6) : const Color(0xFFCBD5E1),
+          width: isSelected ? 2 : 1,
+        ),
+        color: isSelected ? const Color(0xFFEFF6FF) : Colors.white,
       ),
-      width: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Radio<bool>(
-                value: true,
-                groupValue: isSelected,
-                onChanged: (value) {
-                  onChanged(value ?? false);
-                },
-                activeColor: const Color(0xFF3B82F6),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                      color: Color(0xFF1E293B),
-                    ),
+      child: InkWell(
+        onTap: () => onChanged(true),
+        child: Row(
+          children: [
+            Radio<String>(
+              value: title,
+              groupValue: _selectedGoal,
+              onChanged: (value) {
+                if (value != null) onChanged(true);
+              },
+              activeColor: const Color(0xFF3B82F6),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    color: Color(0xFF1E293B),
                   ),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF64748B),
-                    ),
+                ),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF64748B),
                   ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-        ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -215,7 +193,7 @@ class _Step2GoalSelectionState extends State<Step2GoalSelection> {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       ),
       child: const Text(
-        "Generate plan",
+        "Generate Plan",
         style: TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.w500,

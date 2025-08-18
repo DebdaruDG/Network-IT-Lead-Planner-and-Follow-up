@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Step6TrackProgress extends StatelessWidget {
+import '../lead_creation_provider.dart';
+
+class Step6TrackProgress extends ConsumerStatefulWidget {
   const Step6TrackProgress({super.key});
 
   @override
+  ConsumerState<Step6TrackProgress> createState() => _Step6TrackProgressState();
+}
+
+class _Step6TrackProgressState extends ConsumerState<Step6TrackProgress> {
+  @override
   Widget build(BuildContext context) {
+    final stepNotifier = ref.read(leadStepProvider.notifier);
+
     return Column(
       children: [
         Row(
@@ -16,7 +26,7 @@ class Step6TrackProgress extends StatelessWidget {
                 "1 of 3 tasks completed",
               ),
             ),
-            const SizedBox(width: 16), // Spacing between progress cards
+            const SizedBox(width: 16),
             Expanded(
               child: progressCard(
                 "Lead responsiveness",
@@ -26,17 +36,16 @@ class Step6TrackProgress extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 24), // Spacing before task list
+        const SizedBox(height: 24),
         taskList(),
-        const SizedBox(height: 24), // Spacing before buttons
+        const SizedBox(height: 24),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            backButton(() {
-              // Placeholder for go back action
-            }),
+            backButton(() => stepNotifier.previousStep()),
             finishButton(() {
-              // Placeholder for finish action
+              // You could reset or show summary screen
+              debugPrint("Finish clicked!");
             }),
           ],
         ),
@@ -46,23 +55,22 @@ class Step6TrackProgress extends StatelessWidget {
 
   Widget progressCard(String title, double? progress, String detail) {
     return Container(
-      padding: const EdgeInsets.all(16), // Increased padding for spacious feel
+      padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: const Color(0xFFCBD5E1)), // Light gray border
-        borderRadius: BorderRadius.circular(12), // Rounded corners
+        border: Border.all(color: const Color(0xFFCBD5E1)),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             title,
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF1E293B), // Dark gray-blue
+              color: Color(0xFF1E293B),
               fontFamily: 'Roboto',
             ),
           ),
@@ -70,9 +78,9 @@ class Step6TrackProgress extends StatelessWidget {
             const SizedBox(height: 8),
             LinearProgressIndicator(
               value: progress,
-              backgroundColor: const Color(0xFFE0E7FF), // Light blue background
-              color: const Color(0xFF4C51BF), // Purple progress
-              minHeight: 8, // Thicker progress bar
+              backgroundColor: const Color(0xFFE0E7FF),
+              color: const Color(0xFF4C51BF),
+              minHeight: 8,
               borderRadius: BorderRadius.circular(4),
             ),
           ],
@@ -84,8 +92,8 @@ class Step6TrackProgress extends StatelessWidget {
               fontWeight: FontWeight.w400,
               color:
                   progress != null
-                      ? const Color(0xFF64748B) // Medium gray
-                      : const Color(0xFF10B981), // Green for responsiveness
+                      ? const Color(0xFF64748B)
+                      : const Color(0xFF10B981),
               fontFamily: 'Roboto',
             ),
           ),
@@ -94,45 +102,41 @@ class Step6TrackProgress extends StatelessWidget {
     );
   }
 
-  Widget finishButton(VoidCallback onPressed) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF1E293B),
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+  Widget finishButton(VoidCallback onPressed) => ElevatedButton(
+    onPressed: onPressed,
+    style: ElevatedButton.styleFrom(
+      backgroundColor: const Color(0xFF1E293B),
+      foregroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+    ),
+    child: const Text(
+      "Finish",
+      style: TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+        fontFamily: 'Roboto',
       ),
-      child: const Text(
-        "Finish",
-        style: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          fontFamily: 'Roboto',
-        ),
-      ),
-    );
-  }
+    ),
+  );
 
-  Widget backButton(VoidCallback onPressed) {
-    return OutlinedButton(
-      onPressed: onPressed,
-      style: OutlinedButton.styleFrom(
-        side: const BorderSide(color: Color(0xFF1E293B)),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+  Widget backButton(VoidCallback onPressed) => OutlinedButton(
+    onPressed: onPressed,
+    style: OutlinedButton.styleFrom(
+      side: const BorderSide(color: Color(0xFF1E293B)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+    ),
+    child: const Text(
+      "Back",
+      style: TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+        color: Color(0xFF1E293B),
+        fontFamily: 'Roboto',
       ),
-      child: const Text(
-        "Back",
-        style: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          color: Color(0xFF1E293B),
-          fontFamily: 'Roboto',
-        ),
-      ),
-    );
-  }
+    ),
+  );
 
   Widget taskList() {
     return Container(
@@ -146,62 +150,18 @@ class Step6TrackProgress extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: 80, // Fixed width for "When" column
-                child: Text(
-                  "When",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade600,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 80, // Fixed width for "Type" column
-                child: Text(
-                  "Type",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade600,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 120, // Fixed width for "Detail" column
-                child: Text(
-                  "Detail",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade600,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 100, // Fixed width for "Status" column
-                child: Text(
-                  "Status",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade600,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
+            children: const [
+              SizedBox(width: 80, child: Text("When")),
+              SizedBox(width: 80, child: Text("Type")),
+              SizedBox(width: 120, child: Text("Detail")),
+              SizedBox(width: 100, child: Text("Status")),
             ],
           ),
-          const Divider(color: Color(0xFFCBD5E1), thickness: 1), // Separator
+          const Divider(color: Color(0xFFCBD5E1), thickness: 1),
           taskRow("Day 1", "Email", "Share a news", "Sent (mock)"),
-          const Divider(color: Color(0xFFCBD5E1), thickness: 1), // Separator
+          const Divider(color: Color(0xFFCBD5E1), thickness: 1),
           taskRow("Day 3", "LinkedIn", "Value drop", "Pending"),
-          const Divider(color: Color(0xFFCBD5E1), thickness: 1), // Separator
+          const Divider(color: Color(0xFFCBD5E1), thickness: 1),
           taskRow("Day 5", "Phone Call", "Just checking", "Pending"),
         ],
       ),
@@ -210,59 +170,22 @@ class Step6TrackProgress extends StatelessWidget {
 
   Widget taskRow(String when, String type, String detail, String status) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0), // Vertical spacing
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(width: 80, child: Text(when)),
+          SizedBox(width: 80, child: Text(type)),
+          SizedBox(width: 120, child: Text(detail)),
           SizedBox(
-            width: 80, // Fixed width for "When" column
-            child: Text(
-              when,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: Color(0xFF1E293B),
-                fontFamily: 'Roboto',
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 80, // Fixed width for "Type" column
-            child: Text(
-              type,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: Color(0xFF1E293B),
-                fontFamily: 'Roboto',
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 120, // Fixed width for "Detail" column
-            child: Text(
-              detail,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: Color(0xFF1E293B),
-                fontFamily: 'Roboto',
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 100, // Fixed width for "Status" column
+            width: 100,
             child: Text(
               status,
               style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
                 color:
                     status == "Sent (mock)"
-                        ? const Color(0xFF10B981) // Green for sent
-                        : const Color(0xFF64748B), // Medium gray for pending
-                fontFamily: 'Roboto',
+                        ? const Color(0xFF10B981)
+                        : const Color(0xFF64748B),
               ),
             ),
           ),

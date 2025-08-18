@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Step4Instructions extends StatelessWidget {
+import '../lead_creation_provider.dart';
+
+class Step4Instructions extends ConsumerStatefulWidget {
   const Step4Instructions({super.key});
 
   @override
+  ConsumerState<Step4Instructions> createState() => _Step4InstructionsState();
+}
+
+class _Step4InstructionsState extends ConsumerState<Step4Instructions> {
+  @override
   Widget build(BuildContext context) {
+    final stepNotifier = ref.read(leadStepProvider.notifier);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -40,7 +50,10 @@ class Step4Instructions extends StatelessWidget {
         const SizedBox(height: 24),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [goBackButton(() {}), continueButton(() {})],
+          children: [
+            goBackButton(() => stepNotifier.previousStep()),
+            continueButton(() => stepNotifier.nextStep()),
+          ],
         ),
       ],
     );
@@ -77,7 +90,6 @@ class Step4Instructions extends StatelessWidget {
                   borderSide: BorderSide(
                     color: Colors.grey.shade300,
                     width: 0.35,
-                    strokeAlign: 0.2,
                   ),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
