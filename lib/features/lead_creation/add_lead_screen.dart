@@ -251,47 +251,6 @@ class AddLeadScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 24),
                     Expanded(child: stepWidgets[currentStep]),
-                    // Align(
-                    //   alignment: Alignment.bottomRight,
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.end,
-                    //     children: [
-                    //       if (currentStep > 0)
-                    //         OutlinedButton(
-                    //           onPressed: () {
-                    //             ref
-                    //                 .read(leadStepProvider.notifier)
-                    //                 .previousStep();
-                    //           },
-                    //           child: const Text("Go Back"),
-                    //         ),
-                    //       const SizedBox(width: 12),
-                    //       ElevatedButton(
-                    //         style: ElevatedButton.styleFrom(
-                    //           backgroundColor: const Color(0xFF233B7A),
-                    //           padding: const EdgeInsets.symmetric(
-                    //             horizontal: 20,
-                    //             vertical: 14,
-                    //           ),
-                    //           shape: RoundedRectangleBorder(
-                    //             borderRadius: BorderRadius.circular(8),
-                    //           ),
-                    //         ),
-                    //         onPressed: () {
-                    //           ref.read(leadStepProvider.notifier).nextStep();
-                    //         },
-                    //         child: const Text(
-                    //           "Save & Continue",
-                    //           style: TextStyle(
-                    //             fontWeight: FontWeight.w400,
-                    //             fontSize: 14,
-                    //             color: Colors.white,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
