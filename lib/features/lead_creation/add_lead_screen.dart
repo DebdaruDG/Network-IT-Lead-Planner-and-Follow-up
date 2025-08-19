@@ -12,11 +12,22 @@ import 'steps/step4_select_instructions.dart';
 import 'steps/step5_plan_steps.dart';
 import 'steps/step6_plan_overview.dart';
 
-class AddLeadScreen extends ConsumerWidget {
-  const AddLeadScreen({super.key});
+class AddLeadScreen extends ConsumerStatefulWidget {
+  final String? leadId;
+  const AddLeadScreen({super.key, this.leadId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AddLeadScreen> createState() => _AddLeadScreenState();
+}
+
+class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final currentStep = ref.watch(leadStepProvider);
 
     final steps = [
@@ -33,9 +44,10 @@ class AddLeadScreen extends ConsumerWidget {
       const Step2GoalSelection(),
       const Step3PlanSetup(),
       const Step4Instructions(),
-      const Step5ExecuteTasks(),
+      Step5ExecuteTasks(leadId: widget.leadId),
       const Step6TrackProgress(),
     ];
+
     final titles = [
       "Add a new lead",
       "Select a goal",
@@ -44,6 +56,7 @@ class AddLeadScreen extends ConsumerWidget {
       "Execute tasks",
       "Track progress",
     ];
+
     final subtitles = [
       "Start the journey by saving a lead.",
       "What do we want to achieve?",
@@ -231,8 +244,7 @@ class AddLeadScreen extends ConsumerWidget {
                 ],
               ),
             ),
-
-            /// RIGHT SIDE - Step content
+            // RIGHT SIDE
             Expanded(
               child: Container(
                 color: const Color(0xFFF8FAFC),

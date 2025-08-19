@@ -107,4 +107,17 @@ class Plan {
       callTalkingPoint: json["CallTalkingPoint"],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "planId": planId,
+      "leadId": leadId,
+      "goal": goal,
+      "durationDays": durationDays,
+      "preferredChannels": preferredChannels,
+      "emailTemplate": emailTemplate,
+      "linkedInTemplate": linkedInTemplate,
+      "callTalkingPoint": callTalkingPoint,
+    };
+  }
 }

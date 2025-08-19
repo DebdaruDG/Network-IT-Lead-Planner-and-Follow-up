@@ -13,7 +13,7 @@ class LeadState {
   final String? error;
   final String? leadId;
   final List<LeadModel> leads;
-  final List<LeadResult> selectedLeadPlans;
+  final List<Plan> selectedLeadPlans;
 
   LeadState({
     this.isLoading = false,
@@ -28,7 +28,7 @@ class LeadState {
     String? error,
     String? leadId,
     List<LeadModel>? leads,
-    List<LeadResult>? selectedLeadPlans,
+    List<Plan>? selectedLeadPlans,
   }) {
     return LeadState(
       isLoading: isLoading ?? this.isLoading,
@@ -79,7 +79,6 @@ class LeadNotifier extends StateNotifier<LeadState> {
 
       final results = response.data['Results'] as List? ?? [];
 
-      // API returns [{ "LeadInfo": [ {...}, {...} ] }]
       final List<dynamic> leadInfoList =
           results.isNotEmpty ? (results[0]['LeadInfo'] as List? ?? []) : [];
 
@@ -109,20 +108,25 @@ class LeadNotifier extends StateNotifier<LeadState> {
         planId: planId,
       );
 
-      final results = response.results as List? ?? [];
+      final results = response.results;
       if (results.isEmpty) {
         state = state.copyWith(selectedLeadPlans: []);
         return;
       }
 
-      final leadInfo = results[0]['LeadInfo'];
-      final plansJson = leadInfo['Plans'] as List? ?? [];
+      console.log('results length: ${results.length}');
 
-      final plans = plansJson.map((p) => LeadResult.fromJson(p)).toList();
+      final firstResult = results.first; // this is already LeadResult
+      console.log('firstResult runtimeType: ${firstResult.runtimeType}');
 
+      // If your LeadResult already has leadInfo/plans inside
+      final plans = firstResult.leadInfo.plans;
       state = state.copyWith(selectedLeadPlans: plans);
     } on DioException catch (e) {
       state = state.copyWith(error: e.response?.data.toString() ?? e.message);
+    } catch (e, st) {
+      console.log('Unexpected error: $e\n$st');
+      state = state.copyWith(error: e.toString());
     } finally {
       state = state.copyWith(isLoading: false);
     }
@@ -133,3 +137,5 @@ class LeadNotifier extends StateNotifier<LeadState> {
 final leadProvider = StateNotifierProvider<LeadNotifier, LeadState>((ref) {
   return LeadNotifier(LeadService());
 });
+
+final currentLeadIdProvider = StateProvider<String?>((ref) => null);

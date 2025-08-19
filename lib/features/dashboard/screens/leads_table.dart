@@ -184,6 +184,7 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
     final nextStep = lead.nextStep ?? "LinkedIn message · Tomorrow";
 
     return _leadRow(
+      leadId: lead.leadId,
       leadName: leadName,
       subText: "$company · $role",
       goal: goal,
@@ -196,6 +197,7 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
   }
 
   Widget _leadRow({
+    required int leadId,
     required String leadName,
     required String subText,
     required String goal,
@@ -287,7 +289,8 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
                 ),
                 minimumSize: const Size(0, 36),
               ),
-              onPressed: () => context.go(AppRoutes.leadCreation),
+              onPressed:
+                  () => context.go('${AppRoutes.leadCreation}?leadId=$leadId'),
               child: const Text(
                 "Open",
                 style: TextStyle(fontSize: 14, color: Colors.black87),

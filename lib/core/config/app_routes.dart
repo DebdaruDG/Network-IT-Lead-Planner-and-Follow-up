@@ -5,14 +5,12 @@ import '../../features/auth/screens/login_screen.dart';
 import '../../features/dashboard/screens/dashboard_screen.dart';
 import '../../features/lead_creation/add_lead_screen.dart';
 
-/// Named route paths
 class AppRoutes {
   static const dashboard = '/dashboard';
   static const leadCreation = '/lead-creation';
   static const login = '/login';
 }
 
-/// GoRouter configuration
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.login,
   routes: [
@@ -22,7 +20,10 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.leadCreation,
-      builder: (context, state) => const AddLeadScreen(),
+      builder: (context, state) {
+        final leadId = state.uri.queryParameters['leadId'];
+        return AddLeadScreen(leadId: leadId);
+      },
     ),
     GoRoute(
       path: AppRoutes.login,
