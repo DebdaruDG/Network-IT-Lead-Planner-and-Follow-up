@@ -29,7 +29,7 @@ class AddLeadScreen extends ConsumerWidget {
     ];
 
     final stepWidgets = [
-      const Step1LeadDetailsForm(),
+      Step1LeadDetailsForm(),
       const Step2GoalSelection(),
       const Step3PlanSetup(),
       const Step4Instructions(),
