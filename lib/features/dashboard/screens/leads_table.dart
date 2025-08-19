@@ -46,7 +46,16 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(),
+                    SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Color(0xFF001BCE),
+                        ),
+                      ),
+                    ),
                     SizedBox(width: 12),
                     Text("Fetching Leads ..."),
                   ],

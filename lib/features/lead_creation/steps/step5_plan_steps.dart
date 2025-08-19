@@ -1,5 +1,3 @@
-import 'dart:developer' as console;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,12 +19,8 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
   @override
   void initState() {
     super.initState();
-
-    /// ✅ Fetch tasks (plans) for the selected lead
     Future.delayed(Duration.zero, () async {
       final leadId = widget.leadId;
-      // ref.read(leadProvider).leadId;
-      console.log('leadId - $leadId');
 
       if (leadId != null) {
         await ref.read(leadProvider.notifier).fetchLeadPlans(leadId: leadId);
@@ -45,7 +39,14 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(strokeWidth: 2),
+            SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF001BCE)),
+              ),
+            ),
             SizedBox(width: 12),
             Text(
               "Fetching Tasks...",
@@ -78,7 +79,6 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
       child: Column(
         children: [
           ...tasks.map((Plan task) {
-            console.log('task - ${task.toJson()}');
             return taskCard(
               "${task.goal} · Day ${task.durationDays}",
               "Template: ${task.emailTemplate?.isNotEmpty == true ? task.emailTemplate : (task.linkedInTemplate ?? task.callTalkingPoint ?? 'N/A')}",
