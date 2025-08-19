@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data_handling/lead_provider.dart';
 import '../../../core/widgets/app_textfield.dart';
 import '../lead_creation_provider.dart'; // for nextStep()
+import '../../../core/widgets/app_toast.dart'; // Assuming AppToast is defined here
 
 class Step1LeadDetailsForm extends ConsumerWidget {
   Step1LeadDetailsForm({super.key});
@@ -106,8 +107,10 @@ class Step1LeadDetailsForm extends ConsumerWidget {
               final email = _emailController.text.trim();
 
               if (email.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Email is required")),
+                AppToast.warning(
+                  context,
+                  "Lead Creation Failed",
+                  subtitle: "Email is required",
                 );
                 return;
               }
@@ -123,14 +126,21 @@ class Step1LeadDetailsForm extends ConsumerWidget {
                     phone: _phoneController.text.trim(),
                   );
 
-              // Proceed to next step only if no error
+              // Check for errors and proceed
               final error = ref.read(leadProvider).error;
               if (error == null) {
+                AppToast.success(
+                  context,
+                  "Lead Created Successfully",
+                  subtitle: "Proceeding to next step",
+                );
                 ref.read(leadStepProvider.notifier).nextStep();
               } else {
-                ScaffoldMessenger.of(
+                AppToast.failure(
                   context,
-                ).showSnackBar(SnackBar(content: Text("Failed: $error")));
+                  "Lead Creation Failed",
+                  subtitle: error,
+                );
               }
             },
             child: Row(
