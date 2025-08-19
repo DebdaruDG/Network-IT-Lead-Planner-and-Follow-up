@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data_handling/lead_followup_provider.dart';
 import '../lead_creation_provider.dart';
 import '../step_utils.dart';
+import '../../../core/widgets/app_toast.dart';
 
 class Step6TrackProgress extends ConsumerStatefulWidget {
   const Step6TrackProgress({super.key});
@@ -14,7 +16,32 @@ class Step6TrackProgress extends ConsumerStatefulWidget {
 class _Step6TrackProgressState extends ConsumerState<Step6TrackProgress> {
   @override
   Widget build(BuildContext context) {
-    final stepNotifier = ref.read(leadStepProvider.notifier);
+    final followupState = ref.watch(followupProvider);
+    final tasks =
+        followupState.followupResult?['tasks'] as List<dynamic>? ??
+        [
+          {
+            'day': '1',
+            'type': 'email',
+            'template': 'Share a news',
+            'status': 'Sent',
+          },
+          {
+            'day': '3',
+            'type': 'linkedin',
+            'template': 'Value drop',
+            'status': 'Pending',
+          },
+          {
+            'day': '5',
+            'type': 'phone',
+            'template': 'Just checking how are you?',
+            'status': 'Pending',
+          },
+        ];
+    final completedTasks =
+        tasks.where((task) => task['status'] == 'Sent').length;
+    final progress = tasks.isNotEmpty ? completedTasks / tasks.length : 0.0;
 
     return Column(
       children: [
@@ -23,8 +50,8 @@ class _Step6TrackProgressState extends ConsumerState<Step6TrackProgress> {
             Expanded(
               child: progressCard(
                 "Plan completion",
-                0.33,
-                "1 of 3 tasks completed",
+                progress,
+                "$completedTasks of ${tasks.length} tasks completed",
               ),
             ),
             const SizedBox(width: 16),
@@ -32,22 +59,64 @@ class _Step6TrackProgressState extends ConsumerState<Step6TrackProgress> {
               child: progressCard(
                 "Lead responsiveness",
                 null,
-                "Replied in 18h (mock)",
+                "Awaiting response",
               ),
             ),
           ],
         ),
         const SizedBox(height: 24),
-        taskList(),
+        taskList(tasks),
         const SizedBox(height: 24),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            StepUtils().backButton(() => stepNotifier.previousStep()),
-            StepUtils().finishButton(() {
-              // You could reset or show summary screen
-              debugPrint("Finish clicked!");
-            }),
+            StepUtils().backButton(
+              () => ref.read(leadStepProvider.notifier).previousStep(),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF111827),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 14,
+                ),
+              ),
+              onPressed: () {
+                AppToast.success(
+                  context,
+                  "Process Completed",
+                  subtitle: "Lead follow-up finished.",
+                );
+                ref.read(leadStepProvider.notifier).nextStep();
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    "Finish",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  if (followupState.isLoading) ...[
+                    const SizedBox(width: 8),
+                    const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
           ],
         ),
       ],
@@ -103,7 +172,7 @@ class _Step6TrackProgressState extends ConsumerState<Step6TrackProgress> {
     );
   }
 
-  Widget taskList() {
+  Widget taskList(List<dynamic> tasks) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -123,11 +192,23 @@ class _Step6TrackProgressState extends ConsumerState<Step6TrackProgress> {
             ],
           ),
           const Divider(color: Color(0xFFCBD5E1), thickness: 1),
-          taskRow("Day 1", "Email", "Share a news", "Sent (mock)"),
-          const Divider(color: Color(0xFFCBD5E1), thickness: 1),
-          taskRow("Day 3", "LinkedIn", "Value drop", "Pending"),
-          const Divider(color: Color(0xFFCBD5E1), thickness: 1),
-          taskRow("Day 5", "Phone Call", "Just checking", "Pending"),
+          ...tasks.map(
+            (task) => Column(
+              children: [
+                taskRow(
+                  "Day ${task['day']}",
+                  task['type'] == 'email'
+                      ? 'Email'
+                      : task['type'] == 'linkedin'
+                      ? 'LinkedIn'
+                      : 'Phone Call',
+                  task['template'],
+                  task['status'],
+                ),
+                const Divider(color: Color(0xFFCBD5E1), thickness: 1),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -148,7 +229,7 @@ class _Step6TrackProgressState extends ConsumerState<Step6TrackProgress> {
               status,
               style: TextStyle(
                 color:
-                    status == "Sent (mock)"
+                    status == 'Sent'
                         ? const Color(0xFF10B981)
                         : const Color(0xFF64748B),
               ),

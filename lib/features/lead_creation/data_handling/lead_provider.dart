@@ -7,12 +7,14 @@ import '../../../core/services/lead/leads_service.dart';
 class LeadState {
   final bool isLoading;
   final String? error;
+  final String? leadId;
   final List<dynamic> leads;
   final Map<String, dynamic>? selectedLeadTasks;
 
   LeadState({
     this.isLoading = false,
     this.error,
+    this.leadId,
     this.leads = const [],
     this.selectedLeadTasks,
   });

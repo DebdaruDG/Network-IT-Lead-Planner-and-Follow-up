@@ -1,9 +1,13 @@
+import 'dart:developer' as console;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 
+import '../data_handling/lead_followup_provider.dart';
 import '../lead_creation_provider.dart';
 import '../step_utils.dart';
+import '../../../core/widgets/app_toast.dart';
 
 class Step2GoalSelection extends ConsumerStatefulWidget {
   const Step2GoalSelection({super.key});
@@ -13,9 +17,6 @@ class Step2GoalSelection extends ConsumerStatefulWidget {
 }
 
 class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
-  String _selectedGoal = "Book a meeting";
-  int _duration = 10;
-
   final List<Map<String, String>> _goals = [
     {"title": "Book a meeting", "subtitle": "Calendar event"},
     {"title": "Get a reply", "subtitle": "Positive response"},
@@ -28,6 +29,10 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
 
   @override
   Widget build(BuildContext context) {
+    final followupState = ref.watch(followupProvider);
+    final selectedGoal = followupState.selectedGoal ?? "Book a meeting";
+    final duration = followupState.durationDays ?? 10;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -45,12 +50,12 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
                       child: _goalCard(
                         goal["title"]!,
                         goal["subtitle"]!,
-                        _selectedGoal == goal["title"],
+                        selectedGoal == goal["title"],
                         (selected) {
                           if (selected) {
-                            setState(() {
-                              _selectedGoal = goal["title"]!;
-                            });
+                            ref
+                                .read(followupProvider.notifier)
+                                .updateGoal(goal["title"]!);
                           }
                         },
                       ),
@@ -68,13 +73,13 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
             ),
             const SizedBox(width: 8),
             SizedBox(
-              width: 80, // adjust width if needed
+              width: 80,
               child: SpinBox(
                 min: 1,
                 max: 365,
-                value: _duration.toDouble(),
+                value: duration.toDouble(),
                 step: 1,
-                spacing: 0, // spacing between number and buttons
+                spacing: 0,
                 incrementIcon: const Icon(Icons.arrow_drop_up, size: 20),
                 decrementIcon: const Icon(Icons.arrow_drop_down, size: 20),
                 decoration: InputDecoration(
@@ -97,9 +102,9 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
                   color: Color(0xFF1E293B),
                 ),
                 onChanged: (value) {
-                  setState(() {
-                    _duration = value.toInt();
-                  });
+                  ref
+                      .read(followupProvider.notifier)
+                      .updateDuration(value.toInt());
                 },
               ),
             ),
@@ -112,9 +117,60 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
             StepUtils().backButton(() {
               ref.read(leadStepProvider.notifier).previousStep();
             }),
-            StepUtils().generatePlanButton(() {
-              ref.read(leadStepProvider.notifier).nextStep();
-            }),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF111827),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 14,
+                ),
+              ),
+              onPressed: () {
+                console.log('followupState. :- ${followupState.toJson()}');
+                if (followupState.selectedGoal == null ||
+                    followupState.durationDays == null) {
+                  AppToast.warning(
+                    context,
+                    "Selection Incomplete",
+                    subtitle: "Please select a goal and duration.",
+                  );
+                  return;
+                }
+                AppToast.success(
+                  context,
+                  "Goal Selected",
+                  subtitle: "Proceeding to plan setup.",
+                );
+                ref.read(leadStepProvider.notifier).nextStep();
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    "Generate Plan",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  if (followupState.isLoading) ...[
+                    const SizedBox(width: 8),
+                    const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
           ],
         ),
       ],
@@ -154,7 +210,9 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
                 scale: 0.8,
                 child: Radio<String>(
                   value: title,
-                  groupValue: _selectedGoal,
+                  groupValue:
+                      ref.watch(followupProvider).selectedGoal ??
+                      "Book a meeting",
                   onChanged: (value) {
                     if (value != null) onChanged(true);
                   },

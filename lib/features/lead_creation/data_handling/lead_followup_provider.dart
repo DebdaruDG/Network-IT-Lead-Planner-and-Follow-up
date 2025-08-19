@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
-
 import '../../../core/services/follow_up/followup_service.dart';
 
 /// ✅ State model for Followup
@@ -8,19 +7,61 @@ class FollowupState {
   final bool isLoading;
   final String? error;
   final Map<String, dynamic>? followupResult;
+  final String? selectedGoal;
+  final int? durationDays;
+  final List<String>? selectedChannels;
+  final String? emailTemplate;
+  final String? linkedinTemplate;
+  final String? callTalkingPoint;
 
-  FollowupState({this.isLoading = false, this.error, this.followupResult});
+  FollowupState({
+    this.isLoading = false,
+    this.error,
+    this.followupResult,
+    this.selectedGoal,
+    this.durationDays,
+    this.selectedChannels,
+    this.emailTemplate,
+    this.linkedinTemplate,
+    this.callTalkingPoint,
+  });
 
   FollowupState copyWith({
     bool? isLoading,
     String? error,
     Map<String, dynamic>? followupResult,
+    String? selectedGoal,
+    int? durationDays,
+    List<String>? selectedChannels,
+    String? emailTemplate,
+    String? linkedinTemplate,
+    String? callTalkingPoint,
   }) {
     return FollowupState(
       isLoading: isLoading ?? this.isLoading,
       error: error,
       followupResult: followupResult ?? this.followupResult,
+      selectedGoal: selectedGoal ?? this.selectedGoal,
+      durationDays: durationDays ?? this.durationDays,
+      selectedChannels: selectedChannels ?? this.selectedChannels,
+      emailTemplate: emailTemplate ?? this.emailTemplate,
+      linkedinTemplate: linkedinTemplate ?? this.linkedinTemplate,
+      callTalkingPoint: callTalkingPoint ?? this.callTalkingPoint,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "isLoading": isLoading,
+      "error": error,
+      "followupResult": followupResult,
+      "selectedGoal": selectedGoal,
+      "durationDays": durationDays,
+      "selectedChannels": selectedChannels,
+      "emailTemplate": emailTemplate,
+      "linkedinTemplate": linkedinTemplate,
+      "callTalkingPoint": callTalkingPoint,
+    };
   }
 }
 
@@ -30,26 +71,59 @@ class FollowupNotifier extends StateNotifier<FollowupState> {
 
   FollowupNotifier(this._followupService) : super(FollowupState());
 
-  /// Generate followup for a lead
-  Future<void> generateFollowup({
-    required String leadId,
-    required String goal,
-    required int durationDays,
-    required String channel,
-    String? emailTemplate,
-    String? linkedinTemplate,
-    String? callTalkingPoint,
-  }) async {
+  /// Update selected goal
+  void updateGoal(String goal) {
+    state = state.copyWith(selectedGoal: goal);
+  }
+
+  /// Update duration days
+  void updateDuration(int days) {
+    state = state.copyWith(durationDays: days);
+  }
+
+  /// Update selected channels (list of backend values like ['email', 'linkedin'])
+  void updateChannels(List<String> channels) {
+    state = state.copyWith(selectedChannels: channels);
+  }
+
+  /// Update email template
+  void updateEmailTemplate(String? template) {
+    state = state.copyWith(emailTemplate: template);
+  }
+
+  /// Update LinkedIn template
+  void updateLinkedinTemplate(String? template) {
+    state = state.copyWith(linkedinTemplate: template);
+  }
+
+  /// Update call talking point
+  void updateCallTalkingPoint(String? talkingPoint) {
+    state = state.copyWith(callTalkingPoint: talkingPoint);
+  }
+
+  /// Generate followup for a lead using stored state
+  Future<void> generateFollowup({required String leadId}) async {
+    if (state.selectedGoal == null ||
+        state.durationDays == null ||
+        state.selectedChannels == null) {
+      state = state.copyWith(
+        error: 'Missing required selections (goal, duration, channels)',
+      );
+      return;
+    }
+
     state = state.copyWith(isLoading: true, error: null);
     try {
       final response = await _followupService.generateFollowup(
         leadId: leadId,
-        goal: goal,
-        durationDays: durationDays,
-        channel: channel,
-        emailTemplate: emailTemplate,
-        linkedinTemplate: linkedinTemplate,
-        callTalkingPoint: callTalkingPoint,
+        goal: state.selectedGoal!,
+        durationDays: state.durationDays!,
+        channel: state.selectedChannels!.join(
+          ',',
+        ), // Comma-separated for backend
+        emailTemplate: state.emailTemplate,
+        linkedinTemplate: state.linkedinTemplate,
+        callTalkingPoint: state.callTalkingPoint,
       );
 
       state = state.copyWith(followupResult: response.data);
