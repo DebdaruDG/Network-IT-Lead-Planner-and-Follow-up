@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-
+import '../../models/lead_plan_response.dart';
 import '../api_service.dart';
 
 class LeadService {
@@ -11,7 +11,7 @@ class LeadService {
   static const String _leadEndpoint = "/lead";
   static const String _apiKey = "oJuPUA89sUd7X7ubswoD8KQKjceoIF72LAZDMPxg";
 
-  /// Only [email] is required, other fields are optional
+  /// Add a Lead
   Future<Response> addLead({
     required String email,
     String? leadName,
@@ -38,11 +38,29 @@ class LeadService {
 
   /// ✅ Fetch all Leads
   Future<Response> getLeads() async {
-    return await _apiService.get('$_baseURL$_leadEndpoint', query: {});
+    return await _apiService.get(
+      '$_baseURL$_leadEndpoint',
+      options: Options(
+        headers: {"Content-Type": "application/json", "x-api-key": _apiKey},
+      ),
+    );
   }
 
-  /// ✅ Fetch tasks for a specific leadId
-  Future<Response> getLeadTasks(String leadId) async {
-    return await _apiService.get("$_leadEndpoint/$leadId/tasks");
+  /// ✅ Fetch Plans for a given LeadId (and optionally PlanId)
+  Future<LeadPlanResponse> getLeadPlans({
+    required String leadId,
+    String? planId,
+  }) async {
+    final query = {"LeadId": leadId, if (planId != null) "PlanId": planId};
+
+    final response = await _apiService.get(
+      '$_baseURL$_leadEndpoint',
+      query: query,
+      options: Options(
+        headers: {"Content-Type": "application/json", "x-api-key": _apiKey},
+      ),
+    );
+
+    return LeadPlanResponse.fromJson(response.data);
   }
 }

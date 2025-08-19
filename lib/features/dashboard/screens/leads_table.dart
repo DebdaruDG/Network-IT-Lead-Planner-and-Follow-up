@@ -1,124 +1,163 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/config/app_routes.dart';
+import '../../../core/models/lead_model.dart';
+import '../../lead_creation/data_handling/lead_provider.dart';
 
-class LeadsTable extends StatelessWidget {
+class LeadsTable extends ConsumerStatefulWidget {
   const LeadsTable({super.key});
 
   @override
+  ConsumerState<LeadsTable> createState() => _LeadsTableState();
+}
+
+class _LeadsTableState extends ConsumerState<LeadsTable> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await ref.read(leadProvider.notifier).fetchLeads();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = ref.watch(leadProvider);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Title Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Leads",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF0F172A),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _titleRow(context),
+            const SizedBox(height: 20),
+            _tableHeader(),
+            const SizedBox(height: 12),
+            const Divider(height: 1, color: Color(0xFFE2E8F0)),
+            const SizedBox(height: 12),
+
+            /// ✅ State Handling
+            if (state.isLoading)
+              const Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(width: 12),
+                    Text("Fetching Leads ..."),
+                  ],
                 ),
-              ),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFF0F172A),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+              )
+            else if (state.error != null)
+              Center(
+                child: Text(
+                  "Error: ${state.error}",
+                  style: const TextStyle(color: Colors.red),
                 ),
-                onPressed: () {
-                  // Navigate to Add Lead page
-                  context.go(AppRoutes.leadCreation);
-                },
-                child: const Text(
-                  "+ Add Lead",
-                  style: TextStyle(fontSize: 14, color: Colors.white),
+              )
+            else if (state.leads.isEmpty)
+              const Center(
+                child: Text(
+                  "No leads found",
+                  style: TextStyle(color: Color(0xFF64748B)),
                 ),
-              ),
-            ],
+              )
+            else
+              _leadsList(state.leads, context),
+
+            const SizedBox(height: 24),
+            _footerLegend(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// -------------------------------
+  /// 🔹 Widgets
+  /// -------------------------------
+
+  Widget _titleRow(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          "Leads",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF0F172A),
           ),
-          const SizedBox(height: 20),
-          // Table Header
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _headerText("Lead"),
-              _headerText("Goal"),
-              _headerText("Progress"),
-              _headerText("Responsiveness"),
-              _headerText("Next Step"),
-              _headerText("         "),
-            ],
-          ),
-          const SizedBox(height: 12),
-
-          const Divider(height: 1, color: Color(0xFFE2E8F0)),
-          const SizedBox(height: 12),
-
-          // Row 1
-          _leadRow(
-            leadName: "R. Patel",
-            subText: "InoChem · Ops Director",
-            goal: "Book a meeting",
-            progress: 0.4,
-            responsivenessText: "Replied in 1d",
-            responsivenessColor: const Color(0xFF059669),
-            nextStep: "LinkedIn message · Tomorrow",
-            context: context,
-          ),
-
-          const SizedBox(height: 12),
-          const Divider(height: 1, color: Color(0xFFE2E8F0)),
-          const SizedBox(height: 12),
-
-          // Row 2
-          _leadRow(
-            leadName: "A. Khan",
-            subText: "FPI · AI Lead",
-            goal: "Share proposal",
-            progress: 0.7,
-            responsivenessText: "Slow · 4d",
-            responsivenessColor: const Color(0xFFB45309),
-            nextStep: "Email · Today",
-            context: context,
-          ),
-
-          const SizedBox(height: 24),
-
-          // Footer Legend
-          RichText(
-            text: const TextSpan(
-              style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
-              children: [
-                TextSpan(text: "Responsiveness scale: "),
-                TextSpan(
-                  text: "Fast ",
-                  style: TextStyle(color: Color(0xFF059669)),
-                ),
-                TextSpan(text: "< 24h  "),
-                TextSpan(
-                  text: "Slow ",
-                  style: TextStyle(color: Color(0xFFB45309)),
-                ),
-                TextSpan(text: "≥ 72h  Unknown"),
-              ],
+        ),
+        FilledButton(
+          style: FilledButton.styleFrom(
+            backgroundColor: const Color(0xFF0F172A),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
             ),
           ),
+          onPressed: () => context.go(AppRoutes.leadCreation),
+          child: const Text(
+            "+ Add Lead",
+            style: TextStyle(fontSize: 14, color: Colors.white),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _tableHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _headerText("Lead"),
+        _headerText("Goal"),
+        _headerText("Progress"),
+        _headerText("Responsiveness"),
+        _headerText("Next Step"),
+        _headerText("         "),
+      ],
+    );
+  }
+
+  Widget _leadsList(List<LeadModel> leads, BuildContext context) {
+    return Column(
+      children: [
+        for (var i = 0; i < leads.length; i++) ...[
+          _leadRowFromModel(leads[i], context),
+          if (i != leads.length - 1) ...[
+            const SizedBox(height: 12),
+            const Divider(height: 1, color: Color(0xFFE2E8F0)),
+            const SizedBox(height: 12),
+          ],
+        ],
+      ],
+    );
+  }
+
+  Widget _footerLegend() {
+    return RichText(
+      text: const TextSpan(
+        style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+        children: [
+          TextSpan(text: "Responsiveness scale: "),
+          TextSpan(text: "Fast ", style: TextStyle(color: Color(0xFF059669))),
+          TextSpan(text: "< 24h  "),
+          TextSpan(text: "Slow ", style: TextStyle(color: Color(0xFFB45309))),
+          TextSpan(text: "≥ 72h  Unknown"),
         ],
       ),
     );
   }
+
+  /// -------------------------------
+  /// 🔹 Helpers
+  /// -------------------------------
 
   Widget _headerText(String text) {
     return Expanded(
@@ -130,6 +169,29 @@ class LeadsTable extends StatelessWidget {
           color: Colors.grey.shade700,
         ),
       ),
+    );
+  }
+
+  Widget _leadRowFromModel(LeadModel lead, BuildContext context) {
+    final leadName = lead.leadName;
+    final company = lead.company ?? "InoChem";
+    final role = lead.goal ?? "Ops Director"; // if extended in model
+    final goal = lead.goal ?? "Book a meeting";
+    final progress = (lead.progress ?? 40) / 100;
+    final responsivenessText = lead.responsivenessText ?? "Replied in 1d";
+    final responsivenessColor =
+        lead.responsivenessColor ?? const Color(0xFF059669);
+    final nextStep = lead.nextStep ?? "LinkedIn message · Tomorrow";
+
+    return _leadRow(
+      leadName: leadName,
+      subText: "$company · $role",
+      goal: goal,
+      progress: progress,
+      responsivenessText: responsivenessText,
+      responsivenessColor: responsivenessColor,
+      nextStep: nextStep,
+      context: context,
     );
   }
 
@@ -166,7 +228,7 @@ class LeadsTable extends StatelessWidget {
           ),
         ),
 
-        // Goal column
+        // Goal
         Expanded(
           child: Text(
             goal,
@@ -174,7 +236,7 @@ class LeadsTable extends StatelessWidget {
           ),
         ),
 
-        // Progress column
+        // Progress
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(right: 24.0),
@@ -188,7 +250,7 @@ class LeadsTable extends StatelessWidget {
           ),
         ),
 
-        // Responsiveness column
+        // Responsiveness
         Expanded(
           child: Text(
             responsivenessText,
@@ -200,7 +262,7 @@ class LeadsTable extends StatelessWidget {
           ),
         ),
 
-        // Next step column
+        // Next Step
         Expanded(
           child: Text(
             nextStep,
@@ -208,12 +270,12 @@ class LeadsTable extends StatelessWidget {
           ),
         ),
 
+        // Action
         Expanded(
           child: Align(
             alignment: Alignment.centerRight,
             child: FilledButton.tonal(
               style: FilledButton.styleFrom(
-                foregroundColor: Colors.white,
                 backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),

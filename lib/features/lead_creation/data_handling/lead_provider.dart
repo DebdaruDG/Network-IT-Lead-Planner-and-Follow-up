@@ -1,6 +1,10 @@
+import 'dart:developer' as console;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 
+import '../../../core/models/lead_model.dart';
+import '../../../core/models/lead_plan_response.dart';
 import '../../../core/services/lead/leads_service.dart';
 
 /// ✅ Lead State model
@@ -8,28 +12,30 @@ class LeadState {
   final bool isLoading;
   final String? error;
   final String? leadId;
-  final List<dynamic> leads;
-  final Map<String, dynamic>? selectedLeadTasks;
+  final List<LeadModel> leads;
+  final List<LeadResult> selectedLeadPlans;
 
   LeadState({
     this.isLoading = false,
     this.error,
     this.leadId,
     this.leads = const [],
-    this.selectedLeadTasks,
+    this.selectedLeadPlans = const [],
   });
 
   LeadState copyWith({
     bool? isLoading,
     String? error,
-    List<dynamic>? leads,
-    Map<String, dynamic>? selectedLeadTasks,
+    String? leadId,
+    List<LeadModel>? leads,
+    List<LeadResult>? selectedLeadPlans,
   }) {
     return LeadState(
       isLoading: isLoading ?? this.isLoading,
       error: error,
+      leadId: leadId ?? this.leadId,
       leads: leads ?? this.leads,
-      selectedLeadTasks: selectedLeadTasks ?? this.selectedLeadTasks,
+      selectedLeadPlans: selectedLeadPlans ?? this.selectedLeadPlans,
     );
   }
 }
@@ -70,20 +76,51 @@ class LeadNotifier extends StateNotifier<LeadState> {
     state = state.copyWith(isLoading: true, error: null);
     try {
       final response = await _leadService.getLeads();
-      state = state.copyWith(leads: response.data is List ? response.data : []);
+
+      final results = response.data['Results'] as List? ?? [];
+
+      // API returns [{ "LeadInfo": [ {...}, {...} ] }]
+      final List<dynamic> leadInfoList =
+          results.isNotEmpty ? (results[0]['LeadInfo'] as List? ?? []) : [];
+
+      final List<LeadModel> leads =
+          leadInfoList
+              .map((item) => LeadModel.fromJson(item as Map<String, dynamic>))
+              .toList();
+
+      state = state.copyWith(leads: leads);
     } on DioException catch (e) {
+      console.log('error - $e');
       state = state.copyWith(error: e.response?.data.toString() ?? e.message);
+    } catch (e) {
+      console.log('error - $e');
+      state = state.copyWith(error: e.toString());
     } finally {
       state = state.copyWith(isLoading: false);
     }
   }
 
-  /// Fetch tasks for a given lead
-  Future<void> fetchLeadTasks(String leadId) async {
+  /// Fetch plans for a given lead
+  Future<void> fetchLeadPlans({required String leadId, String? planId}) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
-      final response = await _leadService.getLeadTasks(leadId);
-      state = state.copyWith(selectedLeadTasks: response.data);
+      final response = await _leadService.getLeadPlans(
+        leadId: leadId,
+        planId: planId,
+      );
+
+      final results = response.results as List? ?? [];
+      if (results.isEmpty) {
+        state = state.copyWith(selectedLeadPlans: []);
+        return;
+      }
+
+      final leadInfo = results[0]['LeadInfo'];
+      final plansJson = leadInfo['Plans'] as List? ?? [];
+
+      final plans = plansJson.map((p) => LeadResult.fromJson(p)).toList();
+
+      state = state.copyWith(selectedLeadPlans: plans);
     } on DioException catch (e) {
       state = state.copyWith(error: e.response?.data.toString() ?? e.message);
     } finally {
