@@ -14,7 +14,7 @@ class AuthService {
       // Optionally add scopes
       googleProvider.addScope('email');
       googleProvider.addScope('profile');
-
+      googleProvider.setCustomParameters({'prompt': 'select_account'});
       // Trigger the Google Sign-In popup
       UserCredential userCredential = await _auth.signInWithPopup(
         googleProvider,
@@ -90,8 +90,7 @@ class AuthService {
     }
   }
 
-  /// ✅ Check Access from API (After Sign-In)
-  /// Just returns true if user exists & email is verified
+  /// ✅ Check Access from API (After Google Sign-In)
   Future<bool> checkAccess(User user) async {
     try {
       if (user.emailVerified) {
@@ -107,10 +106,12 @@ class AuthService {
   }
 
   /// ✅ Combined Google Sign-In + API Check
-  Future<bool> signInWithGoogleAndCheckAccess() async {
+  Future<User?> signInWithGoogleAndCheckAccess() async {
     final user = await signInWithGoogleWeb();
-    if (user == null) return false;
-    return await checkAccess(user);
+    if (user == null) return null;
+    console.log('google user - ${user.email}');
+    return user;
+    // return await checkAccess(user);
   }
 
   /// ✅ Combined Email/Password Sign-In + API Check

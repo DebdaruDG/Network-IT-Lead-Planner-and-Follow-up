@@ -69,18 +69,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     if (updatedAuthState.data != null &&
         updatedAuthState.data['Success'] == true) {
+      // Show success toast
       AppToast.success(
         context,
         "Login Successful",
         subtitle: updatedAuthState.data['Message'],
       );
+      // Navigate to the dashboard screen
+      Navigator.pushReplacementNamed(context, '/dashboard');
     } else if (updatedAuthState.error != null) {
+      // Show error toast
       AppToast.failure(
         context,
         "Login Failed",
         subtitle: updatedAuthState.error!,
       );
     } else {
+      // Show warning toast for unexpected cases
       AppToast.warning(
         context,
         "Login Failed",
@@ -129,6 +134,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       // 'Images/logo.png',
                       width: 250,
                       color: Colors.white,
+                    ).animate(
+                      effects:
+                          AnimationEffectConstants
+                              .usualAnimationEffects['summaryCardAnimation']
+                              ?.effectsBuilder,
                     ),
                   ),
                 ).animate(

@@ -94,13 +94,41 @@ class AuthViewModel extends StateNotifier<AuthState> {
     );
 
     try {
-      final hasAccess = await _authService.signInWithGoogleAndCheckAccess();
-      if (hasAccess) {
-        state = state.copyWith(
-          isLoading: false,
-          data: {'Success': true, 'Message': 'Google Sign-In Successful'},
-          uiState: LoginUIState.success,
-        );
+      final googleUser = await _authService.signInWithGoogleAndCheckAccess();
+      if (googleUser != null) {
+        // Get the signed-in user's email
+        final user = googleUser;
+        if (user.email != null) {
+          // Call loginWithEmail to check if the email exists in the database
+          await loginWithEmail(user.email!);
+          final updatedState = state;
+
+          if (updatedState.data != null &&
+              updatedState.data['Success'] == true) {
+            // Email exists in the database, update state to success
+            state = state.copyWith(
+              isLoading: false,
+              data: {
+                'Success': true,
+                'Message': 'Google Sign-In and Email Check Successful',
+              },
+              uiState: LoginUIState.success,
+            );
+          } else {
+            // Email not found in the database
+            state = state.copyWith(
+              isLoading: false,
+              error: '${user.email} not registered in the database',
+              uiState: LoginUIState.error,
+            );
+          }
+        } else {
+          state = state.copyWith(
+            isLoading: false,
+            error: 'No email found for Google user',
+            uiState: LoginUIState.error,
+          );
+        }
       } else {
         state = state.copyWith(
           isLoading: false,
@@ -111,10 +139,14 @@ class AuthViewModel extends StateNotifier<AuthState> {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'cancelled-popup-request' ||
           e.code == 'popup-closed-by-user') {
-        // just log and return gracefully
+        // Just log and return gracefully
         return;
       }
-      rethrow;
+      state = state.copyWith(
+        isLoading: false,
+        error: 'Google Sign-In failed: ${e.message}',
+        uiState: LoginUIState.error,
+      );
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
