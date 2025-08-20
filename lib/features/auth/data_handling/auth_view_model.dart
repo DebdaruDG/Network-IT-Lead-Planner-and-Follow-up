@@ -125,8 +125,22 @@ class AuthViewModel extends StateNotifier<AuthState> {
   }
 
   Future<void> signOut() async {
+    state = state.copyWith(
+      isLoading: true,
+      error: null,
+      data: null,
+      uiState: LoginUIState.form,
+    );
+
     try {
-      await _authService.signOut();
+      // Run sign-out and minimum delay together
+      await Future.wait([
+        _authService.signOut(),
+        Future.delayed(
+          const Duration(milliseconds: 400),
+        ), // ensures loader is visible
+      ]);
+
       state = state.copyWith(
         isLoading: false,
         error: null,

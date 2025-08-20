@@ -93,43 +93,69 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
         Tooltip(
           message: "Sign out",
           waitDuration: const Duration(milliseconds: 500),
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            padding: const EdgeInsets.all(8.0),
-            child: FilledButton.tonal(
-              style: FilledButton.styleFrom(
-                backgroundColor: Colors.white.withOpacity(0.15),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-              ),
-              onPressed: () async {
-                final authNotifier = ref.read(authViewModelProvider.notifier);
-                await authNotifier.signOut();
-                authNotifier.resetUIState();
-                context.go(AppRoutes.login);
-              },
-              child: const Row(
-                children: [
-                  Icon(Icons.logout, size: 18, color: Colors.white),
-                  SizedBox(width: 6),
-                  Text(
-                    "Sign out",
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+          child: Consumer(
+            builder: (context, ref, _) {
+              final authState = ref.watch(authViewModelProvider);
+              final isLoading = authState.isLoading;
+
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.all(8.0),
+                child: FilledButton.tonal(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.white.withOpacity(0.15),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                   ),
-                ],
-              ),
-            ),
-          ).animate(
-            effects:
-                AnimationEffectConstants
-                    .usualAnimationEffects['summaryCardAnimation']
-                    ?.effectsBuilder,
+                  onPressed:
+                      isLoading
+                          ? null // disable button while loading
+                          : () async {
+                            final authNotifier = ref.read(
+                              authViewModelProvider.notifier,
+                            );
+                            await authNotifier.signOut();
+                            authNotifier.resetUIState();
+                            context.go(AppRoutes.login);
+                          },
+                  child: Row(
+                    children: [
+                      isLoading
+                          ? const SizedBox(
+                            height: 16,
+                            width: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          )
+                          : Icon(Icons.logout, size: 18, color: Colors.white),
+                      SizedBox(width: 6),
+                      Text(
+                        "Sign out",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ).animate(
+                  effects:
+                      AnimationEffectConstants
+                          .usualAnimationEffects['summaryCardAnimation']
+                          ?.effectsBuilder,
+                ),
+              );
+            },
           ),
         ),
       ],

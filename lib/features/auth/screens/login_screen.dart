@@ -215,6 +215,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     side: const BorderSide(color: Color(0xFFDADCE0)),
                   ),
                   padding: const EdgeInsets.only(top: 8, bottom: 8, right: 24),
+                ).animate(
+                  effects:
+                      AnimationEffectConstants
+                          .usualAnimationEffects['summaryCardAnimation']
+                          ?.effectsBuilder,
                 ),
 
                 const SizedBox(height: 10),
