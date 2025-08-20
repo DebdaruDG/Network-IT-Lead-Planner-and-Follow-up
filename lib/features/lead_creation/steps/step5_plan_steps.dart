@@ -163,13 +163,6 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
     // Title: Goal + Duration
     String effectiveTitle = '${task.goal} - Day ${task.durationDays}';
 
-    // Status / template preview
-    if (task.emailTemplate != null && task.emailTemplate!.isNotEmpty) {
-    } else if (task.linkedInTemplate != null &&
-        task.linkedInTemplate!.isNotEmpty) {
-    } else if (task.callTalkingPoint != null &&
-        task.callTalkingPoint!.isNotEmpty) {}
-
     // Pick icon based on preferred channel
     IconData taskIcon = LucideIcons.circle;
     if (task.preferredChannels.contains("email")) {
@@ -180,12 +173,18 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
       taskIcon = LucideIcons.phone;
     }
 
+    // Check if any templates are available
+    bool hasTemplates =
+        (task.emailTemplate?.isNotEmpty ?? false) ||
+        (task.linkedInTemplate?.isNotEmpty ?? false) ||
+        (task.callTalkingPoint?.isNotEmpty ?? false);
+
     return Container(
       padding: const EdgeInsets.all(14),
       margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: const Color(0xFFE2E8F0)), // subtle border
+        border: Border.all(color: const Color(0xFFE2E8F0)),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -259,101 +258,107 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
               ),
             ],
           ),
-
           const SizedBox(height: 10),
 
           /// TEMPLATES PREVIEW SECTION
-          if ((task.emailTemplate?.isNotEmpty ?? false) ||
-              (task.linkedInTemplate?.isNotEmpty ?? false) ||
-              (task.callTalkingPoint?.isNotEmpty ?? false))
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (task.emailTemplate?.isNotEmpty ?? false)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2.0),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          LucideIcons.mail,
-                          size: 16,
-                          color: Colors.blueGrey,
-                        ),
-                        const SizedBox(width: 6),
-                        Flexible(
-                          child: Text(
-                            task.emailTemplate!,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Color(0xFF1E293B),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                if (task.linkedInTemplate?.isNotEmpty ?? false)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2.0),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          LucideIcons.linkedin,
-                          size: 16,
-                          color: Colors.blue,
-                        ),
-                        const SizedBox(width: 6),
-                        Flexible(
-                          child: Text(
-                            task.linkedInTemplate!,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Color(0xFF1E293B),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                if (task.callTalkingPoint?.isNotEmpty ?? false)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2.0),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          LucideIcons.phone,
-                          size: 16,
-                          color: Colors.orange,
-                        ),
-                        const SizedBox(width: 6),
-                        Flexible(
-                          child: Text(
-                            task.callTalkingPoint!,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Color(0xFF1E293B),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
-            )
-          else
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "No templates available",
+          hasTemplates
+              ? ExpansionTile(
+                title: const Text(
+                  'Templates',
                   style: TextStyle(
-                    fontSize: 13,
-                    fontStyle: FontStyle.italic,
-                    color: Color(0xFF94A3B8),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF1E293B),
                   ),
                 ),
-              ],
-            ),
+                tilePadding: const EdgeInsets.symmetric(horizontal: 0),
+                childrenPadding: const EdgeInsets.only(bottom: 8),
+                expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (task.emailTemplate?.isNotEmpty ?? false)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            LucideIcons.mail,
+                            size: 16,
+                            color: Colors.blueGrey,
+                          ),
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              task.emailTemplate!,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Color(0xFF1E293B),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (task.linkedInTemplate?.isNotEmpty ?? false)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            LucideIcons.linkedin,
+                            size: 16,
+                            color: Colors.blue,
+                          ),
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              task.linkedInTemplate!,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Color(0xFF1E293B),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (task.callTalkingPoint?.isNotEmpty ?? false)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            LucideIcons.phone,
+                            size: 16,
+                            color: Colors.orange,
+                          ),
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              task.callTalkingPoint!,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Color(0xFF1E293B),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              )
+              : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "No templates available",
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontStyle: FontStyle.italic,
+                      color: Color(0xFF94A3B8),
+                    ),
+                  ),
+                ],
+              ),
         ],
       ),
     );
