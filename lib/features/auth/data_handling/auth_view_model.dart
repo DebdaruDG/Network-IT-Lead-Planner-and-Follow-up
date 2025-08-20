@@ -73,14 +73,15 @@ class AuthViewModel extends StateNotifier<AuthState> {
         // Show error state
         state = state.copyWith(
           isLoading: false,
-          error: resData?['Message'] ?? 'Unknown error occurred',
+          error: 'Email not registered in Database',
           uiState: LoginUIState.error,
         );
       }
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
-        error: e.toString(),
+        error: 'User Credentials not found in Database',
+        // e.toString(),
         uiState: LoginUIState.error,
       );
     }

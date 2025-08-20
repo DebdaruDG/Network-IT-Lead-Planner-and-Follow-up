@@ -384,6 +384,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             final authNotifier = ref.read(authViewModelProvider.notifier);
             authNotifier.resetUIState();
           },
+          errorMessage: authState.error ?? '',
         ),
       );
     }

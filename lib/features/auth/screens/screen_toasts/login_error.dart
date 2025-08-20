@@ -67,7 +67,12 @@ class _BaseAnimatedStatusViewState extends State<BaseAnimatedStatusView>
 
 class LoginErrorView extends StatelessWidget {
   final VoidCallback onRetry;
-  const LoginErrorView({super.key, required this.onRetry});
+  final String errorMessage;
+  const LoginErrorView({
+    super.key,
+    required this.onRetry,
+    required this.errorMessage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +82,8 @@ class LoginErrorView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Something went wrong.",
+              errorMessage,
+              // "Something went wrong.",
               style: GoogleFonts.poppins(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,

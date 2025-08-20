@@ -8,14 +8,12 @@ class AuthService {
 
   Future<User?> signInWithGoogleWeb() async {
     try {
-      // Create Google provider
       GoogleAuthProvider googleProvider = GoogleAuthProvider();
 
-      // Optionally add scopes
       googleProvider.addScope('email');
       googleProvider.addScope('profile');
       googleProvider.setCustomParameters({'prompt': 'select_account'});
-      // Trigger the Google Sign-In popup
+
       UserCredential userCredential = await _auth.signInWithPopup(
         googleProvider,
       );
