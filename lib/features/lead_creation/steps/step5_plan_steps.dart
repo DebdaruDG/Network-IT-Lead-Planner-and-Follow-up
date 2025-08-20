@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/utils/animation_constants.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../data_handling/lead_provider.dart';
 import '../lead_creation_provider.dart';
@@ -100,9 +102,16 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              StepUtils().backButton(
-                () => ref.read(leadStepProvider.notifier).previousStep(),
-              ),
+              StepUtils()
+                  .backButton(
+                    () => ref.read(leadStepProvider.notifier).previousStep(),
+                  )
+                  .animate(
+                    effects:
+                        AnimationEffectConstants
+                            .usualAnimationEffects['summaryCardAnimation']
+                            ?.effectsBuilder,
+                  ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF111827),
@@ -130,6 +139,11 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
                     color: Colors.white,
                   ),
                 ),
+              ).animate(
+                effects:
+                    AnimationEffectConstants
+                        .usualAnimationEffects['summaryCardAnimation']
+                        ?.effectsBuilder,
               ),
             ],
           ),
@@ -217,6 +231,11 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
           ),
         ],
       ),
+    ).animate(
+      effects:
+          AnimationEffectConstants
+              .usualAnimationEffects['summaryCardAnimation']
+              ?.effectsBuilder,
     );
   }
 }

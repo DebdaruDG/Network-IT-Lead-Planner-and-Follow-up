@@ -1,9 +1,11 @@
 import 'dart:developer' as console;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinbox/flutter_spinbox.dart';
 
+import '../../../core/utils/animation_constants.dart';
 import '../data_handling/lead_followup_provider.dart';
 import '../lead_creation_provider.dart';
 import '../step_utils.dart';
@@ -70,6 +72,11 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
             const Text(
               "Duration (days): ",
               style: TextStyle(fontSize: 14, color: Color(0xFF1E293B)),
+            ).animate(
+              effects:
+                  AnimationEffectConstants
+                      .usualAnimationEffects['summaryCardAnimation']
+                      ?.effectsBuilder,
             ),
             const SizedBox(width: 8),
             SizedBox(
@@ -107,6 +114,11 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
                       .updateDuration(value.toInt());
                 },
               ),
+            ).animate(
+              effects:
+                  AnimationEffectConstants
+                      .usualAnimationEffects['summaryCardAnimation']
+                      ?.effectsBuilder,
             ),
           ],
         ),
@@ -156,6 +168,11 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
+                  ).animate(
+                    effects:
+                        AnimationEffectConstants
+                            .usualAnimationEffects['summaryCardAnimation']
+                            ?.effectsBuilder,
                   ),
                   if (followupState.isLoading) ...[
                     const SizedBox(width: 8),
@@ -247,6 +264,11 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
             ],
           ),
         ),
+      ).animate(
+        effects:
+            AnimationEffectConstants
+                .usualAnimationEffects['summaryCardAnimation']
+                ?.effectsBuilder,
       ),
     );
   }

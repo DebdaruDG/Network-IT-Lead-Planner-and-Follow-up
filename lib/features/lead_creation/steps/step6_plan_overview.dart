@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/utils/animation_constants.dart';
 import '../data_handling/lead_followup_provider.dart';
 import '../lead_creation_provider.dart';
 import '../step_utils.dart';
@@ -70,9 +72,16 @@ class _Step6TrackProgressState extends ConsumerState<Step6TrackProgress> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            StepUtils().backButton(
-              () => ref.read(leadStepProvider.notifier).previousStep(),
-            ),
+            StepUtils()
+                .backButton(
+                  () => ref.read(leadStepProvider.notifier).previousStep(),
+                )
+                .animate(
+                  effects:
+                      AnimationEffectConstants
+                          .usualAnimationEffects['summaryCardAnimation']
+                          ?.effectsBuilder,
+                ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF111827),
@@ -116,6 +125,11 @@ class _Step6TrackProgressState extends ConsumerState<Step6TrackProgress> {
                   ],
                 ],
               ),
+            ).animate(
+              effects:
+                  AnimationEffectConstants
+                      .usualAnimationEffects['summaryCardAnimation']
+                      ?.effectsBuilder,
             ),
           ],
         ),
@@ -169,6 +183,11 @@ class _Step6TrackProgressState extends ConsumerState<Step6TrackProgress> {
           ),
         ],
       ),
+    ).animate(
+      effects:
+          AnimationEffectConstants
+              .usualAnimationEffects['summaryCardAnimation']
+              ?.effectsBuilder,
     );
   }
 
@@ -211,6 +230,11 @@ class _Step6TrackProgressState extends ConsumerState<Step6TrackProgress> {
           ),
         ],
       ),
+    ).animate(
+      effects:
+          AnimationEffectConstants
+              .usualAnimationEffects['summaryCardAnimation']
+              ?.effectsBuilder,
     );
   }
 
@@ -237,6 +261,11 @@ class _Step6TrackProgressState extends ConsumerState<Step6TrackProgress> {
           ),
         ],
       ),
+    ).animate(
+      effects:
+          AnimationEffectConstants
+              .usualAnimationEffects['summaryCardAnimation']
+              ?.effectsBuilder,
     );
   }
 }

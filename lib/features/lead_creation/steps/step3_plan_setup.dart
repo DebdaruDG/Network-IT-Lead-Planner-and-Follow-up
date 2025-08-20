@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/utils/animation_constants.dart';
 import '../data_handling/lead_followup_provider.dart';
 import '../lead_creation_provider.dart';
 import '../step_utils.dart';
@@ -63,6 +65,11 @@ class _Step3PlanSetupState extends ConsumerState<Step3PlanSetup> {
                   color: Color(0xFF1E293B),
                   letterSpacing: 0.35,
                 ),
+              ).animate(
+                effects:
+                    AnimationEffectConstants
+                        .usualAnimationEffects['summaryCardAnimation']
+                        ?.effectsBuilder,
               ),
               const SizedBox(height: 12),
               Row(
@@ -97,6 +104,11 @@ class _Step3PlanSetupState extends ConsumerState<Step3PlanSetup> {
                   fontSize: 14,
                   color: Color(0xFF1E293B),
                 ),
+              ).animate(
+                effects:
+                    AnimationEffectConstants
+                        .usualAnimationEffects['summaryCardAnimation']
+                        ?.effectsBuilder,
               ),
               const SizedBox(height: 8),
               ...activeSteps.map(
@@ -113,6 +125,11 @@ class _Step3PlanSetupState extends ConsumerState<Step3PlanSetup> {
                       ),
                     ),
                   ],
+                ).animate(
+                  effects:
+                      AnimationEffectConstants
+                          .usualAnimationEffects['summaryCardAnimation']
+                          ?.effectsBuilder,
                 ),
               ),
             ],
@@ -162,6 +179,11 @@ class _Step3PlanSetupState extends ConsumerState<Step3PlanSetup> {
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
+                  ).animate(
+                    effects:
+                        AnimationEffectConstants
+                            .usualAnimationEffects['summaryCardAnimation']
+                            ?.effectsBuilder,
                   ),
                   if (followupState.isLoading) ...[
                     const SizedBox(width: 8),
@@ -217,6 +239,11 @@ class _Step3PlanSetupState extends ConsumerState<Step3PlanSetup> {
           ),
         ),
       ],
+    ).animate(
+      effects:
+          AnimationEffectConstants
+              .usualAnimationEffects['summaryCardAnimation']
+              ?.effectsBuilder,
     );
   }
 }

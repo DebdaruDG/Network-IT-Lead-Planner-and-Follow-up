@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/utils/animation_constants.dart';
 import '../data_handling/lead_followup_provider.dart';
 import '../lead_creation_provider.dart';
 import '../step_utils.dart';
@@ -125,6 +127,11 @@ class Step4Instructions extends ConsumerWidget {
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
+                  ).animate(
+                    effects:
+                        AnimationEffectConstants
+                            .usualAnimationEffects['summaryCardAnimation']
+                            ?.effectsBuilder,
                   ),
                   if (followupState.isLoading) ...[
                     const SizedBox(width: 8),
@@ -231,6 +238,11 @@ class Step4Instructions extends ConsumerWidget {
           ),
         ],
       ),
+    ).animate(
+      effects:
+          AnimationEffectConstants
+              .usualAnimationEffects['summaryCardAnimation']
+              ?.effectsBuilder,
     );
   }
 }
