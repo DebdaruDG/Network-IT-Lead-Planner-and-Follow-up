@@ -1,8 +1,7 @@
-import 'dart:developer' as console;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 import '../../../core/utils/animation_constants.dart';
 import '../../../core/widgets/app_toast.dart';
@@ -161,118 +160,82 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
     required bool isPhoneCall,
     required Plan task,
   }) {
-    console.log('task - ${task.toJson()}');
-
     // Title: Goal + Duration
     String effectiveTitle = '${task.goal} - Day ${task.durationDays}';
 
     // Status / template preview
-    String effectiveStatus = 'Pending';
     if (task.emailTemplate != null && task.emailTemplate!.isNotEmpty) {
-      effectiveStatus = task.emailTemplate!;
     } else if (task.linkedInTemplate != null &&
         task.linkedInTemplate!.isNotEmpty) {
-      effectiveStatus = task.linkedInTemplate!;
     } else if (task.callTalkingPoint != null &&
-        task.callTalkingPoint!.isNotEmpty) {
-      effectiveStatus = task.callTalkingPoint!;
+        task.callTalkingPoint!.isNotEmpty) {}
+
+    // Pick icon based on preferred channel
+    IconData taskIcon = LucideIcons.circle;
+    if (task.preferredChannels.contains("email")) {
+      taskIcon = LucideIcons.mail;
+    } else if (task.preferredChannels.contains("linkedin")) {
+      taskIcon = LucideIcons.linkedin;
+    } else if (task.preferredChannels.contains("phone call")) {
+      taskIcon = LucideIcons.phone;
     }
-    List<String> channels =
-        task.preferredChannels.isNotEmpty
-            ? task.preferredChannels.expand((c) => c).toList()
-            : [];
+
     return Container(
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.all(14),
+      margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: const Color(0xFFCBD5E1)),
-        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE2E8F0)), // subtle border
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// HEADER: Goal + Duration + Status + Button
+          /// HEADER: Icon + Goal + Duration + Button
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: [
+                  Icon(taskIcon, size: 20, color: Colors.black87),
+                  const SizedBox(width: 8),
                   Text(
                     effectiveTitle,
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF1E293B),
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  channels.isNotEmpty
-                      ? Wrap(
-                        spacing: 6,
-                        children:
-                            channels.map((c) {
-                              Color bg;
-                              IconData icon;
-                              switch (c.toLowerCase()) {
-                                case 'email':
-                                  bg = Colors.blue.shade100;
-                                  icon = Icons.email_outlined;
-                                  break;
-                                case 'linkedin':
-                                  bg = Colors.green.shade100;
-                                  icon = Icons.link;
-                                  break;
-                                case 'phone call':
-                                  bg = Colors.orange.shade100;
-                                  icon = Icons.phone_outlined;
-                                  break;
-                                default:
-                                  bg = Colors.grey.shade200;
-                                  icon = Icons.circle_outlined;
-                              }
-                              return Chip(
-                                label: Text(
-                                  c,
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    color: Color(0xFF1E293B),
-                                  ),
-                                ),
-                                avatar: Icon(
-                                  icon,
-                                  size: 16,
-                                  color: Colors.black54,
-                                ),
-                                backgroundColor: bg,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              );
-                            }).toList(),
-                      )
-                      : const Text(
-                        'No channels',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Color(0xFF64748B),
-                        ),
-                      ),
                 ],
               ),
               Row(
                 children: [
-                  Text(
-                    effectiveStatus,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xFF64748B),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.grey.shade800),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      status,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey.shade800,
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: onPressed,
                     style: ElevatedButton.styleFrom(
@@ -282,82 +245,117 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
+                        horizontal: 14,
                         vertical: 8,
                       ),
-                    ),
-                    child: Text(
-                      isPhoneCall ? "Call Now" : "Send",
-                      style: const TextStyle(
-                        fontSize: 14,
+                      textStyle: const TextStyle(
+                        fontSize: 13,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
+                    child: Text(isPhoneCall ? "Call Now" : "Send"),
                   ),
                 ],
               ),
             ],
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
-          /// Templates Section (Expandable)
-          ExpansionTile(
-            title: const Text(
-              "Templates",
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF1E293B),
-              ),
+          /// TEMPLATES PREVIEW SECTION
+          if ((task.emailTemplate?.isNotEmpty ?? false) ||
+              (task.linkedInTemplate?.isNotEmpty ?? false) ||
+              (task.callTalkingPoint?.isNotEmpty ?? false))
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (task.emailTemplate?.isNotEmpty ?? false)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2.0),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          LucideIcons.mail,
+                          size: 16,
+                          color: Colors.blueGrey,
+                        ),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            task.emailTemplate!,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Color(0xFF1E293B),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                if (task.linkedInTemplate?.isNotEmpty ?? false)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2.0),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          LucideIcons.linkedin,
+                          size: 16,
+                          color: Colors.blue,
+                        ),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            task.linkedInTemplate!,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Color(0xFF1E293B),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                if (task.callTalkingPoint?.isNotEmpty ?? false)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2.0),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          LucideIcons.phone,
+                          size: 16,
+                          color: Colors.orange,
+                        ),
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            task.callTalkingPoint!,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Color(0xFF1E293B),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            )
+          else
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "No templates available",
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontStyle: FontStyle.italic,
+                    color: Color(0xFF94A3B8),
+                  ),
+                ),
+              ],
             ),
-            tilePadding: EdgeInsets.zero,
-            children: [
-              if (task.emailTemplate != null && task.emailTemplate!.isNotEmpty)
-                ListTile(
-                  leading: const Icon(Icons.email_outlined, size: 20),
-                  title: Text(
-                    task.emailTemplate!,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ),
-              if (task.linkedInTemplate != null &&
-                  task.linkedInTemplate!.isNotEmpty)
-                ListTile(
-                  leading: const Icon(Icons.link, size: 20),
-                  title: Text(
-                    task.linkedInTemplate!,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ),
-              if (task.callTalkingPoint != null &&
-                  task.callTalkingPoint!.isNotEmpty)
-                ListTile(
-                  leading: const Icon(Icons.phone_outlined, size: 20),
-                  title: Text(
-                    task.callTalkingPoint!,
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ),
-              if ((task.emailTemplate?.isEmpty ?? true) &&
-                  (task.linkedInTemplate?.isEmpty ?? true) &&
-                  (task.callTalkingPoint?.isEmpty ?? true))
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    "No templates available",
-                    style: TextStyle(fontSize: 14, color: Color(0xFF64748B)),
-                  ),
-                ),
-            ],
-          ),
         ],
       ),
-    ).animate(
-      effects:
-          AnimationEffectConstants
-              .usualAnimationEffects['summaryCardAnimation']
-              ?.effectsBuilder,
     );
   }
 }

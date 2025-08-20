@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class LeadPlanResponse {
   final String requestId;
   final bool success;
@@ -79,7 +81,7 @@ class Plan {
   final int leadId;
   final String goal;
   final int durationDays;
-  final List<List<String>> preferredChannels;
+  final List<String> preferredChannels; // flattened + unique
   final String? emailTemplate;
   final String? linkedInTemplate;
   final String? callTalkingPoint;
@@ -96,16 +98,42 @@ class Plan {
   });
 
   factory Plan.fromJson(Map<String, dynamic> json) {
+    List<String> parsedChannels = [];
+
+    dynamic raw = json["PreferredChannels"];
+    if (raw != null) {
+      // If it's a string, try decoding it
+      if (raw is String) {
+        try {
+          raw = jsonDecode(raw);
+        } catch (_) {
+          raw = [];
+        }
+      }
+
+      // Now raw can be List<dynamic>
+      if (raw is List) {
+        // Case 1: List<String>
+        if (raw.isNotEmpty && raw.first is String) {
+          parsedChannels = raw.cast<String>();
+        }
+        // Case 2: List<List<String>>
+        else if (raw.isNotEmpty && raw.first is List) {
+          parsedChannels =
+              raw.expand((e) => (e as List).map((x) => x.toString())).toList();
+        }
+      }
+    }
+
+    // Ensure unique values
+    parsedChannels = parsedChannels.toSet().toList();
+
     return Plan(
       planId: json["PlanId"] ?? 0,
       leadId: json["LeadId"] ?? 0,
       goal: json["Goal"] ?? "",
       durationDays: json["DurationDays"] ?? 0,
-      preferredChannels:
-          (json['preferredChannels'] as List<dynamic>?)
-              ?.map((e) => (e as List<dynamic>).cast<String>().toList())
-              .toList() ??
-          [],
+      preferredChannels: parsedChannels,
       emailTemplate: json["EmailTemplate"],
       linkedInTemplate: json["LinkedInTemplate"],
       callTalkingPoint: json["CallTalkingPoint"],
@@ -114,14 +142,14 @@ class Plan {
 
   Map<String, dynamic> toJson() {
     return {
-      "planId": planId,
-      "leadId": leadId,
-      "goal": goal,
-      "durationDays": durationDays,
-      "preferredChannels": preferredChannels,
-      "emailTemplate": emailTemplate,
-      "linkedInTemplate": linkedInTemplate,
-      "callTalkingPoint": callTalkingPoint,
+      "PlanId": planId,
+      "LeadId": leadId,
+      "Goal": goal,
+      "DurationDays": durationDays,
+      "PreferredChannels": preferredChannels, // returns flat List<String>
+      "EmailTemplate": emailTemplate,
+      "LinkedInTemplate": linkedInTemplate,
+      "CallTalkingPoint": callTalkingPoint,
     };
   }
 }

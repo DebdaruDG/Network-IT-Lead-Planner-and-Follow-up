@@ -28,6 +28,7 @@ dependencies:
   google_sign_in_web: ^1.0.0
   flutter_spinbox: ^0.13.1
   flutter_animate: ^4.5.2
+  lucide_icons: ^0.257.0
 
 dev_dependencies:
   flutter_test:
