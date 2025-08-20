@@ -308,6 +308,11 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
                         letterSpacing: 0.1,
                         fontFamily: "Manrope",
                       ),
+                    ).animate(
+                      effects:
+                          AnimationEffectConstants
+                              .usualAnimationEffects['summaryCardAnimation']
+                              ?.effectsBuilder,
                     ),
                     const SizedBox(height: 6),
                     Text(
@@ -316,6 +321,11 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
                         fontSize: 14,
                         color: Color(0xFF667085),
                       ),
+                    ).animate(
+                      effects:
+                          AnimationEffectConstants
+                              .usualAnimationEffects['summaryCardAnimation']
+                              ?.effectsBuilder,
                     ),
                     const SizedBox(height: 24),
                     Expanded(child: stepWidgets[currentStep]),

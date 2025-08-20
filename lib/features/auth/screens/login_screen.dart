@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sign_in_button/sign_in_button.dart';
+import '../../../core/utils/animation_constants.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/auth_textfield.dart';
 import '../data_handling/auth_view_model.dart';
@@ -129,6 +131,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       color: Colors.white,
                     ),
                   ),
+                ).animate(
+                  effects:
+                      AnimationEffectConstants
+                          .usualAnimationEffects['summaryCardAnimation']
+                          ?.effectsBuilder,
                 ),
               ),
 
@@ -140,7 +147,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   transitionBuilder: (child, animation) {
                     return FadeTransition(opacity: animation, child: child);
                   },
-                  child: _buildRightPanel(authState),
+                  child: _buildRightPanel(authState).animate(
+                    effects:
+                        AnimationEffectConstants
+                            .usualAnimationEffects['summaryCardAnimation']
+                            ?.effectsBuilder,
+                  ),
                 ),
               ),
             ],
