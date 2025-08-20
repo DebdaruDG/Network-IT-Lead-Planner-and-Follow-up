@@ -79,7 +79,7 @@ class Plan {
   final int leadId;
   final String goal;
   final int durationDays;
-  final String preferredChannels;
+  final List<List<String>> preferredChannels;
   final String? emailTemplate;
   final String? linkedInTemplate;
   final String? callTalkingPoint;
@@ -101,7 +101,11 @@ class Plan {
       leadId: json["LeadId"] ?? 0,
       goal: json["Goal"] ?? "",
       durationDays: json["DurationDays"] ?? 0,
-      preferredChannels: json["PreferredChannels"] ?? "",
+      preferredChannels:
+          (json['preferredChannels'] as List<dynamic>?)
+              ?.map((e) => (e as List<dynamic>).cast<String>().toList())
+              .toList() ??
+          [],
       emailTemplate: json["EmailTemplate"],
       linkedInTemplate: json["LinkedInTemplate"],
       callTalkingPoint: json["CallTalkingPoint"],

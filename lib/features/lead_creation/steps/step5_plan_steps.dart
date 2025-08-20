@@ -1,3 +1,5 @@
+import 'dart:developer' as console;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -93,9 +95,8 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
                       "Executed ${task.goal} (Plan ${task.planId}) on Day ${task.durationDays}.",
                 );
               },
-              isPhoneCall:
-                  (task.preferredChannels is List &&
-                      (task.preferredChannels as List).contains("phone")),
+              isPhoneCall: ((task.preferredChannels as List).contains("phone")),
+              task: task,
             );
           }),
           const SizedBox(height: 16),
@@ -158,75 +159,196 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
     String status,
     VoidCallback onPressed, {
     required bool isPhoneCall,
+    required Plan task,
   }) {
+    console.log('task - ${task.toJson()}');
+
+    // Title: Goal + Duration
+    String effectiveTitle = '${task.goal} - Day ${task.durationDays}';
+
+    // Status / template preview
+    String effectiveStatus = 'Pending';
+    if (task.emailTemplate != null && task.emailTemplate!.isNotEmpty) {
+      effectiveStatus = task.emailTemplate!;
+    } else if (task.linkedInTemplate != null &&
+        task.linkedInTemplate!.isNotEmpty) {
+      effectiveStatus = task.linkedInTemplate!;
+    } else if (task.callTalkingPoint != null &&
+        task.callTalkingPoint!.isNotEmpty) {
+      effectiveStatus = task.callTalkingPoint!;
+    }
+    List<String> channels =
+        task.preferredChannels.isNotEmpty
+            ? task.preferredChannels.expand((c) => c).toList()
+            : [];
     return Container(
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
+        color: Colors.white,
         border: Border.all(color: const Color(0xFFCBD5E1)),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          /// HEADER: Goal + Duration + Status + Button
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF1E293B),
-                  letterSpacing: 0.2,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    effectiveTitle,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF1E293B),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  channels.isNotEmpty
+                      ? Wrap(
+                        spacing: 6,
+                        children:
+                            channels.map((c) {
+                              Color bg;
+                              IconData icon;
+                              switch (c.toLowerCase()) {
+                                case 'email':
+                                  bg = Colors.blue.shade100;
+                                  icon = Icons.email_outlined;
+                                  break;
+                                case 'linkedin':
+                                  bg = Colors.green.shade100;
+                                  icon = Icons.link;
+                                  break;
+                                case 'phone call':
+                                  bg = Colors.orange.shade100;
+                                  icon = Icons.phone_outlined;
+                                  break;
+                                default:
+                                  bg = Colors.grey.shade200;
+                                  icon = Icons.circle_outlined;
+                              }
+                              return Chip(
+                                label: Text(
+                                  c,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Color(0xFF1E293B),
+                                  ),
+                                ),
+                                avatar: Icon(
+                                  icon,
+                                  size: 16,
+                                  color: Colors.black54,
+                                ),
+                                backgroundColor: bg,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              );
+                            }).toList(),
+                      )
+                      : const Text(
+                        'No channels',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xFF64748B),
+                        ),
+                      ),
+                ],
               ),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFF64748B),
-                  letterSpacing: 0.2,
-                ),
+              Row(
+                children: [
+                  Text(
+                    effectiveStatus,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFF64748B),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  ElevatedButton(
+                    onPressed: onPressed,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1E293B),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                    ),
+                    child: Text(
+                      isPhoneCall ? "Call Now" : "Send",
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          Row(
+
+          const SizedBox(height: 12),
+
+          /// Templates Section (Expandable)
+          ExpansionTile(
+            title: const Text(
+              "Templates",
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1E293B),
+              ),
+            ),
+            tilePadding: EdgeInsets.zero,
             children: [
-              Text(
-                status,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFF64748B),
-                  fontFamily: 'Roboto',
-                ),
-              ),
-              const SizedBox(width: 16),
-              ElevatedButton(
-                onPressed: onPressed,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1E293B),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
+              if (task.emailTemplate != null && task.emailTemplate!.isNotEmpty)
+                ListTile(
+                  leading: const Icon(Icons.email_outlined, size: 20),
+                  title: Text(
+                    task.emailTemplate!,
+                    style: const TextStyle(fontSize: 14),
                   ),
                 ),
-                child: Text(
-                  isPhoneCall ? "Call Now" : "Send",
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'Roboto',
+              if (task.linkedInTemplate != null &&
+                  task.linkedInTemplate!.isNotEmpty)
+                ListTile(
+                  leading: const Icon(Icons.link, size: 20),
+                  title: Text(
+                    task.linkedInTemplate!,
+                    style: const TextStyle(fontSize: 14),
                   ),
                 ),
-              ),
+              if (task.callTalkingPoint != null &&
+                  task.callTalkingPoint!.isNotEmpty)
+                ListTile(
+                  leading: const Icon(Icons.phone_outlined, size: 20),
+                  title: Text(
+                    task.callTalkingPoint!,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ),
+              if ((task.emailTemplate?.isEmpty ?? true) &&
+                  (task.linkedInTemplate?.isEmpty ?? true) &&
+                  (task.callTalkingPoint?.isEmpty ?? true))
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    "No templates available",
+                    style: TextStyle(fontSize: 14, color: Color(0xFF64748B)),
+                  ),
+                ),
             ],
           ),
         ],
