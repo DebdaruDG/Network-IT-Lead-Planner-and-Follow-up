@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/utils/animation_constants.dart';
 import '../data_handling/lead_provider.dart';
 import '../../../core/widgets/app_textfield.dart';
 import '../lead_creation_provider.dart'; // for nextStep()
@@ -35,6 +37,11 @@ class Step1LeadDetailsForm extends ConsumerWidget {
                   label: "Lead name",
                   hint: "e.g., Jane Cooper",
                 ),
+              ).animate(
+                effects:
+                    AnimationEffectConstants
+                        .usualAnimationEffects['summaryCardAnimation']
+                        ?.effectsBuilder,
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -43,6 +50,11 @@ class Step1LeadDetailsForm extends ConsumerWidget {
                   label: "Company",
                   hint: "e.g., AOC",
                 ),
+              ).animate(
+                effects:
+                    AnimationEffectConstants
+                        .usualAnimationEffects['summaryCardAnimation']
+                        ?.effectsBuilder,
               ),
             ],
           ),
@@ -63,6 +75,11 @@ class Step1LeadDetailsForm extends ConsumerWidget {
                   keyboardType: TextInputType.emailAddress,
                   hint: "name@company.com",
                 ),
+              ).animate(
+                effects:
+                    AnimationEffectConstants
+                        .usualAnimationEffects['summaryCardAnimation']
+                        ?.effectsBuilder,
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -72,6 +89,11 @@ class Step1LeadDetailsForm extends ConsumerWidget {
                   keyboardType: TextInputType.url,
                   hint: "https://www.linkedin.com/in/username",
                 ),
+              ).animate(
+                effects:
+                    AnimationEffectConstants
+                        .usualAnimationEffects['summaryCardAnimation']
+                        ?.effectsBuilder,
               ),
             ],
           ),
@@ -88,6 +110,11 @@ class Step1LeadDetailsForm extends ConsumerWidget {
             keyboardType: TextInputType.phone,
             hint: "e.g. +91 9436567890",
           ),
+        ).animate(
+          effects:
+              AnimationEffectConstants
+                  .usualAnimationEffects['summaryCardAnimation']
+                  ?.effectsBuilder,
         ),
 
         const SizedBox(height: 24),
@@ -153,6 +180,11 @@ class Step1LeadDetailsForm extends ConsumerWidget {
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
                   ),
+                ).animate(
+                  effects:
+                      AnimationEffectConstants
+                          .usualAnimationEffects['summaryCardAnimation']
+                          ?.effectsBuilder,
                 ),
                 if (leadState.isLoading) ...[
                   const SizedBox(width: 8),

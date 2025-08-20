@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/utils/animation_constants.dart';
 import '../../../core/utils/nav_bar.dart';
 import 'leads_table.dart';
 
@@ -25,27 +27,47 @@ class DashboardScreen extends ConsumerWidget {
               childAspectRatio: 2.5,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              children: const [
+              children: [
                 SummaryCard(
                   title: "Active Leads",
                   value: "12",
                   progress: 0.62,
                   subtitle: '62% have a plan',
+                ).animate(
+                  effects:
+                      AnimationEffectConstants
+                          .usualAnimationEffects['summaryCardAnimation']
+                          ?.effectsBuilder,
                 ),
                 SummaryCard(
                   title: "Avg. Responsiveness",
                   value: "Fast",
                   subtitle: 'Median reply in 18h',
+                ).animate(
+                  effects:
+                      AnimationEffectConstants
+                          .usualAnimationEffects['summaryCardAnimation']
+                          ?.effectsBuilder,
                 ),
                 SummaryCard(
                   title: "Tasks Due Today",
                   value: "7",
                   subtitle: '3 Email - 2 LI - 2 Calls',
+                ).animate(
+                  effects:
+                      AnimationEffectConstants
+                          .usualAnimationEffects['summaryCardAnimation']
+                          ?.effectsBuilder,
                 ),
                 SummaryCard(
                   title: "This Week",
                   value: "68%",
                   subtitle: 'Plan completion rate',
+                ).animate(
+                  effects:
+                      AnimationEffectConstants
+                          .usualAnimationEffects['summaryCardAnimation']
+                          ?.effectsBuilder,
                 ),
               ],
             ),

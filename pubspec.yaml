@@ -27,6 +27,7 @@ dependencies:
   flutter_styled_toast: ^2.2.1
   google_sign_in_web: ^1.0.0
   flutter_spinbox: ^0.13.1
+  flutter_animate: ^4.5.2
 
 dev_dependencies:
   flutter_test:

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/config/app_routes.dart';
 import '../../features/auth/data_handling/auth_view_model.dart';
+import 'animation_constants.dart';
 
 class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final String title;
@@ -45,6 +47,11 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   fontFamily: "Manrope",
                 ),
               ),
+            ).animate(
+              effects:
+                  AnimationEffectConstants
+                      .usualAnimationEffects['summaryCardAnimation']
+                      ?.effectsBuilder,
             ),
             const SizedBox(width: 8),
             Text(
@@ -56,6 +63,11 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 color: Colors.white,
                 letterSpacing: 0.15,
               ),
+            ).animate(
+              effects:
+                  AnimationEffectConstants
+                      .usualAnimationEffects['summaryCardAnimation']
+                      ?.effectsBuilder,
             ),
           ],
         ),
@@ -113,6 +125,11 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 ],
               ),
             ),
+          ).animate(
+            effects:
+                AnimationEffectConstants
+                    .usualAnimationEffects['summaryCardAnimation']
+                    ?.effectsBuilder,
           ),
         ),
       ],

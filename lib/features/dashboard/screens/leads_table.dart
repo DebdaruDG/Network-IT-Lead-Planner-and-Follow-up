@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/config/app_routes.dart';
 import '../../../core/models/lead_model.dart';
+import '../../../core/utils/animation_constants.dart';
 import '../../lead_creation/data_handling/lead_provider.dart';
 
 class LeadsTable extends ConsumerStatefulWidget {
@@ -14,9 +16,48 @@ class LeadsTable extends ConsumerStatefulWidget {
 }
 
 class _LeadsTableState extends ConsumerState<LeadsTable> {
+  late final Map<String, AnimationInfo> animationsMap;
   @override
   void initState() {
     super.initState();
+    animationsMap = {
+      'summaryCardAnimation': AnimationInfo(
+        effectsBuilder: [
+          FadeEffect(
+            curve: Curves.easeInOut,
+            delay: Duration(milliseconds: 100),
+            duration: Duration(milliseconds: 400),
+            begin: 0.0,
+            end: 1.0,
+          ),
+          MoveEffect(
+            curve: Curves.easeInOut,
+            delay: Duration(milliseconds: 100),
+            duration: Duration(milliseconds: 400),
+            begin: Offset(0.0, 20.0),
+            end: Offset(0.0, 0.0),
+          ),
+        ],
+      ),
+      'leadRowAnimation': AnimationInfo(
+        effectsBuilder: [
+          FadeEffect(
+            curve: Curves.easeInOut,
+            delay: Duration(milliseconds: 100),
+            duration: Duration(milliseconds: 400),
+            begin: 0.0,
+            end: 1.0,
+          ),
+          MoveEffect(
+            curve: Curves.easeInOut,
+            delay: Duration(milliseconds: 100),
+            duration: Duration(milliseconds: 400),
+            begin: Offset(-20.0, 0.0),
+            end: Offset(0.0, 0.0),
+          ),
+        ],
+      ),
+    };
     Future.delayed(Duration.zero, () async {
       await ref.read(leadProvider.notifier).fetchLeads();
     });
@@ -308,6 +349,6 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
           ),
         ),
       ],
-    );
+    ).animate(effects: animationsMap['summaryCardAnimation']?.effectsBuilder);
   }
 }

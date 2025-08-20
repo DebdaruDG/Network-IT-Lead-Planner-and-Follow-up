@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/config/app_routes.dart';
+import '../../core/utils/animation_constants.dart';
 import '../../core/utils/nav_bar.dart';
 import 'lead_creation_provider.dart';
 import 'steps/step1_add_lead.dart';
@@ -21,9 +23,49 @@ class AddLeadScreen extends ConsumerStatefulWidget {
 }
 
 class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
+  late Map<String, AnimationInfo> animationsMap;
+
   @override
   void initState() {
     super.initState();
+    animationsMap = {
+      'stepTileAnimation': AnimationInfo(
+        effectsBuilder: [
+          FadeEffect(
+            curve: Curves.easeInOut,
+            delay: Duration(milliseconds: 100),
+            duration: Duration(milliseconds: 400),
+            begin: 0.0,
+            end: 1.0,
+          ),
+          MoveEffect(
+            curve: Curves.easeInOut,
+            delay: Duration(milliseconds: 100),
+            duration: Duration(milliseconds: 400),
+            begin: Offset(-20.0, 0.0),
+            end: Offset(0.0, 0.0),
+          ),
+        ],
+      ),
+      'rightContentAnimation': AnimationInfo(
+        effectsBuilder: [
+          FadeEffect(
+            curve: Curves.easeInOut,
+            delay: Duration(milliseconds: 200),
+            duration: Duration(milliseconds: 500),
+            begin: 0.0,
+            end: 1.0,
+          ),
+          MoveEffect(
+            curve: Curves.easeInOut,
+            delay: Duration(milliseconds: 200),
+            duration: Duration(milliseconds: 500),
+            begin: Offset(0.0, 20.0),
+            end: Offset(0.0, 0.0),
+          ),
+        ],
+      ),
+    };
   }
 
   @override
@@ -243,6 +285,8 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
                   ),
                 ],
               ),
+            ).animate(
+              effects: animationsMap['stepTileAnimation']?.effectsBuilder,
             ),
             // RIGHT SIDE
             Expanded(
@@ -277,6 +321,8 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
                     Expanded(child: stepWidgets[currentStep]),
                   ],
                 ),
+              ).animate(
+                effects: animationsMap['rightContentAnimation']?.effectsBuilder,
               ),
             ),
           ],
