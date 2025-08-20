@@ -144,6 +144,7 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
+                          color: Colors.white,
                         ),
                       ),
                     ],
