@@ -16,7 +16,7 @@ class FollowupService {
     required String leadId,
     required String goal,
     required int durationDays,
-    required String channel,
+    required List<String> channel,
     String? emailTemplate,
     String? linkedinTemplate,
     String? callTalkingPoint,
@@ -30,6 +30,7 @@ class FollowupService {
         "linkedin_template": linkedinTemplate,
         "call_talking_point": callTalkingPoint,
       };
+      console.log('payload - $data');
       return await _apiService.post(
         "$_followupEndpoint?LeadId=$leadId",
         data: data,

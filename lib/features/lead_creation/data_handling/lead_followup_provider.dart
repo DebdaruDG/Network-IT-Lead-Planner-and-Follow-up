@@ -118,9 +118,7 @@ class FollowupNotifier extends StateNotifier<FollowupState> {
         leadId: leadId,
         goal: state.selectedGoal!,
         durationDays: state.durationDays!,
-        channel: state.selectedChannels!.join(
-          ',',
-        ), // Comma-separated for backend
+        channel: state.selectedChannels ?? [],
         emailTemplate: state.emailTemplate,
         linkedinTemplate: state.linkedinTemplate,
         callTalkingPoint: state.callTalkingPoint,
