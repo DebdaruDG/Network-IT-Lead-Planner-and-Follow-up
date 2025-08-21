@@ -85,6 +85,7 @@ class Plan {
   final String? emailTemplate;
   final String? linkedInTemplate;
   final String? callTalkingPoint;
+  final List<Task> tasks;
 
   Plan({
     required this.planId,
@@ -95,6 +96,7 @@ class Plan {
     this.emailTemplate,
     this.linkedInTemplate,
     this.callTalkingPoint,
+    required this.tasks,
   });
 
   factory Plan.fromJson(Map<String, dynamic> json) {
@@ -137,6 +139,11 @@ class Plan {
       emailTemplate: json["EmailTemplate"],
       linkedInTemplate: json["LinkedInTemplate"],
       callTalkingPoint: json["CallTalkingPoint"],
+      tasks:
+          (json["Tasks"] as List<dynamic>?)
+              ?.map((e) => Task.fromJson(e))
+              .toList() ??
+          [],
     );
   }
 
@@ -150,6 +157,47 @@ class Plan {
       "EmailTemplate": emailTemplate,
       "LinkedInTemplate": linkedInTemplate,
       "CallTalkingPoint": callTalkingPoint,
+      "Tasks": tasks.map((task) => task.toJson()).toList(),
+    };
+  }
+}
+
+class Task {
+  final String taskId;
+  final String startDate;
+  final List<String> channel;
+  final String templateType;
+  final String templateContent;
+
+  Task({
+    required this.taskId,
+    required this.startDate,
+    required this.channel,
+    required this.templateType,
+    required this.templateContent,
+  });
+
+  factory Task.fromJson(Map<String, dynamic> json) {
+    return Task(
+      taskId: json["TaskId"] ?? "",
+      startDate: json["StartDate"] ?? "",
+      channel:
+          (json["Channel"] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      templateType: json["template_type"] ?? "",
+      templateContent: json["template_content"] ?? "",
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "TaskId": taskId,
+      "StartDate": startDate,
+      "Channel": channel,
+      "template_type": templateType,
+      "template_content": templateContent,
     };
   }
 }

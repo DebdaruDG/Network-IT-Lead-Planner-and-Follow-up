@@ -82,7 +82,7 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
       child: Column(
         children: [
           ...tasks.map((Plan task) {
-            return taskCard(
+            return planCard(
               "${task.goal} · Day ${task.durationDays}",
               "Template: ${task.emailTemplate?.isNotEmpty == true ? task.emailTemplate : (task.linkedInTemplate ?? task.callTalkingPoint ?? 'N/A')}",
               "Pending",
@@ -94,7 +94,7 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
                       "Executed ${task.goal} (Plan ${task.planId}) on Day ${task.durationDays}.",
                 );
               },
-              isPhoneCall: ((task.preferredChannels as List).contains("phone")),
+              isPhoneCall: ((task.preferredChannels).contains("phone")),
               task: task,
             );
           }),
@@ -152,7 +152,7 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
     );
   }
 
-  Widget taskCard(
+  Widget planCard(
     String title,
     String subtitle,
     String status,
@@ -169,15 +169,24 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
       taskIcon = LucideIcons.mail;
     } else if (task.preferredChannels.contains("linkedin")) {
       taskIcon = LucideIcons.linkedin;
-    } else if (task.preferredChannels.contains("phone call")) {
+    } else if (task.preferredChannels.contains("phone")) {
       taskIcon = LucideIcons.phone;
     }
 
-    // Check if any templates are available
+    // Group tasks by channel and select the first task for each
+    Map<String, Task?> tasksByChannel = {};
+    for (var taskItem in task.tasks) {
+      for (var channel in taskItem.channel) {
+        tasksByChannel.putIfAbsent(channel, () => taskItem);
+      }
+    }
+
+    // Check if any templates or tasks are available
     bool hasTemplates =
         (task.emailTemplate?.isNotEmpty ?? false) ||
         (task.linkedInTemplate?.isNotEmpty ?? false) ||
-        (task.callTalkingPoint?.isNotEmpty ?? false);
+        (task.callTalkingPoint?.isNotEmpty ?? false) ||
+        tasksByChannel.isNotEmpty;
 
     return Container(
       padding: const EdgeInsets.all(14),
@@ -260,7 +269,7 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
           ),
           const SizedBox(height: 10),
 
-          /// TEMPLATES PREVIEW SECTION
+          /// TEMPLATES AND TASKS PREVIEW SECTION
           hasTemplates
               ? ExpansionTile(
                 title: const Text(
@@ -275,10 +284,10 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
                 childrenPadding: const EdgeInsets.only(bottom: 8),
                 expandedCrossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (task.emailTemplate?.isNotEmpty ?? false)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                      child: Row(
+                  if (tasksByChannel.containsKey("email") &&
+                      tasksByChannel["email"] != null)
+                    ExpansionTile(
+                      title: Row(
                         children: [
                           const Icon(
                             LucideIcons.mail,
@@ -287,21 +296,52 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
                           ),
                           const SizedBox(width: 6),
                           Flexible(
-                            child: Text(
-                              task.emailTemplate!,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                color: Color(0xFF1E293B),
-                              ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  task.emailTemplate!,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Color(0xFF1E293B),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '(Click to Expand)',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.grey.shade500,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
+                      tilePadding: const EdgeInsets.only(left: 16),
+                      childrenPadding: const EdgeInsets.only(
+                        left: 16,
+                        bottom: 8,
+                      ),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: Text(
+                            tasksByChannel["email"]!.templateContent,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF1E293B),
+                            ),
+                            maxLines: 40,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
-                  if (task.linkedInTemplate?.isNotEmpty ?? false)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                      child: Row(
+                  if (tasksByChannel.containsKey("linkedin") &&
+                      tasksByChannel["linkedin"] != null)
+                    ExpansionTile(
+                      title: Row(
                         children: [
                           const Icon(
                             LucideIcons.linkedin,
@@ -310,21 +350,52 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
                           ),
                           const SizedBox(width: 6),
                           Flexible(
-                            child: Text(
-                              task.linkedInTemplate!,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                color: Color(0xFF1E293B),
-                              ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  task.linkedInTemplate ?? '',
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Color(0xFF1E293B),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '(Click to Expand)',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.grey.shade500,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
+                      tilePadding: const EdgeInsets.only(left: 16),
+                      childrenPadding: const EdgeInsets.only(
+                        left: 16,
+                        bottom: 8,
+                      ),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: Text(
+                            tasksByChannel["linkedin"]!.templateContent,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF1E293B),
+                            ),
+                            maxLines: 40,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
-                  if (task.callTalkingPoint?.isNotEmpty ?? false)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                      child: Row(
+                  if (tasksByChannel.containsKey("phone") &&
+                      tasksByChannel["phone"] != null)
+                    ExpansionTile(
+                      title: Row(
                         children: [
                           const Icon(
                             LucideIcons.phone,
@@ -333,16 +404,47 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
                           ),
                           const SizedBox(width: 6),
                           Flexible(
-                            child: Text(
-                              task.callTalkingPoint!,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                color: Color(0xFF1E293B),
-                              ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  task.callTalkingPoint ?? '',
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Color(0xFF1E293B),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '(Click to Expand)',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.grey.shade500,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
+                      tilePadding: const EdgeInsets.only(left: 16),
+                      childrenPadding: const EdgeInsets.only(
+                        left: 16,
+                        bottom: 8,
+                      ),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16),
+                          child: Text(
+                            tasksByChannel["phone"]!.templateContent,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF1E293B),
+                            ),
+                            maxLines: 40,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                 ],
               )
@@ -350,7 +452,7 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    "No templates available",
+                    "No templates or tasks available",
                     style: TextStyle(
                       fontSize: 13,
                       fontStyle: FontStyle.italic,
