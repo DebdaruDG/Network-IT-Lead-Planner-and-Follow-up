@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-
 import '../../../../core/models/lead_plan_response.dart';
+import '../../../../core/utils/animation_constants.dart';
 
-class TaskTemplateTile extends StatelessWidget {
+class TaskTemplateTile extends StatefulWidget {
   final Map<String, Task?> tasksByChannel;
   final Plan task;
 
@@ -14,101 +15,192 @@ class TaskTemplateTile extends StatelessWidget {
   });
 
   @override
+  State<TaskTemplateTile> createState() => _TaskTemplateTileState();
+}
+
+class _TaskTemplateTileState extends State<TaskTemplateTile>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  bool _isExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _toggleExpansion() {
+    setState(() {
+      _isExpanded = !_isExpanded;
+      if (_isExpanded) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-      title: const Text(
-        'Templates',
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          color: Color(0xFF1E293B),
-        ),
-      ),
-      tilePadding: const EdgeInsets.symmetric(horizontal: 0),
-      childrenPadding: const EdgeInsets.only(bottom: 8),
-      expandedCrossAxisAlignment: CrossAxisAlignment.center,
-      expandedAlignment: Alignment.center,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Wrap(
-          spacing: 8.0,
-          runSpacing: 8.0,
-          alignment: WrapAlignment.spaceBetween,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          verticalDirection: VerticalDirection.down,
-          children: [
-            if (tasksByChannel.containsKey("email") &&
-                tasksByChannel["email"] != null)
-              _buildTemplateTile(
-                context,
-                icon: LucideIcons.mail,
-                iconColor: Colors.blueGrey,
-                title: task.emailTemplate ?? '',
-                content: tasksByChannel["email"]!.templateContent,
-              ),
-            if (tasksByChannel.containsKey("linkedin") &&
-                tasksByChannel["linkedin"] != null)
-              _buildTemplateTile(
-                context,
-                icon: LucideIcons.linkedin,
-                iconColor: Colors.blue,
-                title: task.linkedInTemplate ?? '',
-                content: tasksByChannel["linkedin"]!.templateContent,
-              ),
-            if (tasksByChannel.containsKey("phone") &&
-                tasksByChannel["phone"] != null)
-              _buildTemplateTile(
-                context,
-                icon: LucideIcons.phone,
-                iconColor: Colors.orange,
-                title: task.callTalkingPoint ?? '',
-                content: tasksByChannel["phone"]!.templateContent,
-              ),
-          ],
+        GestureDetector(
+          onTap: _toggleExpansion,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.shade500, width: 0.75),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: const Text(
+                    'Templates',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF1E293B),
+                    ),
+                  ),
+                ),
+                if (_isExpanded)
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildTemplateItem(
+                          context,
+                          channel: 'email',
+                          icon: LucideIcons.mail,
+                          iconColor: Colors.blueGrey,
+                          title: widget.task.emailTemplate ?? '',
+                          content:
+                              widget.tasksByChannel['email']?.templateContent ??
+                              '',
+                        ),
+                        _buildTemplateItem(
+                          context,
+                          channel: 'linkedin',
+                          icon: LucideIcons.linkedin,
+                          iconColor: Colors.blue,
+                          title: widget.task.linkedInTemplate ?? '',
+                          content:
+                              widget
+                                  .tasksByChannel['linkedin']
+                                  ?.templateContent ??
+                              '',
+                        ),
+                        _buildTemplateItem(
+                          context,
+                          channel: 'phone',
+                          icon: LucideIcons.phone,
+                          iconColor: Colors.orange,
+                          title: widget.task.callTalkingPoint ?? '',
+                          content:
+                              widget.tasksByChannel['phone']?.templateContent ??
+                              '',
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildTemplateTile(
+  Widget _buildTemplateItem(
     BuildContext context, {
+    required String channel,
     required IconData icon,
     required Color iconColor,
     required String title,
     required String content,
   }) {
+    if (!widget.tasksByChannel.containsKey(channel) ||
+        widget.tasksByChannel[channel] == null) {
+      return const SizedBox.shrink();
+    }
+
     return Container(
       width: MediaQuery.of(context).size.width * 0.15,
+      height: MediaQuery.of(context).size.height * 0.35,
+      margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.15),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade500, width: 0.75),
       ),
-      child: ExpansionTile(
-        title: Row(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, size: 16, color: iconColor),
-            const SizedBox(width: 6),
-            Flexible(
+            Container(
+              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: Colors.grey.shade500, width: 0.5),
+              ),
+              child: Row(
+                children: [
+                  Icon(icon, size: 16, color: iconColor),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: Color(0xFF1E293B),
+                      ),
+                    ).animate(
+                      effects:
+                          AnimationEffectConstants
+                              .usualAnimationEffects['summaryCardAnimation']
+                              ?.effectsBuilder,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 32, right: 16, bottom: 16),
               child: Text(
-                title,
-                style: const TextStyle(fontSize: 13, color: Color(0xFF1E293B)),
+                content,
+                style: const TextStyle(fontSize: 12, color: Color(0xFF1E293B)),
+                maxLines: 40,
+                overflow: TextOverflow.ellipsis,
+              ).animate(
+                effects:
+                    AnimationEffectConstants
+                        .usualAnimationEffects['leadRowAnimation']
+                        ?.effectsBuilder,
               ),
             ),
           ],
         ),
-        tilePadding: const EdgeInsets.only(left: 16),
-        childrenPadding: const EdgeInsets.only(left: 16, bottom: 8),
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 16),
-            child: Text(
-              content,
-              style: const TextStyle(fontSize: 12, color: Color(0xFF1E293B)),
-              maxLines: 40,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
       ),
     );
   }
