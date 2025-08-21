@@ -1,3 +1,5 @@
+import 'dart:developer' as console;
+
 import 'package:dio/dio.dart';
 import '../api_service.dart';
 
@@ -19,21 +21,25 @@ class FollowupService {
     String? linkedinTemplate,
     String? callTalkingPoint,
   }) async {
-    final data = {
-      "goal": goal,
-      "duration_days": durationDays,
-      "channel": channel,
-      if (emailTemplate != null) "email_template": emailTemplate,
-      if (linkedinTemplate != null) "linkedin_template": linkedinTemplate,
-      if (callTalkingPoint != null) "call_talking_point": callTalkingPoint,
-    };
-
-    return await _apiService.post(
-      "$_followupEndpoint?LeadId=$leadId",
-      data: data,
-      options: Options(
-        headers: {"Content-Type": "application/json", "x-api-key": _apiKey},
-      ),
-    );
+    try {
+      final data = {
+        "goal": goal,
+        "duration_days": durationDays,
+        "channel": channel,
+        "email_template": emailTemplate,
+        "linkedin_template": linkedinTemplate,
+        "call_talking_point": callTalkingPoint,
+      };
+      return await _apiService.post(
+        "$_followupEndpoint?LeadId=$leadId",
+        data: data,
+        options: Options(
+          headers: {"Content-Type": "application/json", "x-api-key": _apiKey},
+        ),
+      );
+    } catch (err) {
+      console.log('err :- $err');
+      rethrow;
+    }
   }
 }

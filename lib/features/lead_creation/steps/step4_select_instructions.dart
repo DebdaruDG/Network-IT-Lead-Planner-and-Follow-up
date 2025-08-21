@@ -35,7 +35,6 @@ class Step4Instructions extends ConsumerWidget {
                 (value) => ref
                     .read(followupProvider.notifier)
                     .updateEmailTemplate(value),
-                followupState.selectedChannels?.contains('email') ?? false,
               ),
             ),
             const SizedBox(width: 8),
@@ -47,7 +46,6 @@ class Step4Instructions extends ConsumerWidget {
                 (value) => ref
                     .read(followupProvider.notifier)
                     .updateLinkedinTemplate(value),
-                followupState.selectedChannels?.contains('linkedin') ?? false,
               ),
             ),
             const SizedBox(width: 8),
@@ -63,7 +61,6 @@ class Step4Instructions extends ConsumerWidget {
                 (value) => ref
                     .read(followupProvider.notifier)
                     .updateCallTalkingPoint(value),
-                followupState.selectedChannels?.contains('phone') ?? false,
               ),
             ),
           ],
@@ -158,7 +155,6 @@ class Step4Instructions extends ConsumerWidget {
     List<String> options,
     String? selectedValue,
     ValueChanged<String?> onChanged,
-    bool isEnabled,
   ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -184,7 +180,7 @@ class Step4Instructions extends ConsumerWidget {
             child: DropdownButtonFormField<String>(
               decoration: InputDecoration(
                 filled: true,
-                fillColor: isEnabled ? Colors.white : Colors.grey.shade100,
+                fillColor: Colors.white,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(
@@ -219,13 +215,10 @@ class Step4Instructions extends ConsumerWidget {
                   options
                       .map((o) => DropdownMenuItem(value: o, child: Text(o)))
                       .toList(),
-              onChanged: isEnabled ? onChanged : null,
+              onChanged: onChanged,
               hint: Text(
                 "Select an option",
-                style: TextStyle(
-                  color:
-                      isEnabled ? Colors.grey.shade600 : Colors.grey.shade400,
-                ),
+                style: TextStyle(color: Colors.grey.shade600),
               ),
               isExpanded: true,
               menuMaxHeight: 200,

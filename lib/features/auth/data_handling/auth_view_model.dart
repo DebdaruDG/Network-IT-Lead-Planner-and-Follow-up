@@ -96,44 +96,44 @@ class AuthViewModel extends StateNotifier<AuthState> {
 
     try {
       final googleUser = await _authService.signInWithGoogleAndCheckAccess();
-      if (googleUser != null) {
-        // Get the signed-in user's email
-        final user = googleUser;
-        if (user.email != null) {
-          // Call loginWithEmail to check if the email exists in the database
-          await loginWithEmail(user.email!);
-          final updatedState = state;
+      if (googleUser == null) {
+        // User canceled the sign-in flow
+        state = state.copyWith(
+          isLoading: false,
+          error: 'Google Sign-In was canceled',
+          uiState: LoginUIState.form, // Reset to form state
+        );
+        return;
+      }
+      // Get the signed-in user's email
+      final user = googleUser;
+      if (user.email != null) {
+        // Call loginWithEmail to check if the email exists in the database
+        await loginWithEmail(user.email!);
+        final updatedState = state;
 
-          if (updatedState.data != null &&
-              updatedState.data['Success'] == true) {
-            // Email exists in the database, update state to success
-            state = state.copyWith(
-              isLoading: false,
-              data: {
-                'Success': true,
-                'Message': 'Google Sign-In and Email Check Successful',
-              },
-              uiState: LoginUIState.success,
-            );
-          } else {
-            // Email not found in the database
-            state = state.copyWith(
-              isLoading: false,
-              error: '${user.email} not registered in the database',
-              uiState: LoginUIState.error,
-            );
-          }
-        } else {
+        if (updatedState.data != null && updatedState.data['Success'] == true) {
+          // Email exists in the database, update state to success
           state = state.copyWith(
             isLoading: false,
-            error: 'No email found for Google user',
+            data: {
+              'Success': true,
+              'Message': 'Google Sign-In and Email Check Successful',
+            },
+            uiState: LoginUIState.success,
+          );
+        } else {
+          // Email not found in the database
+          state = state.copyWith(
+            isLoading: false,
+            error: '${user.email} not registered in the database',
             uiState: LoginUIState.error,
           );
         }
       } else {
         state = state.copyWith(
           isLoading: false,
-          error: 'Access denied or user not found',
+          error: 'No email found for Google user',
           uiState: LoginUIState.error,
         );
       }

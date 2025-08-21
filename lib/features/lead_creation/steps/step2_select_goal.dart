@@ -1,5 +1,3 @@
-import 'dart:developer' as console;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -141,7 +139,6 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
                 ),
               ),
               onPressed: () {
-                console.log('followupState. :- ${followupState.toJson()}');
                 if (followupState.selectedGoal == null ||
                     followupState.durationDays == null) {
                   AppToast.warning(

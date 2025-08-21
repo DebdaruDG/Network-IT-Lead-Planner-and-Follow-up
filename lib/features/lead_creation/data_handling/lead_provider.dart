@@ -131,6 +131,11 @@ class LeadNotifier extends StateNotifier<LeadState> {
       state = state.copyWith(isLoading: false);
     }
   }
+
+  /// Update the leadId in the state
+  void updateLeadId(String? newLeadId) {
+    state = state.copyWith(leadId: newLeadId);
+  }
 }
 
 /// ✅ Riverpod provider

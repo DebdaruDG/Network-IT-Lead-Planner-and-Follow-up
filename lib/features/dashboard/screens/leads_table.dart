@@ -325,7 +325,7 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
         // Action
         Expanded(
           child: Align(
-            alignment: Alignment.centerRight,
+            alignment: Alignment.center,
             child: FilledButton.tonal(
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.white,
@@ -339,8 +339,10 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
                 ),
                 minimumSize: const Size(0, 36),
               ),
-              onPressed:
-                  () => context.go('${AppRoutes.leadCreation}?leadId=$leadId'),
+              onPressed: () {
+                ref.read(leadProvider.notifier).updateLeadId('$leadId');
+                context.go('${AppRoutes.leadCreation}?leadId=$leadId');
+              },
               child: const Text(
                 "Open",
                 style: TextStyle(fontSize: 14, color: Colors.black87),
