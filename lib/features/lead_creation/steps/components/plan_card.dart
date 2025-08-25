@@ -23,6 +23,7 @@ class PlanCard extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(14),
+      margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
         color: Colors.white,
         border: Border.all(color: const Color(0xFFE2E8F0)),

@@ -78,10 +78,11 @@ class _TaskTemplateTileState extends State<TaskTemplateTile>
                           ),
                           children: [
                             TextSpan(
-                              text: ' (Click to Expand)',
+                              text:
+                                  ' (Click to ${_isExpanded ? 'Contract' : 'Expand'})',
                               style: GoogleFonts.poppins(
                                 color: Colors.grey.shade400,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w400,
                                 fontSize: 12,
                               ),
                             ),
