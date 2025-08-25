@@ -142,16 +142,27 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.transparent,
+          color: isSelected ? themeColor.withOpacity(0.01) : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Text(
-          label,
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
-            fontSize: 14,
-            color: isSelected ? themeColor : Colors.white,
-          ),
+        child: Column(
+          children: [
+            Text(
+              label,
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+                color: isSelected ? Colors.white : Colors.white,
+              ),
+            ),
+            if (isSelected)
+              Container(
+                height: 2,
+                margin: const EdgeInsets.only(top: 8),
+                color: Colors.white,
+                width: 80,
+              ),
+          ],
         ),
       ),
     ).animate(
