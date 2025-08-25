@@ -21,7 +21,8 @@ class AddLeadBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentStep = ref.watch(leadStepProvider);
+    final leadState = ref.watch(leadStepProvider);
+    final currentStep = leadState.currentStep;
 
     return Expanded(
       child: Container(

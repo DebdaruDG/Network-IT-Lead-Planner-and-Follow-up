@@ -48,10 +48,9 @@ class AddLeadSidebar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentStep = ref.watch(leadStepProvider);
-    final leadNotifier = ref.read(leadStepProvider.notifier);
-
-    final isPlanExpanded = leadNotifier.isPlanExpanded;
+    final leadState = ref.watch(leadStepProvider); // LeadStepState
+    final currentStep = leadState.currentStep; // int
+    final isPlanExpanded = leadState.planExpanded;
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.18,
@@ -170,7 +169,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                   iconData = Icons.playlist_add_check_outlined;
                                   break;
                                 default:
-                                  iconData = Icons.circle_outlined; // fallback
+                                  iconData = Icons.circle_outlined;
                               }
 
                               return InkWell(
@@ -211,7 +210,6 @@ class AddLeadSidebar extends ConsumerWidget {
                                                 : Colors.grey[600],
                                       ),
                                       const SizedBox(width: 8),
-
                                       Text(
                                         subStep.title,
                                         style: GoogleFonts.inter(

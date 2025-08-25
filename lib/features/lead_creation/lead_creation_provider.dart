@@ -10,62 +10,70 @@ final stepWidgets = [
   "Track Progress",
 ];
 
-class LeadStepNotifier extends StateNotifier<int> {
-  LeadStepNotifier() : super(0);
+/// Immutable state object
+class LeadStepState {
+  final int currentStep;
+  final bool planExpanded;
 
-  // Expansion state for the "Plan" group
-  bool _planExpanded = true;
+  const LeadStepState({required this.currentStep, required this.planExpanded});
+
+  LeadStepState copyWith({int? currentStep, bool? planExpanded}) {
+    return LeadStepState(
+      currentStep: currentStep ?? this.currentStep,
+      planExpanded: planExpanded ?? this.planExpanded,
+    );
+  }
+}
+
+class LeadStepNotifier extends StateNotifier<LeadStepState> {
+  LeadStepNotifier()
+    : super(const LeadStepState(currentStep: 0, planExpanded: true));
 
   int get totalSteps => stepWidgets.length;
 
   // --- Step navigation ---
   void nextStep() {
-    if (state < totalSteps - 1) {
-      state++;
+    if (state.currentStep < totalSteps - 1) {
+      state = state.copyWith(currentStep: state.currentStep + 1);
     }
   }
 
   void previousStep() {
-    if (state > 0) {
-      state--;
+    if (state.currentStep > 0) {
+      state = state.copyWith(currentStep: state.currentStep - 1);
     }
   }
 
   void goToStep(int index) {
     if (index >= 0 && index < totalSteps) {
-      state = index;
+      state = state.copyWith(currentStep: index);
     }
   }
 
   void reset() {
-    state = 0;
+    state = state.copyWith(currentStep: 0);
   }
 
   // --- Plan related getters ---
-  bool get isInsidePlan => state >= 1 && state <= 3;
-
-  int? get activePlanChildIndex => isInsidePlan ? state - 1 : null;
+  bool get isInsidePlan => state.currentStep >= 1 && state.currentStep <= 3;
+  int? get activePlanChildIndex => isInsidePlan ? state.currentStep - 1 : null;
 
   // --- Expansion state for "Plan" ---
-  bool get isPlanExpanded => _planExpanded;
+  bool get isPlanExpanded => state.planExpanded;
 
   void togglePlanExpanded() {
-    _planExpanded = !_planExpanded;
-    // notify listeners → state has to change
-    state = state;
+    state = state.copyWith(planExpanded: !state.planExpanded);
   }
 
   void expandPlan() {
-    _planExpanded = true;
-    state = state;
+    state = state.copyWith(planExpanded: true);
   }
 
   void collapsePlan() {
-    _planExpanded = false;
-    state = state;
+    state = state.copyWith(planExpanded: false);
   }
 }
 
-final leadStepProvider = StateNotifierProvider<LeadStepNotifier, int>(
+final leadStepProvider = StateNotifierProvider<LeadStepNotifier, LeadStepState>(
   (ref) => LeadStepNotifier(),
 );
