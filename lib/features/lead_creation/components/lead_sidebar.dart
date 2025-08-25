@@ -125,7 +125,10 @@ class AddLeadSidebar extends ConsumerWidget {
                               step.title,
                               style: GoogleFonts.inter(
                                 fontSize: 15,
-                                fontWeight: FontWeight.w600,
+                                fontWeight:
+                                    isPlanActive
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
                                 color:
                                     isPlanActive
                                         ? Colors.black
