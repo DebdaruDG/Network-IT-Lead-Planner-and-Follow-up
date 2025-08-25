@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../../../core/models/lead_plan_response.dart';
 import '../../../../core/utils/animation_constants.dart';
@@ -56,74 +57,101 @@ class _TaskTemplateTileState extends State<TaskTemplateTile>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GestureDetector(
-          onTap: _toggleExpansion,
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey.shade500, width: 0.75),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: const Text(
-                    'Templates',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF1E293B),
-                    ),
+        SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.only(bottom: 6),
+                child: InkWell(
+                  onTap: _toggleExpansion,
+                  child: Row(
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          text: 'Templates',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: Color(0xFF1E293B),
+                          ),
+                          children: [
+                            TextSpan(
+                              text: ' (Click to Expand)',
+                              style: GoogleFonts.poppins(
+                                color: Colors.grey.shade400,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        _isExpanded
+                            ? Icons.arrow_drop_up_outlined
+                            : Icons.arrow_drop_down_outlined,
+                        color: const Color(0xFF233B7A),
+                        size: 20,
+                      ).animate(
+                        effects:
+                            AnimationEffectConstants
+                                .usualAnimationEffects['summaryCardAnimation']
+                                ?.effectsBuilder,
+                      ),
+                    ],
                   ),
                 ),
-                if (_isExpanded)
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _buildTemplateItem(
-                          context,
-                          channel: 'email',
-                          icon: LucideIcons.mail,
-                          iconColor: Colors.blueGrey,
-                          title: widget.task.emailTemplate ?? '',
-                          content:
-                              widget.tasksByChannel['email']?.templateContent ??
-                              '',
-                        ),
-                        _buildTemplateItem(
-                          context,
-                          channel: 'linkedin',
-                          icon: LucideIcons.linkedin,
-                          iconColor: Colors.blue,
-                          title: widget.task.linkedInTemplate ?? '',
-                          content:
-                              widget
-                                  .tasksByChannel['linkedin']
-                                  ?.templateContent ??
-                              '',
-                        ),
-                        _buildTemplateItem(
-                          context,
-                          channel: 'phone',
-                          icon: LucideIcons.phone,
-                          iconColor: Colors.orange,
-                          title: widget.task.callTalkingPoint ?? '',
-                          content:
-                              widget.tasksByChannel['phone']?.templateContent ??
-                              '',
-                        ),
-                      ],
-                    ),
+              ),
+              if (_isExpanded)
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildTemplateItem(
+                        context,
+                        channel: 'email',
+                        icon: LucideIcons.mail,
+                        iconColor: Colors.blueGrey,
+                        title: widget.task.emailTemplate ?? '',
+                        content:
+                            widget.tasksByChannel['email']?.templateContent ??
+                            '',
+                      ),
+                      _buildTemplateItem(
+                        context,
+                        channel: 'linkedin',
+                        icon: LucideIcons.linkedin,
+                        iconColor: Colors.blue,
+                        title: widget.task.linkedInTemplate ?? '',
+                        content:
+                            widget
+                                .tasksByChannel['linkedin']
+                                ?.templateContent ??
+                            '',
+                      ),
+                      _buildTemplateItem(
+                        context,
+                        channel: 'phone',
+                        icon: LucideIcons.phone,
+                        iconColor: Colors.orange,
+                        title: widget.task.callTalkingPoint ?? '',
+                        content:
+                            widget.tasksByChannel['phone']?.templateContent ??
+                            '',
+                      ),
+                    ],
+                  ).animate(
+                    effects:
+                        AnimationEffectConstants
+                            .usualAnimationEffects['summaryCardAnimation']
+                            ?.effectsBuilder,
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
         ),
       ],
@@ -150,7 +178,7 @@ class _TaskTemplateTileState extends State<TaskTemplateTile>
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.15),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade500, width: 0.75),
+        border: Border.all(color: Colors.grey.shade500, width: 0.4),
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -158,11 +186,12 @@ class _TaskTemplateTileState extends State<TaskTemplateTile>
           children: [
             Container(
               padding: const EdgeInsets.all(16),
-              margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: Colors.grey.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: Colors.grey.shade500, width: 0.5),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(6),
+                  topRight: Radius.circular(6),
+                ),
               ),
               child: Row(
                 children: [
@@ -171,7 +200,7 @@ class _TaskTemplateTileState extends State<TaskTemplateTile>
                   Expanded(
                     child: Text(
                       title,
-                      style: const TextStyle(
+                      style: GoogleFonts.poppins(
                         fontSize: 13,
                         color: Color(0xFF1E293B),
                       ),
@@ -185,8 +214,8 @@ class _TaskTemplateTileState extends State<TaskTemplateTile>
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 32, right: 16, bottom: 16),
+            Container(
+              padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
               child: Text(
                 content,
                 style: const TextStyle(fontSize: 12, color: Color(0xFF1E293B)),
