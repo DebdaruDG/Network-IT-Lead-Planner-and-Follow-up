@@ -1,3 +1,5 @@
+import 'dart:developer' as console;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,6 +32,7 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
   @override
   void initState() {
     super.initState();
+    console.log('lead id - ${widget.leadId}');
     animationsMap = {
       'stepTileAnimation': AnimationInfo(
         effectsBuilder: [
@@ -73,7 +76,10 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
   @override
   Widget build(BuildContext context) {
     final sidebarSteps = [
-      SidebarStep(title: "Add Lead", number: 1),
+      SidebarStep(
+        title: (widget.leadId ?? '').isEmpty ? "Add Lead" : "Update Lead",
+        number: 1,
+      ),
       SidebarStep(
         title: "Plan",
         number: 2,
@@ -88,7 +94,7 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
     ];
 
     final stepWidgets = [
-      Step1LeadDetailsForm(),
+      Step1LeadDetailsForm(leadId: widget.leadId),
       const Step2GoalSelection(),
       const Step3PlanSetup(),
       const Step4Instructions(),
@@ -97,7 +103,7 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
     ];
 
     final titles = [
-      "Add a new lead",
+      if ((widget.leadId ?? '').isEmpty) "Add a new lead" else "Update Lead",
       "Select a goal",
       "Plan generation",
       "Plan generation",
@@ -140,12 +146,17 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
         ),
         child: Row(
           children: [
-            AddLeadSidebar(steps: sidebarSteps, animationsMap: animationsMap),
+            AddLeadSidebar(
+              steps: sidebarSteps,
+              animationsMap: animationsMap,
+              leadId: widget.leadId,
+            ),
             AddLeadBody(
               titles: titles,
               subtitles: subtitles,
               stepWidgets: stepWidgets,
               animationsMap: animationsMap,
+              leadId: widget.leadId,
             ),
           ],
         ),

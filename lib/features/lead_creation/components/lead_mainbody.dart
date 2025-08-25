@@ -10,6 +10,7 @@ class AddLeadBody extends ConsumerWidget {
   final List<String> subtitles;
   final List<Widget> stepWidgets;
   final Map<String, AnimationInfo> animationsMap;
+  final String? leadId;
 
   const AddLeadBody({
     super.key,
@@ -17,6 +18,7 @@ class AddLeadBody extends ConsumerWidget {
     required this.subtitles,
     required this.stepWidgets,
     required this.animationsMap,
+    this.leadId,
   });
 
   @override

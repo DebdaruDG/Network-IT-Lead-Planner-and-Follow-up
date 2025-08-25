@@ -1,3 +1,5 @@
+import 'dart:developer' as console;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,7 +11,8 @@ import '../lead_creation_provider.dart'; // for nextStep()
 import '../../../core/widgets/app_toast.dart'; // Assuming AppToast is defined here
 
 class Step1LeadDetailsForm extends ConsumerWidget {
-  Step1LeadDetailsForm({super.key});
+  final String? leadId;
+  Step1LeadDetailsForm({super.key, required this.leadId});
 
   // Controllers to capture field values
   final TextEditingController _leadNameController = TextEditingController();
@@ -21,7 +24,8 @@ class Step1LeadDetailsForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final leadState = ref.watch(leadProvider);
-
+    console.log('Lead Id :- ${(leadId ?? '')}');
+    bool forAddLead = (leadId ?? '').isEmpty;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

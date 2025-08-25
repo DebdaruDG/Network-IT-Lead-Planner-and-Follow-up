@@ -10,11 +10,13 @@ import 'sidebar_step_model.dart';
 class AddLeadSidebar extends ConsumerWidget {
   final List<SidebarStep> steps;
   final Map<String, AnimationInfo> animationsMap;
+  final String? leadId;
 
   const AddLeadSidebar({
     super.key,
     required this.steps,
     required this.animationsMap,
+    this.leadId,
   });
 
   // helper: flattens steps into unique global indices
