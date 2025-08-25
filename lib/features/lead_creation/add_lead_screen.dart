@@ -8,6 +8,7 @@ import '../../core/utils/animation_constants.dart';
 import '../../core/utils/nav_bar.dart';
 import 'components/lead_mainbody.dart';
 import 'components/lead_sidebar.dart';
+import 'components/sidebar_step_model.dart';
 import 'steps/step1_add_lead.dart';
 import 'steps/step2_select_goal.dart';
 import 'steps/step3_plan_setup.dart';
@@ -71,13 +72,19 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final steps = [
-      "Add Lead",
-      "Select Goal",
-      "Generate Plan",
-      "Select Instructions",
-      "Execute Tasks",
-      "Track Progress",
+    final sidebarSteps = [
+      SidebarStep(title: "Add Lead", number: 1),
+      SidebarStep(
+        title: "Plan",
+        number: 2,
+        children: [
+          SidebarStep(title: "Select Goal"),
+          SidebarStep(title: "Generate Plan"),
+          SidebarStep(title: "Select Instructions"),
+        ],
+      ),
+      SidebarStep(title: "Execute Tasks", number: 3),
+      SidebarStep(title: "Track Progress", number: 4),
     ];
 
     final stepWidgets = [
@@ -133,7 +140,7 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
         ),
         child: Row(
           children: [
-            AddLeadSidebar(steps: steps, animationsMap: animationsMap),
+            AddLeadSidebar(steps: sidebarSteps, animationsMap: animationsMap),
             AddLeadBody(
               titles: titles,
               subtitles: subtitles,
