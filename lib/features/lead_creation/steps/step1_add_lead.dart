@@ -5,27 +5,73 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/utils/animation_constants.dart';
+import '../data_handling/lead_form_notifier.dart';
 import '../data_handling/lead_provider.dart';
 import '../../../core/widgets/app_textfield.dart';
 import '../lead_creation_provider.dart'; // for nextStep()
 import '../../../core/widgets/app_toast.dart'; // Assuming AppToast is defined here
 
-class Step1LeadDetailsForm extends ConsumerWidget {
+class Step1LeadDetailsForm extends ConsumerStatefulWidget {
   final String? leadId;
-  Step1LeadDetailsForm({super.key, required this.leadId});
 
-  // Controllers to capture field values
-  final TextEditingController _leadNameController = TextEditingController();
-  final TextEditingController _companyController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _linkedinController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
+  const Step1LeadDetailsForm({super.key, required this.leadId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<Step1LeadDetailsForm> createState() =>
+      _Step1LeadDetailsFormState();
+}
+
+class _Step1LeadDetailsFormState extends ConsumerState<Step1LeadDetailsForm> {
+  // Controllers to capture field values
+  late final TextEditingController _leadNameController;
+  late final TextEditingController _companyController;
+  late final TextEditingController _emailController;
+  late final TextEditingController _linkedinController;
+  late final TextEditingController _phoneController;
+
+  @override
+  void initState() {
+    super.initState();
+    _leadNameController = TextEditingController();
+    _companyController = TextEditingController();
+    _emailController = TextEditingController();
+    _linkedinController = TextEditingController();
+    _phoneController = TextEditingController();
+
+    // Initialize form state with leadInfo if available
+    final leadState = ref.read(leadProvider);
+    final leadInfo = leadState.selectedLead;
+    if (leadInfo != null) {
+      Future.delayed(Duration.zero, () async {
+        ref.read(leadFormProvider.notifier).initializeFromLeadInfo(leadInfo);
+        _leadNameController.text = leadInfo.leadName;
+        _companyController.text = leadInfo.company;
+        _emailController.text = leadInfo.email;
+        _linkedinController.text = leadInfo.linkedIn ?? '';
+        _phoneController.text = leadInfo.phone ?? '';
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _leadNameController.dispose();
+    _companyController.dispose();
+    _emailController.dispose();
+    _linkedinController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final leadState = ref.watch(leadProvider);
-    console.log('Lead Id :- ${(leadId ?? '')}');
-    bool forAddLead = (leadId ?? '').isEmpty;
+    final formState = ref.watch(leadFormProvider);
+    final isLoading = leadState.isLoading;
+    bool forAddLead = (widget.leadId ?? '').isEmpty;
+    final leadInfo = leadState.selectedLead?.toJson();
+    console.log('leadInfo - $leadInfo');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -40,6 +86,10 @@ class Step1LeadDetailsForm extends ConsumerWidget {
                   controller: _leadNameController,
                   label: "Lead name",
                   hint: "e.g., Jane Cooper",
+                  onChanged:
+                      (value) => ref
+                          .read(leadFormProvider.notifier)
+                          .updateLeadName(value),
                 ),
               ).animate(
                 effects:
@@ -53,6 +103,10 @@ class Step1LeadDetailsForm extends ConsumerWidget {
                   controller: _companyController,
                   label: "Company",
                   hint: "e.g., AOC",
+                  onChanged:
+                      (value) => ref
+                          .read(leadFormProvider.notifier)
+                          .updateCompany(value),
                 ),
               ).animate(
                 effects:
@@ -78,6 +132,10 @@ class Step1LeadDetailsForm extends ConsumerWidget {
                   label: "Email",
                   keyboardType: TextInputType.emailAddress,
                   hint: "name@company.com",
+                  onChanged:
+                      (value) => ref
+                          .read(leadFormProvider.notifier)
+                          .updateEmail(value),
                 ),
               ).animate(
                 effects:
@@ -92,6 +150,10 @@ class Step1LeadDetailsForm extends ConsumerWidget {
                   label: "LinkedIn URL",
                   keyboardType: TextInputType.url,
                   hint: "https://www.linkedin.com/in/username",
+                  onChanged:
+                      (value) => ref
+                          .read(leadFormProvider.notifier)
+                          .updateLinkedin(value),
                 ),
               ).animate(
                 effects:
@@ -113,6 +175,9 @@ class Step1LeadDetailsForm extends ConsumerWidget {
             label: "Phone Number",
             keyboardType: TextInputType.phone,
             hint: "e.g. +91 9436567890",
+            onChanged:
+                (value) =>
+                    ref.read(leadFormProvider.notifier).updatePhone(value),
           ),
         ).animate(
           effects:
@@ -135,7 +200,7 @@ class Step1LeadDetailsForm extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
             ),
             onPressed: () async {
-              final email = _emailController.text.trim();
+              final email = formState.email.trim();
 
               if (email.isEmpty) {
                 AppToast.warning(
@@ -146,15 +211,15 @@ class Step1LeadDetailsForm extends ConsumerWidget {
                 return;
               }
 
-              // Call leadProvider to add lead
+              // Call leadProvider to add lead using form state
               await ref
                   .read(leadProvider.notifier)
                   .addLead(
                     email: email,
-                    leadName: _leadNameController.text.trim(),
-                    company: _companyController.text.trim(),
-                    linkedIn: _linkedinController.text.trim(),
-                    phone: _phoneController.text.trim(),
+                    leadName: formState.leadName.trim(),
+                    company: formState.company.trim(),
+                    linkedIn: formState.linkedin?.trim(),
+                    phone: formState.phone?.trim(),
                   );
 
               // Check for errors and proceed
@@ -166,6 +231,8 @@ class Step1LeadDetailsForm extends ConsumerWidget {
                   subtitle: "Proceeding to next step",
                 );
                 ref.read(leadStepProvider.notifier).nextStep();
+                // Reset form state after successful submission
+                ref.read(leadFormProvider.notifier).reset();
               } else {
                 AppToast.failure(
                   context,
@@ -177,8 +244,10 @@ class Step1LeadDetailsForm extends ConsumerWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  "Save & Continue",
+                Text(
+                  (widget.leadId ?? '').isEmpty
+                      ? "Save & Continue"
+                      : "Update & Continue",
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,

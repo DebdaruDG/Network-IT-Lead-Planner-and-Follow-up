@@ -13,14 +13,15 @@ class LeadState {
   final String? error;
   final String? leadId;
   final List<LeadModel> leads;
-  final List<Plan> selectedLeadPlans;
+  final LeadInfo? selectedLead;
+  // final List<Plan> selectedLeadPlans;
 
   LeadState({
     this.isLoading = false,
     this.error,
     this.leadId,
     this.leads = const [],
-    this.selectedLeadPlans = const [],
+    this.selectedLead,
   });
 
   LeadState copyWith({
@@ -28,14 +29,14 @@ class LeadState {
     String? error,
     String? leadId,
     List<LeadModel>? leads,
-    List<Plan>? selectedLeadPlans,
+    LeadInfo? selectedLead,
   }) {
     return LeadState(
       isLoading: isLoading ?? this.isLoading,
       error: error,
       leadId: leadId ?? this.leadId,
       leads: leads ?? this.leads,
-      selectedLeadPlans: selectedLeadPlans ?? this.selectedLeadPlans,
+      selectedLead: selectedLead ?? this.selectedLead,
     );
   }
 }
@@ -110,7 +111,7 @@ class LeadNotifier extends StateNotifier<LeadState> {
 
       final results = response.results;
       if (results.isEmpty) {
-        state = state.copyWith(selectedLeadPlans: []);
+        state = state.copyWith(selectedLead: null);
         return;
       }
 
@@ -120,8 +121,8 @@ class LeadNotifier extends StateNotifier<LeadState> {
       console.log('firstResult runtimeType: ${firstResult.runtimeType}');
 
       // If your LeadResult already has leadInfo/plans inside
-      final plans = firstResult.leadInfo.plans;
-      state = state.copyWith(selectedLeadPlans: plans);
+      final leadInfo = firstResult.leadInfo;
+      state = state.copyWith(selectedLead: leadInfo);
     } on DioException catch (e) {
       state = state.copyWith(error: e.response?.data.toString() ?? e.message);
     } catch (e, st) {

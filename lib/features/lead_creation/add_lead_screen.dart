@@ -12,6 +12,7 @@ import '../auth/data_handling/route_notifier.dart';
 import 'components/lead_mainbody.dart';
 import 'components/lead_sidebar.dart';
 import 'components/sidebar_step_model.dart';
+import 'data_handling/lead_provider.dart';
 import 'steps/step1_add_lead.dart';
 import 'steps/step2_select_goal.dart';
 import 'steps/step3_plan_setup.dart';
@@ -72,6 +73,14 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
         ],
       ),
     };
+    if ((widget.leadId ?? '').isNotEmpty) {
+      Future.delayed(Duration.zero, () async {
+        final leadId = widget.leadId;
+        if (leadId != null) {
+          await ref.read(leadProvider.notifier).fetchLeadPlans(leadId: leadId);
+        }
+      });
+    }
   }
 
   @override

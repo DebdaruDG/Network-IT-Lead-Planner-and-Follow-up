@@ -18,19 +18,13 @@ class _Step5ExecuteTasksState extends ConsumerState<Step5ExecuteTasks> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () async {
-      final leadId = widget.leadId;
-      if (leadId != null) {
-        await ref.read(leadProvider.notifier).fetchLeadPlans(leadId: leadId);
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     final leadState = ref.watch(leadProvider);
     final isLoading = leadState.isLoading;
-    final tasks = leadState.selectedLeadPlans;
+    final tasks = leadState.selectedLead?.plans ?? [];
 
     if (isLoading) {
       return const Center(child: LoadingIndicator());

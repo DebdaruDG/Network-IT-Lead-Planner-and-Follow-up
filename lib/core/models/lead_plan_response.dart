@@ -74,6 +74,18 @@ class LeadInfo {
           [],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "LeadId": leadId,
+      "LeadName": leadName,
+      "Email": email,
+      "Phone": phone,
+      "Company": company,
+      "LinkedIn": linkedIn,
+      // "Plans": plans.map((plan) => plan.toJson()).toList(),
+    };
+  }
 }
 
 class Plan {
