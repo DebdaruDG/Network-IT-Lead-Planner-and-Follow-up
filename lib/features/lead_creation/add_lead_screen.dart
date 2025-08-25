@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/config/app_routes.dart';
 import '../../core/utils/animation_constants.dart';
 import '../../core/utils/nav_bar.dart';
+import '../auth/data_handling/route_notifier.dart';
 import 'components/lead_mainbody.dart';
 import 'components/lead_sidebar.dart';
 import 'components/sidebar_step_model.dart';
@@ -134,7 +135,11 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            onPressed: () => context.go(AppRoutes.dashboard),
+            onPressed: () {
+              final navNotifier = ref.read(routeNotifierProvider.notifier);
+              navNotifier.setNavItem(NavItem.dashboard);
+              context.go(AppRoutes.dashboard);
+            },
             child: const Text("Go Back"),
           ),
         ],

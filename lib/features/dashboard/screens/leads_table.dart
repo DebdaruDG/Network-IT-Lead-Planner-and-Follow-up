@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/config/app_routes.dart';
 import '../../../core/models/lead_model.dart';
 import '../../../core/utils/animation_constants.dart';
+import '../../auth/data_handling/route_notifier.dart';
 import '../../lead_creation/data_handling/lead_provider.dart';
 
 class LeadsTable extends ConsumerStatefulWidget {
@@ -151,7 +152,11 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
               borderRadius: BorderRadius.circular(20),
             ),
           ),
-          onPressed: () => context.go(AppRoutes.leadCreation),
+          onPressed: () {
+            final navNotifier = ref.read(routeNotifierProvider.notifier);
+            navNotifier.setNavItem(NavItem.journey);
+            context.go(AppRoutes.leadCreation);
+          },
           child: const Text(
             "+ Add Lead",
             style: TextStyle(fontSize: 14, color: Colors.white),
@@ -340,6 +345,8 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
                 minimumSize: const Size(0, 36),
               ),
               onPressed: () {
+                final navNotifier = ref.read(routeNotifierProvider.notifier);
+                navNotifier.setNavItem(NavItem.journey);
                 ref.read(leadProvider.notifier).updateLeadId('$leadId');
                 context.go('${AppRoutes.leadCreation}?leadId=$leadId');
               },
