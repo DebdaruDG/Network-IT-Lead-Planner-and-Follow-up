@@ -179,7 +179,7 @@ class _TaskTemplateTileState extends State<TaskTemplateTile>
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.15),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade500, width: 0.4),
+        border: Border.all(color: Colors.grey.shade500, width: 0.3),
       ),
       child: SingleChildScrollView(
         child: Column(
