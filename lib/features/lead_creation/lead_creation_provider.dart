@@ -1,21 +1,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Sidebar steps → children mapping
-/// Matches the same structure you defined in the UI
 final stepWidgets = [
-  "Add Lead", // 0
-  "Select Goal", // 1
-  "Generate Plan", // 2
-  "Select Instructions", // 3
-  "Execute Tasks", // 4
-  "Track Progress", // 5
+  "Add Lead",
+  "Select Goal",
+  "Generate Plan",
+  "Select Instructions",
+  "Execute Tasks",
+  "Track Progress",
 ];
 
 class LeadStepNotifier extends StateNotifier<int> {
   LeadStepNotifier() : super(0);
 
+  // Expansion state for the "Plan" group
+  bool _planExpanded = true;
+
   int get totalSteps => stepWidgets.length;
 
+  // --- Step navigation ---
   void nextStep() {
     if (state < totalSteps - 1) {
       state++;
@@ -38,12 +41,29 @@ class LeadStepNotifier extends StateNotifier<int> {
     state = 0;
   }
 
-  /// Returns `true` if the current step is inside "Plan"
+  // --- Plan related getters ---
   bool get isInsidePlan => state >= 1 && state <= 3;
 
-  /// Returns the index of the active child inside Plan
-  /// (0 = Select Goal, 1 = Generate Plan, 2 = Select Instructions)
   int? get activePlanChildIndex => isInsidePlan ? state - 1 : null;
+
+  // --- Expansion state for "Plan" ---
+  bool get isPlanExpanded => _planExpanded;
+
+  void togglePlanExpanded() {
+    _planExpanded = !_planExpanded;
+    // notify listeners → state has to change
+    state = state;
+  }
+
+  void expandPlan() {
+    _planExpanded = true;
+    state = state;
+  }
+
+  void collapsePlan() {
+    _planExpanded = false;
+    state = state;
+  }
 }
 
 final leadStepProvider = StateNotifierProvider<LeadStepNotifier, int>(

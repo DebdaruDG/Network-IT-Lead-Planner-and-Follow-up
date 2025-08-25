@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/utils/animation_constants.dart';
 import '../lead_creation_provider.dart';
 import 'sidebar_step_model.dart';
 
-class AddLeadSidebar extends ConsumerStatefulWidget {
+class AddLeadSidebar extends ConsumerWidget {
   final List<SidebarStep> steps;
   final Map<String, AnimationInfo> animationsMap;
 
@@ -16,22 +17,16 @@ class AddLeadSidebar extends ConsumerStatefulWidget {
     required this.animationsMap,
   });
 
-  @override
-  ConsumerState<AddLeadSidebar> createState() => _AddLeadSidebarState();
-}
-
-class _AddLeadSidebarState extends ConsumerState<AddLeadSidebar> {
-  bool planExpanded = true; // default expanded
-
   // helper: flattens steps into unique global indices
-  int _globalIndexForChild(int parentIndex, int childIndex) {
-    // parentIndex is the index of the parent in steps
-    // all previous parents and steps count
+  int _globalIndexForChild(
+    List<SidebarStep> steps,
+    int parentIndex,
+    int childIndex,
+  ) {
     int global = 0;
     for (int i = 0; i < parentIndex; i++) {
-      if (widget.steps[i].children != null &&
-          widget.steps[i].children!.isNotEmpty) {
-        global += widget.steps[i].children!.length;
+      if (steps[i].children != null && steps[i].children!.isNotEmpty) {
+        global += steps[i].children!.length;
       } else {
         global += 1;
       }
@@ -39,12 +34,11 @@ class _AddLeadSidebarState extends ConsumerState<AddLeadSidebar> {
     return global + childIndex;
   }
 
-  int _globalIndexForFlat(int stepIndex) {
+  int _globalIndexForFlat(List<SidebarStep> steps, int stepIndex) {
     int global = 0;
     for (int i = 0; i < stepIndex; i++) {
-      if (widget.steps[i].children != null &&
-          widget.steps[i].children!.isNotEmpty) {
-        global += widget.steps[i].children!.length;
+      if (steps[i].children != null && steps[i].children!.isNotEmpty) {
+        global += steps[i].children!.length;
       } else {
         global += 1;
       }
@@ -53,9 +47,11 @@ class _AddLeadSidebarState extends ConsumerState<AddLeadSidebar> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final currentStep = ref.watch(leadStepProvider);
     final leadNotifier = ref.read(leadStepProvider.notifier);
+
+    final isPlanExpanded = leadNotifier.isPlanExpanded;
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.18,
@@ -63,14 +59,14 @@ class _AddLeadSidebarState extends ConsumerState<AddLeadSidebar> {
       padding: const EdgeInsets.symmetric(vertical: 24),
       child: ListView(
         children:
-            widget.steps.asMap().entries.map((entry) {
+            steps.asMap().entries.map((entry) {
               final stepIndex = entry.key;
               final step = entry.value;
 
               if (step.children != null && step.children!.isNotEmpty) {
                 // PLAN (with children)
                 final isPlanActive = step.children!.asMap().keys.any((subIdx) {
-                  final gIndex = _globalIndexForChild(stepIndex, subIdx);
+                  final gIndex = _globalIndexForChild(steps, stepIndex, subIdx);
                   return gIndex == currentStep;
                 });
 
@@ -115,7 +111,10 @@ class _AddLeadSidebarState extends ConsumerState<AddLeadSidebar> {
                                 step.number.toString(),
                                 style: TextStyle(
                                   fontSize: 12,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight:
+                                      isPlanActive
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
                                   color:
                                       isPlanActive
                                           ? Colors.white
@@ -125,7 +124,7 @@ class _AddLeadSidebarState extends ConsumerState<AddLeadSidebar> {
                             ),
                             title: Text(
                               step.title,
-                              style: TextStyle(
+                              style: GoogleFonts.inter(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
                                 color:
@@ -136,27 +135,43 @@ class _AddLeadSidebarState extends ConsumerState<AddLeadSidebar> {
                             ),
                             trailing: IconButton(
                               icon: Icon(
-                                planExpanded
+                                isPlanExpanded
                                     ? Icons.keyboard_arrow_down
                                     : Icons.keyboard_arrow_right,
                               ),
                               onPressed: () {
-                                setState(() {
-                                  planExpanded = !planExpanded;
-                                });
+                                ref
+                                    .read(leadStepProvider.notifier)
+                                    .togglePlanExpanded();
                               },
                             ),
                           ),
-                          if (planExpanded)
+                          if (isPlanExpanded)
                             ...step.children!.asMap().entries.map((subEntry) {
                               final subIdx = subEntry.key;
                               final subStep = subEntry.value;
                               final gIndex = _globalIndexForChild(
+                                steps,
                                 stepIndex,
                                 subIdx,
                               );
 
                               final isActive = gIndex == currentStep;
+
+                              IconData iconData;
+                              switch (subStep.title) {
+                                case "Select Goal":
+                                  iconData = Icons.flag_outlined;
+                                  break;
+                                case "Generate Plan":
+                                  iconData = Icons.auto_fix_high_outlined;
+                                  break;
+                                case "Select Instructions":
+                                  iconData = Icons.playlist_add_check_outlined;
+                                  break;
+                                default:
+                                  iconData = Icons.circle_outlined; // fallback
+                              }
 
                               return InkWell(
                                 onTap: () {
@@ -164,25 +179,55 @@ class _AddLeadSidebarState extends ConsumerState<AddLeadSidebar> {
                                       .read(leadStepProvider.notifier)
                                       .goToStep(gIndex);
                                 },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 40,
-                                    top: 6,
-                                    bottom: 6,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 40,
+                                    vertical: 6,
                                   ),
-                                  child: Text(
-                                    subStep.title,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color:
-                                          isActive
-                                              ? const Color(0xFF4338CA)
-                                              : Colors.grey[700],
-                                      fontWeight:
-                                          isActive
-                                              ? FontWeight.w600
-                                              : FontWeight.w400,
+                                  margin: const EdgeInsets.only(
+                                    left: 20,
+                                    right: 20,
+                                    bottom: 12,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        isActive
+                                            ? const Color(
+                                              0xFF4338CA,
+                                            ).withOpacity(0.1)
+                                            : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(
+                                      isActive ? 12 : 4,
                                     ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        iconData,
+                                        size: 18,
+                                        color:
+                                            isActive
+                                                ? const Color(0xFF4338CA)
+                                                : Colors.grey[600],
+                                      ),
+                                      const SizedBox(width: 8),
+
+                                      Text(
+                                        subStep.title,
+                                        style: GoogleFonts.inter(
+                                          fontSize: 14,
+                                          fontWeight:
+                                              isActive
+                                                  ? FontWeight.w600
+                                                  : FontWeight.w400,
+                                          color:
+                                              isActive
+                                                  ? const Color(0xFF4338CA)
+                                                  : Colors.grey[700],
+                                          letterSpacing: 0,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               );
@@ -194,7 +239,7 @@ class _AddLeadSidebarState extends ConsumerState<AddLeadSidebar> {
                 );
               } else {
                 // FLAT step
-                final gIndex = _globalIndexForFlat(stepIndex);
+                final gIndex = _globalIndexForFlat(steps, stepIndex);
                 final isActive = gIndex == currentStep;
 
                 return Container(
@@ -235,9 +280,12 @@ class _AddLeadSidebarState extends ConsumerState<AddLeadSidebar> {
                                     : const Color(0xFF4338CA).withOpacity(0.1),
                             child: Text(
                               step.number.toString(),
-                              style: TextStyle(
+                              style: GoogleFonts.inter(
                                 fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                                fontWeight:
+                                    isActive
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
                                 color:
                                     isActive
                                         ? Colors.white
@@ -247,9 +295,13 @@ class _AddLeadSidebarState extends ConsumerState<AddLeadSidebar> {
                           ),
                           title: Text(
                             step.title,
-                            style: TextStyle(
+                            style: GoogleFonts.inter(
                               fontSize: 15,
-                              color: isActive ? Colors.black : Colors.grey[800],
+                              fontWeight:
+                                  isActive
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                              color: Colors.black87,
                             ),
                           ),
                         ),
@@ -260,8 +312,6 @@ class _AddLeadSidebarState extends ConsumerState<AddLeadSidebar> {
               }
             }).toList(),
       ),
-    ).animate(
-      effects: widget.animationsMap['stepTileAnimation']?.effectsBuilder,
-    );
+    ).animate(effects: animationsMap['stepTileAnimation']?.effectsBuilder);
   }
 }
