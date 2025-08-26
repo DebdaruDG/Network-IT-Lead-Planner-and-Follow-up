@@ -66,6 +66,8 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
         ),
         const SizedBox(height: 20),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const Text(
               "Duration (days): ",
@@ -76,41 +78,86 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
                       .usualAnimationEffects['summaryCardAnimation']
                       ?.effectsBuilder,
             ),
-            const SizedBox(width: 8),
-            SizedBox(
-              width: 80,
-              child: SpinBox(
-                min: 1,
-                max: 365,
-                value: duration.toDouble(),
-                step: 1,
-                spacing: 0,
-                incrementIcon: const Icon(Icons.arrow_drop_up, size: 20),
-                decrementIcon: const Icon(Icons.arrow_drop_down, size: 20),
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade300,
-                      width: 0.25,
+            const SizedBox(height: 8),
+            Container(
+              width: 82,
+              height: 80,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.grey.shade300,
+                  width: 0.25, // Matches the original thin border width
+                ),
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.white,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    width: 40,
+                    height: 30,
+                    child: TextField(
+                      controller: TextEditingController(
+                        text: duration.toString(),
+                      ),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF1E293B),
+                      ),
+                      decoration: const InputDecoration(
+                        border:
+                            InputBorder
+                                .none, // No inner border for the TextField
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                      ),
+                      onChanged: (value) {
+                        int? newValue = int.tryParse(value);
+                        if (newValue != null &&
+                            newValue >= 1 &&
+                            newValue <= 365) {
+                          ref
+                              .read(followupProvider.notifier)
+                              .updateDuration(newValue);
+                        }
+                      },
                     ),
                   ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
+                  SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_drop_up),
+                          padding: EdgeInsets.zero,
+                          iconSize: 15,
+                          onPressed: () {
+                            if (duration < 365) {
+                              ref
+                                  .read(followupProvider.notifier)
+                                  .updateDuration(duration + 1);
+                            }
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.arrow_drop_down),
+                          padding: EdgeInsets.zero,
+                          iconSize: 15,
+                          onPressed: () {
+                            if (duration > 1) {
+                              ref
+                                  .read(followupProvider.notifier)
+                                  .updateDuration(duration - 1);
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                textStyle: const TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF1E293B),
-                ),
-                onChanged: (value) {
-                  ref
-                      .read(followupProvider.notifier)
-                      .updateDuration(value.toInt());
-                },
+                ],
               ),
             ).animate(
               effects:
@@ -157,6 +204,8 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text(
                     "Generate Plan",
