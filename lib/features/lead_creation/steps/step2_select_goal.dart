@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_spinbox/flutter_spinbox.dart';
-
 import '../../../core/utils/animation_constants.dart';
 import '../data_handling/lead_followup_provider.dart';
 import '../lead_creation_provider.dart';
