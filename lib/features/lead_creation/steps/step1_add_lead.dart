@@ -3,8 +3,6 @@ import 'dart:developer' as console;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../core/preferences/user_preferences.dart';
 import '../../../core/utils/animation_constants.dart';
 import '../data_handling/lead_form_notifier.dart';
 import '../data_handling/lead_provider.dart';
@@ -44,8 +42,6 @@ class _Step1LeadDetailsFormState extends ConsumerState<Step1LeadDetailsForm> {
     final leadInfo = leadState.selectedLead;
     if (leadInfo != null) {
       Future.delayed(Duration.zero, () async {
-        final currentUser = await UserPreferences.getUser();
-        console.log('currentUser?.email - ${currentUser?.email}');
         ref.read(leadFormProvider.notifier).initializeFromLeadInfo(leadInfo);
         _leadNameController.text = leadInfo.leadName;
         _companyController.text = leadInfo.company;

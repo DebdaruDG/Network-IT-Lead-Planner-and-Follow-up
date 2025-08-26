@@ -1,16 +1,23 @@
 class UserModel {
   final int userId;
   final String email;
+  final String userName;
 
-  UserModel({required this.userId, required this.email});
+  UserModel({
+    required this.userId,
+    required this.email,
+    required this.userName,
+  });
 
-  // Convert from JSON (API response)
   factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(userId: json['UserId'], email: json['Email']);
+    return UserModel(
+      userId: json['UserId'],
+      email: json['Email'],
+      userName: json['UserName'],
+    );
   }
 
-  // Convert to Map for SharedPreferences
   Map<String, dynamic> toJson() {
-    return {'UserId': userId, 'Email': email};
+    return {'UserId': userId, 'Email': email, 'UserName': userName};
   }
 }
