@@ -213,7 +213,7 @@ class _Step1LeadDetailsFormState extends ConsumerState<Step1LeadDetailsForm> {
               // Call leadProvider to add lead using form state
               await ref
                   .read(leadProvider.notifier)
-                  .addLead(
+                  .upsertLead(
                     email: email,
                     leadName: formState.leadName.trim(),
                     company: formState.company.trim(),

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import '../../models/lead_plan_response.dart';
+import '../../preferences/user_preferences.dart';
 import '../api_service.dart';
 
 class LeadService {
@@ -12,22 +13,26 @@ class LeadService {
   static const String _apiKey = "oJuPUA89sUd7X7ubswoD8KQKjceoIF72LAZDMPxg";
 
   /// Add a Lead
-  Future<Response> addLead({
+  Future<Response> upsertLead({
     required String email,
     String? leadName,
     String? company,
     String? linkedIn,
     String? phone,
+    bool forAdd = true,
   }) async {
+    final currentUser = await UserPreferences.getUser();
     final data = {
       "Email": email,
       if (leadName != null) "LeadName": leadName,
       if (company != null) "Company": company,
       if (linkedIn != null) "LinkedIn": linkedIn,
       if (phone != null) "Phone": phone,
+      if (forAdd) "CreatedBy": currentUser?.userId.toString(),
+      if (!forAdd) "UpdatedBy": currentUser?.userId.toString(),
     };
 
-    return await _apiService.post(
+    return await _apiService.put(
       '$_baseURL$_leadEndpoint',
       data: data,
       options: Options(
@@ -38,8 +43,9 @@ class LeadService {
 
   /// ✅ Fetch all Leads
   Future<Response> getLeads() async {
+    final currentUser = await UserPreferences.getUser();
     return await _apiService.get(
-      '$_baseURL$_leadEndpoint',
+      '$_baseURL$_leadEndpoint?CreatedBy=${currentUser?.userId}',
       options: Options(
         headers: {"Content-Type": "application/json", "x-api-key": _apiKey},
       ),

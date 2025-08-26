@@ -48,7 +48,7 @@ class LeadNotifier extends StateNotifier<LeadState> {
   LeadNotifier(this._leadService) : super(LeadState());
 
   /// Add a new lead
-  Future<void> addLead({
+  Future<void> upsertLead({
     required String email,
     String? leadName,
     String? company,
@@ -57,7 +57,7 @@ class LeadNotifier extends StateNotifier<LeadState> {
   }) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
-      await _leadService.addLead(
+      await _leadService.upsertLead(
         email: email,
         leadName: leadName,
         company: company,
