@@ -29,7 +29,7 @@ class Step4Instructions extends ConsumerWidget {
                 [
                   "Ask for meeting",
                   "Share a news",
-                  "comment on company activity",
+                  "Comment on company activity",
                 ],
                 followupState.emailTemplate,
                 (value) => ref
