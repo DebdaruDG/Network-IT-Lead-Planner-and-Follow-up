@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
+import '../../../core/models/user_model.dart';
+import '../../../core/preferences/user_preferences.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/services/firebase/auth_service.dart';
 
@@ -63,6 +65,13 @@ class AuthViewModel extends StateNotifier<AuthState> {
       final resData = response.data;
 
       if (resData != null && resData['Success'] == true) {
+        // Extract user data
+        final userJson = resData['Results'][0];
+        final user = UserModel.fromJson(userJson);
+
+        // Save to SharedPreferences
+        await UserPreferences.saveUser(user);
+
         // Show success state
         state = state.copyWith(
           isLoading: false,
@@ -113,6 +122,12 @@ class AuthViewModel extends StateNotifier<AuthState> {
         final updatedState = state;
 
         if (updatedState.data != null && updatedState.data['Success'] == true) {
+          // Extract user from updatedState
+          final userJson = updatedState.data['Results'][0];
+          final user = UserModel.fromJson(userJson);
+
+          // Save to SharedPreferences
+          await UserPreferences.saveUser(user);
           // Email exists in the database, update state to success
           state = state.copyWith(
             isLoading: false,
@@ -169,6 +184,7 @@ class AuthViewModel extends StateNotifier<AuthState> {
       // Run sign-out and minimum delay together
       await Future.wait([
         _authService.signOut(),
+        UserPreferences.clearUser(), // 🗑️ clear shared prefs
         Future.delayed(
           const Duration(milliseconds: 400),
         ), // ensures loader is visible

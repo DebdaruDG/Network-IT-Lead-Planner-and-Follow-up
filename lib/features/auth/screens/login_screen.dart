@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sign_in_button/sign_in_button.dart';
+import '../../../core/config/app_routes.dart';
 import '../../../core/utils/animation_constants.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../../core/widgets/auth_textfield.dart';
@@ -76,7 +77,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         subtitle: updatedAuthState.data['Message'],
       );
       // Navigate to the dashboard screen
-      Navigator.pushReplacementNamed(context, '/dashboard');
+      Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
     } else if (updatedAuthState.error != null) {
       // Show error toast
       AppToast.failure(
