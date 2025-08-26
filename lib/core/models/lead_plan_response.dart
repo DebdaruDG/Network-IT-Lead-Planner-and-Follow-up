@@ -192,9 +192,9 @@ class Task {
   factory Task.fromJson(Map<String, dynamic> json) {
     return Task(
       taskId: json["TaskId"] ?? "",
-      startDate: json["StartDate"] ?? "",
+      startDate: json["start_date"] ?? "",
       channel:
-          (json["Channel"] as List<dynamic>?)
+          (json["channel"] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],

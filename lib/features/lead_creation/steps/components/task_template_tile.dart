@@ -1,3 +1,5 @@
+import 'dart:developer' as console;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -167,11 +169,11 @@ class _TaskTemplateTileState extends State<TaskTemplateTile>
     required String title,
     required String content,
   }) {
-    if (!widget.tasksByChannel.containsKey(channel) ||
-        widget.tasksByChannel[channel] == null) {
-      return const SizedBox.shrink();
-    }
-
+    // if (!widget.tasksByChannel.containsKey(channel) ||
+    //     widget.tasksByChannel[channel] == null) {
+    //   return const SizedBox.shrink();
+    // }
+    console.log('content - $content');
     return Container(
       width: MediaQuery.of(context).size.width * 0.15,
       height: MediaQuery.of(context).size.height * 0.35,
