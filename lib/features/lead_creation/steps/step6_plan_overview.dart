@@ -58,12 +58,14 @@ class _Step6TrackProgressState extends ConsumerState<Step6TrackProgress> {
                     "Plan completion",
                     progress,
                     "$completedTasks of ${tasks.length} tasks completed",
+                    isMobile: isMobile,
                   ),
                   const SizedBox(height: 16),
                   progressCard(
                     "Lead responsiveness",
                     null,
                     "Awaiting response",
+                    isMobile: isMobile,
                   ),
                 ],
               )
@@ -158,8 +160,15 @@ class _Step6TrackProgressState extends ConsumerState<Step6TrackProgress> {
     );
   }
 
-  Widget progressCard(String title, double? progress, String detail) {
+  Widget progressCard(
+    String title,
+    double? progress,
+    String detail, {
+    bool isMobile = false,
+  }) {
     return Container(
+      height: 110,
+      width: isMobile ? MediaQuery.of(context).size.width * 0.4 : null,
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(

@@ -181,6 +181,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                                         : const Color(
                                                           0xFF1D2939,
                                                         ),
+                                                letterSpacing: 0,
                                               ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
@@ -418,6 +419,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                                     ? FontWeight.bold
                                                     : FontWeight.normal,
                                             color: Colors.black87,
+                                            letterSpacing: 0,
                                           ),
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -521,6 +523,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                             isPlanActive
                                                 ? Colors.black
                                                 : const Color(0xFF1D2939),
+                                        letterSpacing: 0,
                                       ),
                                     ),
                                     trailing: IconButton(
@@ -697,6 +700,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                             isActive
                                                 ? Colors.white
                                                 : const Color(0xFF4338CA),
+                                        letterSpacing: 0,
                                       ),
                                     ),
                                   ),
@@ -709,6 +713,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                               ? FontWeight.bold
                                               : FontWeight.normal,
                                       color: Colors.black87,
+                                      letterSpacing: 0,
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
