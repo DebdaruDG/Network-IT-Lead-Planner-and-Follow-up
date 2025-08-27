@@ -211,16 +211,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 20),
                 if (isMobile) ...[
                   // Logo at the top for mobile
-                  Image.asset(
-                    'assets/Images/logo.png',
-                    width: 150,
-                    color: primaryBlue,
-                  ).animate(
-                    effects:
-                        AnimationEffectConstants
-                            .usualAnimationEffects['summaryCardAnimation']
-                            ?.effectsBuilder,
-                  ),
+                  Image.asset('assets/Images/logo.png', width: 150),
                   const SizedBox(height: 20),
                 ],
                 Center(
