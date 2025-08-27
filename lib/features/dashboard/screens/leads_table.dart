@@ -18,6 +18,7 @@ class LeadsTable extends ConsumerStatefulWidget {
 
 class _LeadsTableState extends ConsumerState<LeadsTable> {
   late final Map<String, AnimationInfo> animationsMap;
+
   @override
   void initState() {
     super.initState();
@@ -67,9 +68,10 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(leadProvider);
+    final isMobile = MediaQuery.of(context).size.width <= 920;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(isMobile ? 12 : 16),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
       child: SingleChildScrollView(
         child: Column(
@@ -77,10 +79,12 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
           children: [
             _titleRow(context),
             const SizedBox(height: 20),
-            _tableHeader(),
-            const SizedBox(height: 12),
-            const Divider(height: 1, color: Color(0xFFE2E8F0)),
-            const SizedBox(height: 12),
+            if (!isMobile) ...[
+              _tableHeader(),
+              const SizedBox(height: 12),
+              const Divider(height: 1, color: Color(0xFFE2E8F0)),
+              const SizedBox(height: 12),
+            ],
 
             /// ✅ State Handling
             if (state.isLoading)
@@ -118,8 +122,9 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
                 ),
               )
             else
-              _leadsList(state.leads, context),
-
+              isMobile
+                  ? _leadsCardList(state.leads, context)
+                  : _leadsList(state.leads, context),
             const SizedBox(height: 24),
             _footerLegend(),
           ],
@@ -133,15 +138,17 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
   /// -------------------------------
 
   Widget _titleRow(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width <= 920;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text(
+        Text(
           "Leads",
           style: TextStyle(
-            fontSize: 20,
+            fontSize: isMobile ? 18 : 20,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF0F172A),
+            color: const Color(0xFF0F172A),
           ),
         ),
         FilledButton(
@@ -195,6 +202,17 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
     );
   }
 
+  Widget _leadsCardList(List<LeadModel> leads, BuildContext context) {
+    return Column(
+      children: [
+        for (var i = 0; i < leads.length; i++) ...[
+          _leadCardFromModel(leads[i], context),
+          if (i != leads.length - 1) const SizedBox(height: 12),
+        ],
+      ],
+    );
+  }
+
   Widget _footerLegend() {
     return RichText(
       text: const TextSpan(
@@ -230,7 +248,7 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
   Widget _leadRowFromModel(LeadModel lead, BuildContext context) {
     final leadName = lead.leadName;
     final company = lead.company ?? "InoChem";
-    final role = lead.goal ?? "Ops Director"; // if extended in model
+    final role = lead.goal ?? "Ops Director";
     final goal = lead.goal ?? "Book a meeting";
     final progress = (lead.progress ?? 40) / 100;
     final responsivenessText = lead.responsivenessText ?? "Replied in 1d";
@@ -239,6 +257,30 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
     final nextStep = lead.nextStep ?? "LinkedIn message · Tomorrow";
 
     return _leadRow(
+      leadId: lead.leadId,
+      leadName: leadName,
+      subText: "$company · $role",
+      goal: goal,
+      progress: progress,
+      responsivenessText: responsivenessText,
+      responsivenessColor: responsivenessColor,
+      nextStep: nextStep,
+      context: context,
+    );
+  }
+
+  Widget _leadCardFromModel(LeadModel lead, BuildContext context) {
+    final leadName = lead.leadName;
+    final company = lead.company ?? "InoChem";
+    final role = lead.goal ?? "Ops Director";
+    final goal = lead.goal ?? "Book a meeting";
+    final progress = (lead.progress ?? 40) / 100;
+    final responsivenessText = lead.responsivenessText ?? "Replied in 1d";
+    final responsivenessColor =
+        lead.responsivenessColor ?? const Color(0xFF059669);
+    final nextStep = lead.nextStep ?? "LinkedIn message · Tomorrow";
+
+    return _leadCard(
       leadId: lead.leadId,
       leadName: leadName,
       subText: "$company · $role",
@@ -358,6 +400,162 @@ class _LeadsTableState extends ConsumerState<LeadsTable> {
           ),
         ),
       ],
-    ).animate(effects: animationsMap['summaryCardAnimation']?.effectsBuilder);
+    ).animate(effects: animationsMap['leadRowAnimation']?.effectsBuilder);
+  }
+
+  Widget _leadCard({
+    required int leadId,
+    required String leadName,
+    required String subText,
+    required String goal,
+    required double progress,
+    required String responsivenessText,
+    required Color responsivenessColor,
+    required String nextStep,
+    required BuildContext context,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFCBD5E1), width: 0.4),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade200,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        leadName,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: Color(0xFF0F172A),
+                        ),
+                      ),
+                      Text(
+                        responsivenessText,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: responsivenessColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                FilledButton.tonal(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: const BorderSide(color: Color(0xFFCBD5E1)),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    minimumSize: const Size(0, 36),
+                  ),
+                  onPressed: () {
+                    final navNotifier = ref.read(
+                      routeNotifierProvider.notifier,
+                    );
+                    navNotifier.setNavItem(NavItem.journey);
+                    ref.read(leadProvider.notifier).updateLeadId('$leadId');
+                    context.go('${AppRoutes.leadCreation}?leadId=$leadId');
+                  },
+                  child: const Text(
+                    "Open",
+                    style: TextStyle(fontSize: 14, color: Colors.black87),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          // Body
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _labelValuePair("Goal", goal),
+                const SizedBox(height: 8),
+                _labelValuePair(
+                  "Next Step",
+                  nextStep,
+                  labelTextAlignment: TextAlign.right,
+                  valueTextAlignment: TextAlign.right,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          // Progress (no label)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            child: LinearProgressIndicator(
+              value: progress,
+              color: const Color(0xFF4F46E5),
+              backgroundColor: const Color(0xFFE2E8F0),
+              minHeight: 6,
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
+      ),
+    ).animate(effects: animationsMap['leadRowAnimation']?.effectsBuilder);
+  }
+
+  Widget _labelValuePair(
+    String label,
+    String value, {
+    Color? textColor,
+    TextAlign? labelTextAlignment,
+    TextAlign? valueTextAlignment,
+  }) {
+    return SizedBox(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF64748B),
+            ),
+            textAlign: labelTextAlignment,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 14,
+              color: textColor ?? const Color(0xFF0F172A),
+            ),
+            textAlign: valueTextAlignment,
+          ),
+        ],
+      ),
+    );
   }
 }
