@@ -30,211 +30,215 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
     final followupState = ref.watch(followupProvider);
     final selectedGoal = followupState.selectedGoal ?? "Book a meeting";
     final duration = followupState.durationDays ?? 10;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth <= 720;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children:
-              _goals.map((goal) {
-                return LayoutBuilder(
-                  builder: (context, constraints) {
-                    double cardWidth = (constraints.maxWidth - 12 * 2) / 3;
-                    return SizedBox(
-                      width: cardWidth,
-                      child: _goalCard(
-                        goal["title"]!,
-                        goal["subtitle"]!,
-                        selectedGoal == goal["title"],
-                        (selected) {
-                          if (selected) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children:
+                _goals.map((goal) {
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      double cardWidth =
+                          isMobile
+                              ? (constraints.maxWidth - 12) /
+                                  2 // Two cards per row
+                              : (constraints.maxWidth - 12 * 2) /
+                                  3; // Three cards per row
+                      return SizedBox(
+                        width: cardWidth,
+                        child: _goalCard(
+                          goal["title"]!,
+                          goal["subtitle"]!,
+                          selectedGoal == goal["title"],
+                          (selected) {
+                            if (selected) {
+                              ref
+                                  .read(followupProvider.notifier)
+                                  .updateGoal(goal["title"] ?? '');
+                            }
+                          },
+                        ),
+                      );
+                    },
+                  );
+                }).toList(),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Text(
+                "Duration (days): ",
+                style: TextStyle(fontSize: 14, color: Color(0xFF1E293B)),
+              ).animate(
+                effects:
+                    AnimationEffectConstants
+                        .usualAnimationEffects['summaryCardAnimation']
+                        ?.effectsBuilder,
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: 82,
+                height: 80,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300, width: 0.25),
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.white,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 40,
+                      height: 30,
+                      child: TextField(
+                        controller: TextEditingController(
+                          text: duration.toString(),
+                        ),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF1E293B),
+                        ),
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                        ),
+                        onChanged: (value) {
+                          int? newValue = int.tryParse(value);
+                          if (newValue != null &&
+                              newValue >= 1 &&
+                              newValue <= 365) {
                             ref
                                 .read(followupProvider.notifier)
-                                .updateGoal(goal["title"] ?? '');
+                                .updateDuration(newValue);
                           }
                         },
                       ),
-                    );
-                  },
-                );
-              }).toList(),
-        ),
-        const SizedBox(height: 20),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Text(
-              "Duration (days): ",
-              style: TextStyle(fontSize: 14, color: Color(0xFF1E293B)),
-            ).animate(
-              effects:
-                  AnimationEffectConstants
-                      .usualAnimationEffects['summaryCardAnimation']
-                      ?.effectsBuilder,
-            ),
-            const SizedBox(height: 8),
-            Container(
-              width: 82,
-              height: 80,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey.shade300,
-                  width: 0.25, // Matches the original thin border width
-                ),
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.white,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    width: 40,
-                    height: 30,
-                    child: TextField(
-                      controller: TextEditingController(
-                        text: duration.toString(),
-                      ),
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF1E293B),
-                      ),
-                      decoration: const InputDecoration(
-                        border:
-                            InputBorder
-                                .none, // No inner border for the TextField
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                      ),
-                      onChanged: (value) {
-                        int? newValue = int.tryParse(value);
-                        if (newValue != null &&
-                            newValue >= 1 &&
-                            newValue <= 365) {
-                          ref
-                              .read(followupProvider.notifier)
-                              .updateDuration(newValue);
-                        }
-                      },
                     ),
-                  ),
-                  SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_drop_up),
-                          padding: EdgeInsets.zero,
-                          iconSize: 15,
-                          onPressed: () {
-                            if (duration < 365) {
-                              ref
-                                  .read(followupProvider.notifier)
-                                  .updateDuration(duration + 1);
-                            }
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.arrow_drop_down),
-                          padding: EdgeInsets.zero,
-                          iconSize: 15,
-                          onPressed: () {
-                            if (duration > 1) {
-                              ref
-                                  .read(followupProvider.notifier)
-                                  .updateDuration(duration - 1);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ).animate(
-              effects:
-                  AnimationEffectConstants
-                      .usualAnimationEffects['summaryCardAnimation']
-                      ?.effectsBuilder,
-            ),
-          ],
-        ),
-        const SizedBox(height: 24),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            StepUtils().backButton(() {
-              ref.read(leadStepProvider.notifier).previousStep();
-            }),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF111827),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 14,
-                ),
-              ),
-              onPressed: () {
-                if (followupState.selectedGoal == null ||
-                    followupState.durationDays == null) {
-                  AppToast.warning(
-                    context,
-                    "Selection Incomplete",
-                    subtitle: "Please select a goal and duration.",
-                  );
-                  return;
-                }
-                AppToast.success(
-                  context,
-                  "Goal Selected",
-                  subtitle: "Proceeding to plan setup.",
-                );
-                ref.read(leadStepProvider.notifier).nextStep();
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Generate Plan",
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ).animate(
-                    effects:
-                        AnimationEffectConstants
-                            .usualAnimationEffects['summaryCardAnimation']
-                            ?.effectsBuilder,
-                  ),
-                  if (followupState.isLoading) ...[
-                    const SizedBox(width: 8),
-                    const SizedBox(
-                      height: 18,
-                      width: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
+                    SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.arrow_drop_up),
+                            padding: EdgeInsets.zero,
+                            iconSize: 15,
+                            onPressed: () {
+                              if (duration < 365) {
+                                ref
+                                    .read(followupProvider.notifier)
+                                    .updateDuration(duration + 1);
+                              }
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.arrow_drop_down),
+                            padding: EdgeInsets.zero,
+                            iconSize: 15,
+                            onPressed: () {
+                              if (duration > 1) {
+                                ref
+                                    .read(followupProvider.notifier)
+                                    .updateDuration(duration - 1);
+                              }
+                            },
+                          ),
+                        ],
                       ),
                     ),
                   ],
-                ],
+                ),
+              ).animate(
+                effects:
+                    AnimationEffectConstants
+                        .usualAnimationEffects['summaryCardAnimation']
+                        ?.effectsBuilder,
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              StepUtils().backButton(() {
+                ref.read(leadStepProvider.notifier).previousStep();
+              }),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF111827),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 14,
+                  ),
+                ),
+                onPressed: () {
+                  if (followupState.selectedGoal == null ||
+                      followupState.durationDays == null) {
+                    AppToast.warning(
+                      context,
+                      "Selection Incomplete",
+                      subtitle: "Please select a goal and duration.",
+                    );
+                    return;
+                  }
+                  AppToast.success(
+                    context,
+                    "Goal Selected",
+                    subtitle: "Proceeding to plan setup.",
+                  );
+                  ref.read(leadStepProvider.notifier).nextStep();
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Generate Plan",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ).animate(
+                      effects:
+                          AnimationEffectConstants
+                              .usualAnimationEffects['summaryCardAnimation']
+                              ?.effectsBuilder,
+                    ),
+                    if (followupState.isLoading) ...[
+                      const SizedBox(width: 8),
+                      const SizedBox(
+                        height: 18,
+                        width: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -281,29 +285,33 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
                 ),
               ),
               const SizedBox(width: 4),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15,
-                      color: Color(0xFF1E293B),
-                      letterSpacing: 0.2,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                        color: Color(0xFF1E293B),
+                        letterSpacing: 0.2,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xFF64748B),
-                      letterSpacing: 0.1,
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFF64748B),
+                        letterSpacing: 0.1,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
