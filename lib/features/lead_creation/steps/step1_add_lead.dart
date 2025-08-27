@@ -66,214 +66,295 @@ class _Step1LeadDetailsFormState extends ConsumerState<Step1LeadDetailsForm> {
   Widget build(BuildContext context) {
     final leadState = ref.watch(leadProvider);
     final formState = ref.watch(leadFormProvider);
-    final isLoading = leadState.isLoading;
-    bool forAddLead = (widget.leadId ?? '').isEmpty;
     final leadInfo = leadState.selectedLead?.toJson();
     console.log('leadInfo - $leadInfo');
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Lead Name + Company
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.5,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: AppTextField(
-                  controller: _leadNameController,
-                  label: "Lead name",
-                  hint: "e.g., Jane Cooper",
-                  onChanged:
-                      (value) => ref
-                          .read(leadFormProvider.notifier)
-                          .updateLeadName(value),
-                ),
-              ).animate(
-                effects:
-                    AnimationEffectConstants
-                        .usualAnimationEffects['summaryCardAnimation']
-                        ?.effectsBuilder,
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: AppTextField(
-                  controller: _companyController,
-                  label: "Company",
-                  hint: "e.g., AOC",
-                  onChanged:
-                      (value) => ref
-                          .read(leadFormProvider.notifier)
-                          .updateCompany(value),
-                ),
-              ).animate(
-                effects:
-                    AnimationEffectConstants
-                        .usualAnimationEffects['summaryCardAnimation']
-                        ?.effectsBuilder,
-              ),
-            ],
-          ),
-        ),
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth <= 600;
 
-        const SizedBox(height: 16),
-
-        // Email + LinkedIn
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.5,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: AppTextField(
-                  controller: _emailController,
-                  label: "Email",
-                  keyboardType: TextInputType.emailAddress,
-                  hint: "name@company.com",
-                  onChanged:
-                      (value) => ref
-                          .read(leadFormProvider.notifier)
-                          .updateEmail(value),
-                ),
-              ).animate(
-                effects:
-                    AnimationEffectConstants
-                        .usualAnimationEffects['summaryCardAnimation']
-                        ?.effectsBuilder,
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: AppTextField(
-                  controller: _linkedinController,
-                  label: "LinkedIn URL",
-                  keyboardType: TextInputType.url,
-                  hint: "https://www.linkedin.com/in/username",
-                  onChanged:
-                      (value) => ref
-                          .read(leadFormProvider.notifier)
-                          .updateLinkedin(value),
-                ),
-              ).animate(
-                effects:
-                    AnimationEffectConstants
-                        .usualAnimationEffects['summaryCardAnimation']
-                        ?.effectsBuilder,
-              ),
-            ],
-          ),
-        ),
-
-        const SizedBox(height: 16),
-
-        // Phone
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.25,
-          child: AppTextField(
-            controller: _phoneController,
-            label: "Phone Number",
-            keyboardType: TextInputType.phone,
-            hint: "e.g. +91 9436567890",
-            onChanged:
-                (value) =>
-                    ref.read(leadFormProvider.notifier).updatePhone(value),
-          ),
-        ).animate(
-          effects:
-              AnimationEffectConstants
-                  .usualAnimationEffects['summaryCardAnimation']
-                  ?.effectsBuilder,
-        ),
-
-        const SizedBox(height: 24),
-
-        // Save & Continue button
-        Align(
-          alignment: Alignment.centerRight,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF111827),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-            ),
-            onPressed: () async {
-              final email = formState.email.trim();
-
-              if (email.isEmpty) {
-                AppToast.warning(
-                  context,
-                  "Lead Creation Failed",
-                  subtitle: "Email is required",
-                );
-                return;
-              }
-
-              // Call leadProvider to add lead using form state
-              await ref
-                  .read(leadProvider.notifier)
-                  .upsertLead(
-                    email: email,
-                    leadName: formState.leadName.trim(),
-                    company: formState.company.trim(),
-                    linkedIn: formState.linkedin?.trim(),
-                    phone: formState.phone?.trim(),
-                  );
-
-              // Check for errors and proceed
-              final error = ref.read(leadProvider).error;
-              if (error == null) {
-                AppToast.success(
-                  context,
-                  "Lead Created Successfully",
-                  subtitle: "Proceeding to next step",
-                );
-                ref.read(leadStepProvider.notifier).nextStep();
-                // Reset form state after successful submission
-                ref.read(leadFormProvider.notifier).reset();
-              } else {
-                AppToast.failure(
-                  context,
-                  "Lead Creation Failed",
-                  subtitle: error,
-                );
-              }
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  (widget.leadId ?? '').isEmpty
-                      ? "Save & Continue"
-                      : "Update & Continue",
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Lead Name + Company
+          isMobile
+              ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppTextField(
+                    controller: _leadNameController,
+                    label: "Lead name",
+                    hint: "e.g., Jane Cooper",
+                    onChanged:
+                        (value) => ref
+                            .read(leadFormProvider.notifier)
+                            .updateLeadName(value),
+                  ).animate(
+                    effects:
+                        AnimationEffectConstants
+                            .usualAnimationEffects['summaryCardAnimation']
+                            ?.effectsBuilder,
                   ),
-                ).animate(
-                  effects:
-                      AnimationEffectConstants
-                          .usualAnimationEffects['summaryCardAnimation']
-                          ?.effectsBuilder,
-                ),
-                if (leadState.isLoading) ...[
-                  const SizedBox(width: 8),
-                  const SizedBox(
-                    height: 18,
-                    width: 18,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Colors.white,
-                    ),
+                  const SizedBox(height: 16),
+                  AppTextField(
+                    controller: _companyController,
+                    label: "Company",
+                    hint: "e.g., AOC",
+                    onChanged:
+                        (value) => ref
+                            .read(leadFormProvider.notifier)
+                            .updateCompany(value),
+                  ).animate(
+                    effects:
+                        AnimationEffectConstants
+                            .usualAnimationEffects['summaryCardAnimation']
+                            ?.effectsBuilder,
                   ),
                 ],
-              ],
+              )
+              : SizedBox(
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: AppTextField(
+                        controller: _leadNameController,
+                        label: "Lead name",
+                        hint: "e.g., Jane Cooper",
+                        onChanged:
+                            (value) => ref
+                                .read(leadFormProvider.notifier)
+                                .updateLeadName(value),
+                      ),
+                    ).animate(
+                      effects:
+                          AnimationEffectConstants
+                              .usualAnimationEffects['summaryCardAnimation']
+                              ?.effectsBuilder,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: AppTextField(
+                        controller: _companyController,
+                        label: "Company",
+                        hint: "e.g., AOC",
+                        onChanged:
+                            (value) => ref
+                                .read(leadFormProvider.notifier)
+                                .updateCompany(value),
+                      ),
+                    ).animate(
+                      effects:
+                          AnimationEffectConstants
+                              .usualAnimationEffects['summaryCardAnimation']
+                              ?.effectsBuilder,
+                    ),
+                  ],
+                ),
+              ),
+
+          const SizedBox(height: 16),
+
+          // Email + LinkedIn
+          isMobile
+              ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppTextField(
+                    controller: _emailController,
+                    label: "Email",
+                    keyboardType: TextInputType.emailAddress,
+                    hint: "name@company.com",
+                    onChanged:
+                        (value) => ref
+                            .read(leadFormProvider.notifier)
+                            .updateEmail(value),
+                  ).animate(
+                    effects:
+                        AnimationEffectConstants
+                            .usualAnimationEffects['summaryCardAnimation']
+                            ?.effectsBuilder,
+                  ),
+                  const SizedBox(height: 16),
+                  AppTextField(
+                    controller: _linkedinController,
+                    label: "LinkedIn URL",
+                    keyboardType: TextInputType.url,
+                    hint: "https://www.linkedin.com/in/username",
+                    onChanged:
+                        (value) => ref
+                            .read(leadFormProvider.notifier)
+                            .updateLinkedin(value),
+                  ).animate(
+                    effects:
+                        AnimationEffectConstants
+                            .usualAnimationEffects['summaryCardAnimation']
+                            ?.effectsBuilder,
+                  ),
+                ],
+              )
+              : SizedBox(
+                width: MediaQuery.of(context).size.width * 0.5,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: AppTextField(
+                        controller: _emailController,
+                        label: "Email",
+                        keyboardType: TextInputType.emailAddress,
+                        hint: "name@company.com",
+                        onChanged:
+                            (value) => ref
+                                .read(leadFormProvider.notifier)
+                                .updateEmail(value),
+                      ),
+                    ).animate(
+                      effects:
+                          AnimationEffectConstants
+                              .usualAnimationEffects['summaryCardAnimation']
+                              ?.effectsBuilder,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: AppTextField(
+                        controller: _linkedinController,
+                        label: "LinkedIn URL",
+                        keyboardType: TextInputType.url,
+                        hint: "https://www.linkedin.com/in/username",
+                        onChanged:
+                            (value) => ref
+                                .read(leadFormProvider.notifier)
+                                .updateLinkedin(value),
+                      ),
+                    ).animate(
+                      effects:
+                          AnimationEffectConstants
+                              .usualAnimationEffects['summaryCardAnimation']
+                              ?.effectsBuilder,
+                    ),
+                  ],
+                ),
+              ),
+
+          const SizedBox(height: 16),
+
+          // Phone
+          SizedBox(
+            width:
+                isMobile
+                    ? MediaQuery.of(context).size.width * 0.9
+                    : MediaQuery.of(context).size.width * 0.25,
+            child: AppTextField(
+              controller: _phoneController,
+              label: "Phone Number",
+              keyboardType: TextInputType.phone,
+              hint: "e.g. +91 9436567890",
+              onChanged:
+                  (value) =>
+                      ref.read(leadFormProvider.notifier).updatePhone(value),
+            ),
+          ).animate(
+            effects:
+                AnimationEffectConstants
+                    .usualAnimationEffects['summaryCardAnimation']
+                    ?.effectsBuilder,
+          ),
+
+          const SizedBox(height: 24),
+
+          // Save & Continue button
+          Align(
+            alignment: Alignment.centerRight,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF111827),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 14,
+                ),
+              ),
+              onPressed: () async {
+                final email = formState.email.trim();
+
+                if (email.isEmpty) {
+                  AppToast.warning(
+                    context,
+                    "Lead Creation Failed",
+                    subtitle: "Email is required",
+                  );
+                  return;
+                }
+
+                // Call leadProvider to add lead using form state
+                await ref
+                    .read(leadProvider.notifier)
+                    .upsertLead(
+                      email: email,
+                      leadName: formState.leadName.trim(),
+                      company: formState.company.trim(),
+                      linkedIn: formState.linkedin?.trim(),
+                      phone: formState.phone?.trim(),
+                    );
+
+                // Check for errors and proceed
+                final error = ref.read(leadProvider).error;
+                if (error == null) {
+                  AppToast.success(
+                    context,
+                    "Lead Created Successfully",
+                    subtitle: "Proceeding to next step",
+                  );
+                  ref.read(leadStepProvider.notifier).nextStep();
+                  // Reset form state after successful submission
+                  ref.read(leadFormProvider.notifier).reset();
+                } else {
+                  AppToast.failure(
+                    context,
+                    "Lead Creation Failed",
+                    subtitle: error,
+                  );
+                }
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    (widget.leadId ?? '').isEmpty
+                        ? "Save & Continue"
+                        : "Update & Continue",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ).animate(
+                    effects:
+                        AnimationEffectConstants
+                            .usualAnimationEffects['summaryCardAnimation']
+                            ?.effectsBuilder,
+                  ),
+                  if (leadState.isLoading) ...[
+                    const SizedBox(width: 8),
+                    const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

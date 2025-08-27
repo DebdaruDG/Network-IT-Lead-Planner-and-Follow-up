@@ -199,7 +199,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                   if (isPlanExpanded)
                                     SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,
-                                      child: Row(
+                                      child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children:
                                             step.children!.asMap().entries.map((
