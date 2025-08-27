@@ -130,6 +130,10 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
       "Simple progress and responsive view (mock).",
     ];
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth <= 600;
+    final isTablet = screenWidth <= 920 && screenWidth > 600;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF9FBFD),
       appBar: NetworkItAppBar(
@@ -155,25 +159,50 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
       ),
       body: Container(
         margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.1,
-          vertical: MediaQuery.of(context).size.height * 0.05,
+          horizontal: isMobile ? 16 : MediaQuery.of(context).size.width * 0.1,
+          vertical: isMobile ? 16 : MediaQuery.of(context).size.height * 0.05,
         ),
-        child: Row(
-          children: [
-            AddLeadSidebar(
-              steps: sidebarSteps,
-              animationsMap: animationsMap,
-              leadId: widget.leadId,
-            ),
-            AddLeadBody(
-              titles: titles,
-              subtitles: subtitles,
-              stepWidgets: stepWidgets,
-              animationsMap: animationsMap,
-              leadId: widget.leadId,
-            ),
-          ],
-        ),
+        child:
+            isMobile || isTablet
+                ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AddLeadSidebar(
+                      steps: sidebarSteps,
+                      animationsMap: animationsMap,
+                      leadId: widget.leadId,
+                      isHorizontal: isMobile,
+                    ),
+                    AddLeadBody(
+                      titles: titles,
+                      subtitles: subtitles,
+                      stepWidgets: stepWidgets,
+                      animationsMap: animationsMap,
+                      leadId: widget.leadId,
+                      isMobile: isMobile,
+                      isTablet: isTablet,
+                    ),
+                  ],
+                )
+                : Row(
+                  children: [
+                    AddLeadSidebar(
+                      steps: sidebarSteps,
+                      animationsMap: animationsMap,
+                      leadId: widget.leadId,
+                      isHorizontal: false,
+                    ),
+                    AddLeadBody(
+                      titles: titles,
+                      subtitles: subtitles,
+                      stepWidgets: stepWidgets,
+                      animationsMap: animationsMap,
+                      leadId: widget.leadId,
+                      isMobile: isMobile,
+                      isTablet: isTablet,
+                    ),
+                  ],
+                ),
       ),
     );
   }

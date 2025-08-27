@@ -11,6 +11,8 @@ class AddLeadBody extends ConsumerWidget {
   final List<Widget> stepWidgets;
   final Map<String, AnimationInfo> animationsMap;
   final String? leadId;
+  final bool isMobile;
+  final bool isTablet;
 
   const AddLeadBody({
     super.key,
@@ -19,6 +21,8 @@ class AddLeadBody extends ConsumerWidget {
     required this.stepWidgets,
     required this.animationsMap,
     this.leadId,
+    required this.isMobile,
+    required this.isTablet,
   });
 
   @override
@@ -29,16 +33,19 @@ class AddLeadBody extends ConsumerWidget {
     return Expanded(
       child: Container(
         color: const Color(0xFFF8FAFC),
-        margin: const EdgeInsets.symmetric(horizontal: 48, vertical: 32),
+        margin: EdgeInsets.symmetric(
+          horizontal: isMobile ? 16 : 48,
+          vertical: isMobile ? 16 : 32,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               titles[currentStep],
-              style: const TextStyle(
-                fontSize: 22,
+              style: TextStyle(
+                fontSize: isMobile ? 18 : 22,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF1D2939),
+                color: const Color(0xFF1D2939),
                 letterSpacing: 0.1,
                 fontFamily: "Manrope",
               ),
@@ -51,7 +58,10 @@ class AddLeadBody extends ConsumerWidget {
             const SizedBox(height: 6),
             Text(
               subtitles[currentStep],
-              style: const TextStyle(fontSize: 14, color: Color(0xFF667085)),
+              style: TextStyle(
+                fontSize: isMobile ? 12 : 14,
+                color: const Color(0xFF667085),
+              ),
             ).animate(
               effects:
                   AnimationEffectConstants
