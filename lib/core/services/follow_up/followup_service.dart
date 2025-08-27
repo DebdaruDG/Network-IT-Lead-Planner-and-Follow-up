@@ -30,14 +30,17 @@ class FollowupService {
         "linkedin_template": linkedinTemplate,
         "call_talking_point": callTalkingPoint,
       };
-      console.log('payload - $data');
-      return await _apiService.post(
+      console.log('service payload - $data');
+      console.log('service leadId - $leadId');
+      Response response = await _apiService.post(
         "$_followupEndpoint?LeadId=$leadId",
         data: data,
         options: Options(
           headers: {"Content-Type": "application/json", "x-api-key": _apiKey},
         ),
       );
+      console.log('service response.statusCode - ${response.statusCode}');
+      return response;
     } catch (err) {
       console.log('err :- $err');
       rethrow;

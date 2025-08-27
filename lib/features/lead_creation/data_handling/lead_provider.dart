@@ -115,11 +115,7 @@ class LeadNotifier extends StateNotifier<LeadState> {
         return;
       }
 
-      console.log('results length: ${results.length}');
-
       final firstResult = results.first; // this is already LeadResult
-      console.log('firstResult runtimeType: ${firstResult.runtimeType}');
-
       // If your LeadResult already has leadInfo/plans inside
       final leadInfo = firstResult.leadInfo;
       state = state.copyWith(selectedLead: leadInfo);

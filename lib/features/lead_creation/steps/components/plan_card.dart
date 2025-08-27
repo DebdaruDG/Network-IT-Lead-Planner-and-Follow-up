@@ -1,5 +1,3 @@
-import 'dart:developer' as console;
-
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
@@ -132,15 +130,12 @@ class PlanCard extends StatelessWidget {
   }
 
   Map<String, Task?> _groupTasksByChannel(List<Task> tasks) {
-    console.log('tasks - ${tasks.length}');
     final tasksByChannel = <String, Task?>{};
     for (var taskItem in tasks) {
-      console.log('taskItem - ${taskItem.toJson()}');
       for (var channel in taskItem.channel) {
         tasksByChannel.putIfAbsent(channel, () => taskItem);
       }
     }
-    console.log('tasksByChannel - $tasksByChannel');
     return tasksByChannel;
   }
 }

@@ -53,7 +53,7 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
                           if (selected) {
                             ref
                                 .read(followupProvider.notifier)
-                                .updateGoal(goal["title"]!);
+                                .updateGoal(goal["title"] ?? '');
                           }
                         },
                       ),

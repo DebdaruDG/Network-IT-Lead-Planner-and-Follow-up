@@ -1,3 +1,5 @@
+import 'dart:developer' as console;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import '../../../core/services/follow_up/followup_service.dart';
@@ -103,6 +105,9 @@ class FollowupNotifier extends StateNotifier<FollowupState> {
 
   /// Generate followup for a lead using stored state
   Future<void> generateFollowup({required String leadId}) async {
+    console.log('state.selectedGoal - ${state.selectedGoal}');
+    console.log('state.durationDays - ${state.durationDays}');
+    console.log('state.selectedChannels - ${state.selectedChannels}');
     if (state.selectedGoal == null ||
         state.durationDays == null ||
         state.selectedChannels == null) {
@@ -123,7 +128,6 @@ class FollowupNotifier extends StateNotifier<FollowupState> {
         linkedinTemplate: state.linkedinTemplate,
         callTalkingPoint: state.callTalkingPoint,
       );
-
       state = state.copyWith(followupResult: response.data);
     } on DioException catch (e) {
       state = state.copyWith(error: e.response?.data.toString() ?? e.message);
