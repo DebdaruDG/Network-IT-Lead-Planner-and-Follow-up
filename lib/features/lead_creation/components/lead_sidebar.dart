@@ -187,11 +187,20 @@ class AddLeadSidebar extends ConsumerWidget {
                                             ),
                                           ),
                                           const SizedBox(width: 8),
-                                          Icon(
-                                            isPlanExpanded
-                                                ? Icons.keyboard_arrow_down
-                                                : Icons.keyboard_arrow_right,
-                                            size: 20,
+                                          InkWell(
+                                            onTap: () {
+                                              ref
+                                                  .read(
+                                                    leadStepProvider.notifier,
+                                                  )
+                                                  .togglePlanExpanded();
+                                            },
+                                            child: Icon(
+                                              isPlanExpanded
+                                                  ? Icons.keyboard_arrow_down
+                                                  : Icons.keyboard_arrow_right,
+                                              size: 20,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -298,7 +307,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                                         child: Text(
                                                           subStep.title,
                                                           style: GoogleFonts.inter(
-                                                            fontSize: 14,
+                                                            fontSize: 12,
                                                             fontWeight:
                                                                 isActive
                                                                     ? FontWeight
@@ -413,7 +422,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                         child: Text(
                                           step.title,
                                           style: GoogleFonts.inter(
-                                            fontSize: 15,
+                                            fontSize: 13,
                                             fontWeight:
                                                 isActive
                                                     ? FontWeight.bold
@@ -514,7 +523,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                     title: Text(
                                       step.title,
                                       style: GoogleFonts.inter(
-                                        fontSize: 15,
+                                        fontSize: 13,
                                         fontWeight:
                                             isPlanActive
                                                 ? FontWeight.bold
