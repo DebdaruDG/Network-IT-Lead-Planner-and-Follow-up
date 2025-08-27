@@ -98,13 +98,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authViewModelProvider);
+    final isMobile = MediaQuery.of(context).size.width <= 920;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          height: MediaQuery.of(context).size.height * 0.8,
+          width:
+              isMobile
+                  ? MediaQuery.of(context).size.width * 0.9
+                  : MediaQuery.of(context).size.width * 0.8,
+          height:
+              isMobile
+                  ? MediaQuery.of(context).size.height * 0.9
+                  : MediaQuery.of(context).size.height * 0.8,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
@@ -116,79 +123,111 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
             ],
           ),
-          child: Row(
-            children: [
-              // LEFT SECTION
-              Expanded(
-                flex: 1,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: primaryBlue,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      bottomLeft: Radius.circular(20),
-                    ),
-                  ),
-                  child: Center(
-                    child: Image.asset(
-                      'assets/Images/logo.png',
-                      // 'Images/logo.png',
-                      width: 250,
-                      color: Colors.white,
-                    ).animate(
+          child:
+              isMobile
+                  ? AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 500),
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(opacity: animation, child: child);
+                    },
+                    child: _buildRightPanel(authState, isMobile).animate(
                       effects:
                           AnimationEffectConstants
                               .usualAnimationEffects['summaryCardAnimation']
                               ?.effectsBuilder,
                     ),
+                  )
+                  : Row(
+                    children: [
+                      // LEFT SECTION (Web only)
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: primaryBlue,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              bottomLeft: Radius.circular(20),
+                            ),
+                          ),
+                          child: Center(
+                            child: Image.asset(
+                              'assets/Images/logo.png',
+                              width: 250,
+                              color: Colors.white,
+                            ).animate(
+                              effects:
+                                  AnimationEffectConstants
+                                      .usualAnimationEffects['summaryCardAnimation']
+                                      ?.effectsBuilder,
+                            ),
+                          ),
+                        ).animate(
+                          effects:
+                              AnimationEffectConstants
+                                  .usualAnimationEffects['summaryCardAnimation']
+                                  ?.effectsBuilder,
+                        ),
+                      ),
+                      // RIGHT SECTION
+                      Expanded(
+                        flex: 1,
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 500),
+                          transitionBuilder: (child, animation) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: child,
+                            );
+                          },
+                          child: _buildRightPanel(authState, isMobile).animate(
+                            effects:
+                                AnimationEffectConstants
+                                    .usualAnimationEffects['summaryCardAnimation']
+                                    ?.effectsBuilder,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ).animate(
-                  effects:
-                      AnimationEffectConstants
-                          .usualAnimationEffects['summaryCardAnimation']
-                          ?.effectsBuilder,
-                ),
-              ),
-
-              // RIGHT SECTION
-              Expanded(
-                flex: 1,
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 500),
-                  transitionBuilder: (child, animation) {
-                    return FadeTransition(opacity: animation, child: child);
-                  },
-                  child: _buildRightPanel(authState).animate(
-                    effects:
-                        AnimationEffectConstants
-                            .usualAnimationEffects['summaryCardAnimation']
-                            ?.effectsBuilder,
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
   }
 
-  Widget _buildRightPanel(AuthState authState) {
+  Widget _buildRightPanel(AuthState authState, bool isMobile) {
     if (authState.uiState == LoginUIState.form) {
       return FadeScaleTransitionWrapper(
         key: const ValueKey("login_form"),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(40, 20, 40, 40),
+          padding:
+              isMobile
+                  ? const EdgeInsets.fromLTRB(20, 20, 20, 20)
+                  : const EdgeInsets.fromLTRB(40, 20, 40, 40),
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 20),
+                if (isMobile) ...[
+                  // Logo at the top for mobile
+                  Image.asset(
+                    'assets/Images/logo.png',
+                    width: 150,
+                    color: primaryBlue,
+                  ).animate(
+                    effects:
+                        AnimationEffectConstants
+                            .usualAnimationEffects['summaryCardAnimation']
+                            ?.effectsBuilder,
+                  ),
+                  const SizedBox(height: 20),
+                ],
                 Center(
                   child: Text(
                     "Login",
                     style: GoogleFonts.poppins(
-                      fontSize: 28,
+                      fontSize: isMobile ? 24 : 28,
                       fontWeight: FontWeight.w600,
                       color: primaryBlue,
                     ),
@@ -199,13 +238,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   child: Text(
                     "Lead Follow Up Planner",
                     style: GoogleFonts.poppins(
-                      fontSize: 14,
+                      fontSize: isMobile ? 12 : 14,
                       fontWeight: FontWeight.w400,
                       color: Colors.grey,
                     ),
                   ),
                 ),
-                const SizedBox(height: 30),
+                SizedBox(height: isMobile ? 20 : 30),
 
                 // Google Sign-in Button
                 SignInButton(
@@ -215,7 +254,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ? "Signing in..."
                           : "Sign in with Google",
                   textStyle: GoogleFonts.poppins(
-                    fontSize: 16,
+                    fontSize: isMobile ? 14 : 16,
                     fontWeight: FontWeight.w600,
                     color: Colors.grey.shade900,
                   ),
@@ -242,7 +281,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: Text(
                         "or sign in with Email",
                         style: GoogleFonts.poppins(
-                          fontSize: 12,
+                          fontSize: isMobile ? 10 : 12,
                           fontWeight: FontWeight.w400,
                           color: Colors.grey,
                         ),
@@ -251,7 +290,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     Expanded(child: Divider(color: Colors.grey.shade300)),
                   ],
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: isMobile ? 15 : 20),
 
                 // Email Field
                 AuthTextField(
@@ -260,7 +299,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   isRequired: true,
                   controller: _emailController,
                 ),
-                const SizedBox(height: 15),
+                SizedBox(height: isMobile ? 10 : 15),
 
                 // Password Field
                 AuthTextField(
@@ -285,7 +324,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         Text(
                           "Remember me",
-                          style: GoogleFonts.poppins(fontSize: 13),
+                          style: GoogleFonts.poppins(
+                            fontSize: isMobile ? 12 : 13,
+                          ),
                         ),
                       ],
                     ),
@@ -295,18 +336,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         "Forgot password?",
                         style: GoogleFonts.poppins(
                           color: primaryBlue,
-                          fontSize: 13,
+                          fontSize: isMobile ? 12 : 13,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: isMobile ? 15 : 20),
 
                 // Login Button
                 SizedBox(
                   width: double.infinity,
-                  height: 48,
+                  height: isMobile ? 44 : 48,
                   child: ElevatedButton(
                     onPressed: authState.isLoading ? () {} : _handleLogin,
                     style: ElevatedButton.styleFrom(
@@ -322,17 +363,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         Text(
                           "Login",
                           style: GoogleFonts.poppins(
-                            fontSize: 16,
+                            fontSize: isMobile ? 14 : 16,
                             fontWeight: FontWeight.w500,
                             color: Colors.white,
                           ),
                         ),
                         if (authState.isLoading) ...[
                           const SizedBox(width: 12),
-                          const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
+                          SizedBox(
+                            height: isMobile ? 18 : 20,
+                            width: isMobile ? 18 : 20,
+                            child: const CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation<Color>(
                                 Colors.white,
@@ -344,7 +385,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: isMobile ? 15 : 20),
 
                 // Create Account Link
                 Row(
@@ -352,7 +393,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   children: [
                     Text(
                       "Not registered yet? ",
-                      style: GoogleFonts.poppins(fontSize: 13),
+                      style: GoogleFonts.poppins(fontSize: isMobile ? 12 : 13),
                     ),
                     GestureDetector(
                       onTap: () {},
@@ -361,7 +402,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         style: GoogleFonts.poppins(
                           color: primaryBlue,
                           fontWeight: FontWeight.w600,
-                          fontSize: 13,
+                          fontSize: isMobile ? 12 : 13,
                         ),
                       ),
                     ),
