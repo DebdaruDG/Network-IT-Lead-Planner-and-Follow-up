@@ -1,3 +1,5 @@
+import 'dart:developer' as console;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -211,7 +213,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 20),
                 if (isMobile) ...[
                   // Logo at the top for mobile
-                  Image.asset('assets/Images/logo.png', width: 150),
+                  Image.asset(
+                    'assets/Images/logo.png',
+                    width: 150,
+                    color: primaryBlue,
+                    errorBuilder: (context, error, stackTrace) {
+                      console.log('Logo loading error: $error');
+                      return const Text('Failed to load logo'); // Fallback UI
+                    },
+                  ).animate(
+                    effects:
+                        AnimationEffectConstants
+                            .usualAnimationEffects['summaryCardAnimation']
+                            ?.effectsBuilder,
+                  ),
                   const SizedBox(height: 20),
                 ],
                 Center(
