@@ -10,23 +10,28 @@ class DashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isMobile = MediaQuery.of(context).size.width <= 920;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: const NetworkItAppBar(title: "NetworkIt", showAddLead: true),
       body: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(isMobile ? 12 : 16),
         margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.09,
+          horizontal:
+              isMobile
+                  ? MediaQuery.of(context).size.width * 0.05
+                  : MediaQuery.of(context).size.width * 0.09,
         ),
         child: Column(
           children: [
             // Summary cards
             GridView.count(
               shrinkWrap: true,
-              crossAxisCount: 4,
-              childAspectRatio: 2.5,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
+              crossAxisCount: isMobile ? 2 : 4,
+              childAspectRatio: isMobile ? 2.2 : 2.5,
+              crossAxisSpacing: isMobile ? 8 : 12,
+              mainAxisSpacing: isMobile ? 8 : 12,
               children: [
                 SummaryCard(
                   title: "Active Leads",
@@ -96,42 +101,55 @@ class SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width <= 920;
+
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(isMobile ? 12 : 16),
       decoration: BoxDecoration(
         // color: Colors.white.withOpacity(0.9),
         borderRadius: BorderRadius.circular(16),
         // border: Border.all(color: const Color(0xFFCBD5E1)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-          ),
-          if (progress != null) ...[
-            const SizedBox(height: 8),
-            LinearProgressIndicator(
-              value: progress,
-              color: Color(0xFF4F46E5),
-              backgroundColor: const Color(0xFFE2E8F0),
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ],
-          if ((subtitle ?? '').isNotEmpty) ...[
-            const SizedBox(height: 4),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Text(
-              subtitle ?? '',
-              style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+              title,
+              style: TextStyle(
+                fontSize: isMobile ? 10 : 12,
+                color: const Color(0xFF64748B),
+              ),
             ),
+            SizedBox(height: isMobile ? 2 : 4),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: isMobile ? 16 : 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            if (progress != null) ...[
+              SizedBox(height: isMobile ? 4 : 8),
+              LinearProgressIndicator(
+                value: progress,
+                color: const Color(0xFF4F46E5),
+                backgroundColor: const Color(0xFFE2E8F0),
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ],
+            if ((subtitle ?? '').isNotEmpty) ...[
+              SizedBox(height: isMobile ? 2 : 4),
+              Text(
+                subtitle ?? '',
+                style: TextStyle(
+                  fontSize: isMobile ? 10 : 12,
+                  color: const Color(0xFF64748B),
+                ),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

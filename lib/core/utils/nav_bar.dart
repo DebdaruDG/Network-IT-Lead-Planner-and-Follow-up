@@ -25,20 +25,23 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentNav = ref.watch(routeNotifierProvider);
     final navNotifier = ref.read(routeNotifierProvider.notifier);
+    final isMobile = MediaQuery.of(context).size.width <= 920;
 
     return AppBar(
       backgroundColor: const Color(0xFF233B7A),
       actionsPadding: EdgeInsets.only(
-        right: MediaQuery.of(context).size.width * 0.1,
+        right: isMobile ? 8 : MediaQuery.of(context).size.width * 0.1,
       ),
       title: Container(
-        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.1),
+        padding: EdgeInsets.only(
+          left: isMobile ? 8 : MediaQuery.of(context).size.width * 0.1,
+        ),
         child: Row(
           children: [
             // --- Logo/Initial ---
             Container(
-              height: 36,
-              width: 36,
+              height: isMobile ? 32 : 36,
+              width: isMobile ? 32 : 36,
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(12),
@@ -46,10 +49,10 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
               alignment: Alignment.center,
               child: Text(
                 title.characters.first.toUpperCase(),
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
-                  fontSize: 18,
+                  fontSize: isMobile ? 16 : 18,
                   fontFamily: "Manrope",
                 ),
               ),
@@ -59,23 +62,25 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
                       .usualAnimationEffects['summaryCardAnimation']
                       ?.effectsBuilder,
             ),
-            const SizedBox(width: 12),
-            Text(
-              title,
-              style: const TextStyle(
-                fontFamily: "Manrope",
-                fontWeight: FontWeight.w500,
-                fontSize: 20,
-                color: Colors.white,
-                letterSpacing: 0.15,
+            if (!isMobile) ...[
+              const SizedBox(width: 12),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontFamily: "Manrope",
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20,
+                  color: Colors.white,
+                  letterSpacing: 0.15,
+                ),
+              ).animate(
+                effects:
+                    AnimationEffectConstants
+                        .usualAnimationEffects['summaryCardAnimation']
+                        ?.effectsBuilder,
               ),
-            ).animate(
-              effects:
-                  AnimationEffectConstants
-                      .usualAnimationEffects['summaryCardAnimation']
-                      ?.effectsBuilder,
-            ),
-            const SizedBox(width: 48),
+            ],
+            SizedBox(width: isMobile ? 24 : 48),
             // --- Nav Items ---
             _buildNavItem(
               context,
@@ -86,6 +91,7 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 navNotifier.setNavItem(NavItem.dashboard);
                 context.go(AppRoutes.dashboard);
               },
+              isMobile: isMobile,
             ),
             const SizedBox(width: 8),
             _buildNavItem(
@@ -97,14 +103,14 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 navNotifier.setNavItem(NavItem.journey);
                 context.go(AppRoutes.leadCreation);
               },
+              isMobile: isMobile,
             ),
           ],
         ),
       ),
-
       // --- Right Actions ---
       actions: [
-        if (showAddLead)
+        if (showAddLead && !isMobile)
           FilledButton.tonal(
             style: FilledButton.styleFrom(
               backgroundColor: Colors.white.withOpacity(0.15),
@@ -122,7 +128,7 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
             child: const Text("+ Add Lead"),
           ),
         if (extraActions != null) ...extraActions!,
-        _buildSignOutButton(context, ref),
+        _buildSignOutButton(context, ref, isMobile),
       ],
     );
   }
@@ -133,6 +139,7 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
     required String label,
     required bool isSelected,
     required VoidCallback onTap,
+    required bool isMobile,
   }) {
     final themeColor = const Color(0xFF233B7A);
 
@@ -140,7 +147,10 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? 10 : 14,
+          vertical: isMobile ? 6 : 8,
+        ),
         decoration: BoxDecoration(
           color: isSelected ? themeColor.withOpacity(0.01) : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
@@ -151,7 +161,7 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
               label,
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w400,
-                fontSize: 14,
+                fontSize: isMobile ? 12 : 14,
                 color: isSelected ? Colors.white : Colors.white,
               ),
             ),
@@ -160,7 +170,7 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 height: 2,
                 margin: const EdgeInsets.only(top: 8),
                 color: Colors.white,
-                width: 80,
+                width: isMobile ? 60 : 80,
               ),
           ],
         ),
@@ -173,7 +183,11 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
     );
   }
 
-  Widget _buildSignOutButton(BuildContext context, WidgetRef ref) {
+  Widget _buildSignOutButton(
+    BuildContext context,
+    WidgetRef ref,
+    bool isMobile,
+  ) {
     final authState = ref.watch(authViewModelProvider);
     final isLoading = authState.isLoading;
 
@@ -181,7 +195,7 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
       message: "Sign out",
       waitDuration: const Duration(milliseconds: 500),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16),
+        margin: EdgeInsets.symmetric(horizontal: isMobile ? 8 : 16),
         padding: const EdgeInsets.all(8.0),
         child: FilledButton.tonal(
           style: FilledButton.styleFrom(
@@ -190,7 +204,10 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: EdgeInsets.symmetric(
+              horizontal: isMobile ? 8 : 12,
+              vertical: isMobile ? 6 : 8,
+            ),
           ),
           onPressed:
               isLoading
@@ -206,24 +223,30 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
           child: Row(
             children: [
               isLoading
-                  ? const SizedBox(
-                    height: 16,
-                    width: 16,
-                    child: CircularProgressIndicator(
+                  ? SizedBox(
+                    height: isMobile ? 14 : 16,
+                    width: isMobile ? 14 : 16,
+                    child: const CircularProgressIndicator(
                       strokeWidth: 2,
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   )
-                  : const Icon(Icons.logout, size: 18, color: Colors.white),
-              const SizedBox(width: 6),
-              const Text(
-                "Sign out",
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
+                  : Icon(
+                    Icons.logout,
+                    size: isMobile ? 16 : 18,
+                    color: Colors.white,
+                  ),
+              if (!isMobile) ...[
+                const SizedBox(width: 6),
+                const Text(
+                  "Sign out",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ).animate(
