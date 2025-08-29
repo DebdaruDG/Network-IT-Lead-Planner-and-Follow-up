@@ -15,6 +15,8 @@ class FollowupState {
   final String? emailTemplate;
   final String? linkedinTemplate;
   final String? callTalkingPoint;
+  final String? frequency; // <-- new
+  final DateTime? scheduleStart; // <-- new
 
   FollowupState({
     this.isLoading = false,
@@ -26,6 +28,8 @@ class FollowupState {
     this.emailTemplate,
     this.linkedinTemplate,
     this.callTalkingPoint,
+    this.frequency,
+    this.scheduleStart,
   });
 
   FollowupState copyWith({
@@ -38,6 +42,8 @@ class FollowupState {
     String? emailTemplate,
     String? linkedinTemplate,
     String? callTalkingPoint,
+    String? frequency,
+    DateTime? scheduleStart,
   }) {
     return FollowupState(
       isLoading: isLoading ?? this.isLoading,
@@ -49,6 +55,8 @@ class FollowupState {
       emailTemplate: emailTemplate ?? this.emailTemplate,
       linkedinTemplate: linkedinTemplate ?? this.linkedinTemplate,
       callTalkingPoint: callTalkingPoint ?? this.callTalkingPoint,
+      frequency: frequency ?? this.frequency,
+      scheduleStart: scheduleStart ?? this.scheduleStart,
     );
   }
 
@@ -102,6 +110,12 @@ class FollowupNotifier extends StateNotifier<FollowupState> {
   void updateCallTalkingPoint(String? talkingPoint) {
     state = state.copyWith(callTalkingPoint: talkingPoint);
   }
+
+  void updateFrequency(String frequency) =>
+      state = state.copyWith(frequency: frequency);
+
+  void updateScheduleStart(DateTime date) =>
+      state = state.copyWith(scheduleStart: date);
 
   /// Generate followup for a lead using stored state
   Future<void> generateFollowup({required String leadId}) async {

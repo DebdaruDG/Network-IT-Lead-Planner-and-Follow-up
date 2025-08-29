@@ -6,6 +6,8 @@ import '../data_handling/lead_followup_provider.dart';
 import '../lead_creation_provider.dart';
 import '../step_utils.dart';
 import '../../../core/widgets/app_toast.dart';
+import 'components/frequency_dropdown.dart';
+import 'components/schedule_start_date.dart';
 
 class Step2GoalSelection extends ConsumerStatefulWidget {
   const Step2GoalSelection({super.key});
@@ -86,8 +88,8 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
               ),
               const SizedBox(height: 8),
               Container(
-                width: 82,
-                height: 80,
+                width: 125,
+                height: 40,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey.shade300, width: 0.25),
                   borderRadius: BorderRadius.circular(8),
@@ -98,7 +100,7 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
                   children: [
                     SizedBox(
                       width: 40,
-                      height: 30,
+                      height: 60,
                       child: TextField(
                         controller: TextEditingController(
                           text: duration.toString(),
@@ -128,7 +130,8 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
                       ),
                     ),
                     SingleChildScrollView(
-                      child: Column(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           IconButton(
@@ -168,6 +171,10 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
               ),
             ],
           ),
+          const SizedBox(height: 12),
+          FrequencyDropdown(),
+          const SizedBox(height: 12),
+          ScheduleStartDatePicker(),
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
