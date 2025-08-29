@@ -74,107 +74,119 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
           ),
           const SizedBox(height: 20),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Text(
-                "Duration (days): ",
-                style: TextStyle(fontSize: 14, color: Color(0xFF1E293B)),
-              ).animate(
-                effects:
-                    AnimationEffectConstants
-                        .usualAnimationEffects['summaryCardAnimation']
-                        ?.effectsBuilder,
-              ),
-              const SizedBox(height: 8),
-              Container(
-                width: 125,
-                height: 40,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300, width: 0.25),
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.white,
-                ),
+              Expanded(
+                flex: 3,
                 child: Row(
-                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      width: 40,
-                      height: 60,
-                      child: TextField(
-                        controller: TextEditingController(
-                          text: duration.toString(),
-                        ),
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF1E293B),
-                        ),
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                        ),
-                        onChanged: (value) {
-                          int? newValue = int.tryParse(value);
-                          if (newValue != null &&
-                              newValue >= 1 &&
-                              newValue <= 365) {
-                            ref
-                                .read(followupProvider.notifier)
-                                .updateDuration(newValue);
-                          }
-                        },
-                      ),
+                    const Text(
+                      "Duration (days): ",
+                      style: TextStyle(fontSize: 14, color: Color(0xFF1E293B)),
+                    ).animate(
+                      effects:
+                          AnimationEffectConstants
+                              .usualAnimationEffects['summaryCardAnimation']
+                              ?.effectsBuilder,
                     ),
-                    SingleChildScrollView(
+                    const SizedBox(height: 8),
+                    Container(
+                      width: 125,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                          width: 0.25,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.white,
+                      ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          IconButton(
-                            icon: const Icon(Icons.arrow_drop_up),
-                            padding: EdgeInsets.zero,
-                            iconSize: 15,
-                            onPressed: () {
-                              if (duration < 365) {
-                                ref
-                                    .read(followupProvider.notifier)
-                                    .updateDuration(duration + 1);
-                              }
-                            },
+                          SizedBox(
+                            width: 40,
+                            height: 60,
+                            child: TextField(
+                              controller: TextEditingController(
+                                text: duration.toString(),
+                              ),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF1E293B),
+                              ),
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                              ),
+                              onChanged: (value) {
+                                int? newValue = int.tryParse(value);
+                                if (newValue != null &&
+                                    newValue >= 1 &&
+                                    newValue <= 365) {
+                                  ref
+                                      .read(followupProvider.notifier)
+                                      .updateDuration(newValue);
+                                }
+                              },
+                            ),
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.arrow_drop_down),
-                            padding: EdgeInsets.zero,
-                            iconSize: 15,
-                            onPressed: () {
-                              if (duration > 1) {
-                                ref
-                                    .read(followupProvider.notifier)
-                                    .updateDuration(duration - 1);
-                              }
-                            },
+                          SingleChildScrollView(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.arrow_drop_up),
+                                  padding: EdgeInsets.zero,
+                                  iconSize: 15,
+                                  onPressed: () {
+                                    if (duration < 365) {
+                                      ref
+                                          .read(followupProvider.notifier)
+                                          .updateDuration(duration + 1);
+                                    }
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.arrow_drop_down),
+                                  padding: EdgeInsets.zero,
+                                  iconSize: 15,
+                                  onPressed: () {
+                                    if (duration > 1) {
+                                      ref
+                                          .read(followupProvider.notifier)
+                                          .updateDuration(duration - 1);
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
+                    ).animate(
+                      effects:
+                          AnimationEffectConstants
+                              .usualAnimationEffects['summaryCardAnimation']
+                              ?.effectsBuilder,
                     ),
                   ],
                 ),
-              ).animate(
-                effects:
-                    AnimationEffectConstants
-                        .usualAnimationEffects['summaryCardAnimation']
-                        ?.effectsBuilder,
               ),
+              const SizedBox(width: 12),
+              Expanded(flex: 3, child: FrequencyDropdown()),
+              const SizedBox(width: 12),
+              Expanded(flex: 3, child: ScheduleStartDatePicker()),
             ],
           ),
-          const SizedBox(height: 12),
-          FrequencyDropdown(),
-          const SizedBox(height: 12),
-          ScheduleStartDatePicker(),
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
