@@ -40,53 +40,83 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 6),
-        DropdownSearch<String>(
-          popupProps: PopupProps.menu(
-            showSearchBox: true,
-            searchFieldProps: TextFieldProps(
+        Container(
+          height: 42,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: DropdownSearch<String>(
+            popupProps: PopupProps.menu(
+              showSearchBox: true,
+              searchFieldProps: TextFieldProps(
+                decoration: InputDecoration(
+                  hintText: "Search...",
+                  prefixIcon: const Icon(Icons.search, size: 18),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 6,
+                  ),
+                ),
+              ),
+              menuProps: MenuProps(
+                backgroundColor: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            dropdownBuilder:
+                (context, selectedItem) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(selectedItem ?? ''),
+                ),
+            items: (String filter, LoadProps? loadProps) {
+              return widget.items
+                  .where(
+                    (item) => item.toLowerCase().contains(filter.toLowerCase()),
+                  )
+                  .toList();
+            },
+            selectedItem: _selectedValue,
+            onChanged: (value) {
+              if (value != null) {
+                setState(() => _selectedValue = value);
+                widget.onChanged(value);
+              }
+            },
+            decoratorProps: DropDownDecoratorProps(
               decoration: InputDecoration(
-                hintText: "Search...",
-                prefixIcon: const Icon(Icons.search, size: 18),
-                border: OutlineInputBorder(
+                enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(
+                    color: Colors.grey.shade300,
+                    width: 0.8,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(
+                    color: Colors.grey.shade300,
+                    width: 0.8,
+                  ),
+                ),
+                disabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(
+                    color: Colors.grey.shade300,
+                    width: 0.8,
+                  ),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 8,
                   vertical: 6,
                 ),
+                filled: true,
+                fillColor: Colors.white,
               ),
-            ),
-            menuProps: MenuProps(
-              backgroundColor: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          dropdownBuilder: (context, selectedItem) => Text(selectedItem ?? ''),
-          items: (String filter, LoadProps? loadProps) {
-            return widget.items
-                .where(
-                  (item) => item.toLowerCase().contains(filter.toLowerCase()),
-                )
-                .toList();
-          },
-          selectedItem: _selectedValue,
-          onChanged: (value) {
-            if (value != null) {
-              setState(() => _selectedValue = value);
-              widget.onChanged(value);
-            }
-          },
-          decoratorProps: DropDownDecoratorProps(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 8,
-              ),
-              filled: true,
-              fillColor: Colors.white,
             ),
           ),
         ),
