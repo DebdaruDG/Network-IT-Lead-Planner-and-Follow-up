@@ -192,126 +192,129 @@ class _Step2GoalSelectionState extends ConsumerState<Step2GoalSelection> {
                   const ScheduleStartDatePicker(),
                 ],
               )
-              : Row(
+              : Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    flex: 2,
-                    child: Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.start, // Center the row content
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Duration (days): ",
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Color(0xFF1E293B),
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ).animate(
-                          effects:
-                              AnimationEffectConstants
-                                  .usualAnimationEffects['summaryCardAnimation']
-                                  ?.effectsBuilder,
+                  Row(
+                    mainAxisAlignment:
+                        MainAxisAlignment.start, // Center the row content
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Duration (days): ",
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: Color(0xFF1E293B),
                         ),
-                        const SizedBox(width: 4),
-                        Container(
-                          width: 60,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.grey.shade300,
-                              width: 0.25,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                            color: Colors.white,
+                        overflow: TextOverflow.ellipsis,
+                      ).animate(
+                        effects:
+                            AnimationEffectConstants
+                                .usualAnimationEffects['summaryCardAnimation']
+                                ?.effectsBuilder,
+                      ),
+                      const SizedBox(width: 4),
+                      Container(
+                        width: 60,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey.shade300,
+                            width: 0.25,
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 40,
-                                child: TextField(
-                                  controller: TextEditingController(
-                                    text: duration.toString(),
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.white,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 40,
+                              child: TextField(
+                                controller: TextEditingController(
+                                  text: duration.toString(),
+                                ),
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Color(0xFF1E293B),
+                                ),
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10,
+                                  ), // Adjusted padding
+                                ),
+                                onChanged: (value) {
+                                  final newValue = int.tryParse(value);
+                                  if (newValue != null &&
+                                      newValue >= 1 &&
+                                      newValue <= 365) {
+                                    ref
+                                        .read(followupProvider.notifier)
+                                        .updateDuration(newValue);
+                                  }
+                                },
+                              ),
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.arrow_drop_up,
+                                    size: 12,
                                   ),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    color: Color(0xFF1E293B),
-                                  ),
-                                  decoration: const InputDecoration(
-                                    border: InputBorder.none,
-                                    contentPadding: EdgeInsets.symmetric(
-                                      vertical: 10,
-                                    ), // Adjusted padding
-                                  ),
-                                  onChanged: (value) {
-                                    final newValue = int.tryParse(value);
-                                    if (newValue != null &&
-                                        newValue >= 1 &&
-                                        newValue <= 365) {
+                                  padding: EdgeInsets.zero,
+                                  constraints:
+                                      const BoxConstraints(), // Remove default padding
+                                  onPressed: () {
+                                    if (duration < 365) {
                                       ref
                                           .read(followupProvider.notifier)
-                                          .updateDuration(newValue);
+                                          .updateDuration(duration + 1);
                                     }
                                   },
                                 ),
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.arrow_drop_up,
-                                      size: 12,
-                                    ),
-                                    padding: EdgeInsets.zero,
-                                    constraints:
-                                        const BoxConstraints(), // Remove default padding
-                                    onPressed: () {
-                                      if (duration < 365) {
-                                        ref
-                                            .read(followupProvider.notifier)
-                                            .updateDuration(duration + 1);
-                                      }
-                                    },
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.arrow_drop_down,
+                                    size: 12,
                                   ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.arrow_drop_down,
-                                      size: 12,
-                                    ),
-                                    padding: EdgeInsets.zero,
-                                    constraints:
-                                        const BoxConstraints(), // Remove default padding
-                                    onPressed: () {
-                                      if (duration > 1) {
-                                        ref
-                                            .read(followupProvider.notifier)
-                                            .updateDuration(duration - 1);
-                                      }
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ).animate(
-                          effects:
-                              AnimationEffectConstants
-                                  .usualAnimationEffects['summaryCardAnimation']
-                                  ?.effectsBuilder,
+                                  padding: EdgeInsets.zero,
+                                  constraints:
+                                      const BoxConstraints(), // Remove default padding
+                                  onPressed: () {
+                                    if (duration > 1) {
+                                      ref
+                                          .read(followupProvider.notifier)
+                                          .updateDuration(duration - 1);
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ).animate(
+                        effects:
+                            AnimationEffectConstants
+                                .usualAnimationEffects['summaryCardAnimation']
+                                ?.effectsBuilder,
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(flex: 3, child: FrequencyDropdown()),
-                  const SizedBox(width: 12),
-                  Expanded(flex: 3, child: ScheduleStartDatePicker()),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(flex: 3, child: FrequencyDropdown()),
+                      const SizedBox(width: 12),
+                      Expanded(flex: 3, child: ScheduleStartDatePicker()),
+                    ],
+                  ),
                 ],
               ),
           const SizedBox(height: 24),
