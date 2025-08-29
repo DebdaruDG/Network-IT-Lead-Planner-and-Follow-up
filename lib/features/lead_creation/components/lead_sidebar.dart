@@ -86,7 +86,9 @@ class AddLeadSidebar extends ConsumerWidget {
                           decoration: BoxDecoration(
                             color:
                                 isPlanActive
-                                    ? const Color(0xFF4338CA).withOpacity(0.05)
+                                    ? const Color(
+                                      0xFF4338CA,
+                                    ).withValues(alpha: 0.05)
                                     : Colors.transparent,
                             borderRadius: BorderRadius.circular(4),
                           ),
@@ -102,7 +104,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                     decoration: BoxDecoration(
                                       color: const Color(
                                         0xFF4338CA,
-                                      ).withOpacity(0.8),
+                                      ).withValues(alpha: 0.8),
                                       borderRadius: const BorderRadius.only(
                                         topLeft: Radius.circular(20),
                                         topRight: Radius.circular(20),
@@ -140,7 +142,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                                     ? const Color(0xFF4338CA)
                                                     : const Color(
                                                       0xFF4338CA,
-                                                    ).withOpacity(0.1),
+                                                    ).withValues(alpha: 0.1),
                                             child: Text(
                                               step.number.toString(),
                                               style: TextStyle(
@@ -271,7 +273,9 @@ class AddLeadSidebar extends ConsumerWidget {
                                                         isActive
                                                             ? const Color(
                                                               0xFF4338CA,
-                                                            ).withOpacity(0.1)
+                                                            ).withValues(
+                                                              alpha: 0.1,
+                                                            )
                                                             : Colors
                                                                 .transparent,
                                                     borderRadius:
@@ -349,7 +353,9 @@ class AddLeadSidebar extends ConsumerWidget {
                           decoration: BoxDecoration(
                             color:
                                 isActive
-                                    ? const Color(0xFF4338CA).withOpacity(0.05)
+                                    ? const Color(
+                                      0xFF4338CA,
+                                    ).withValues(alpha: 0.05)
                                     : Colors.transparent,
                             borderRadius: BorderRadius.circular(4),
                           ),
@@ -365,7 +371,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                     decoration: BoxDecoration(
                                       color: const Color(
                                         0xFF4338CA,
-                                      ).withOpacity(0.8),
+                                      ).withValues(alpha: 0.8),
                                       borderRadius: const BorderRadius.only(
                                         topLeft: Radius.circular(20),
                                         topRight: Radius.circular(20),
@@ -394,7 +400,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                                 ? const Color(0xFF4338CA)
                                                 : const Color(
                                                   0xFF4338CA,
-                                                ).withOpacity(0.1),
+                                                ).withValues(alpha: 0.1),
                                         child: Text(
                                           step.number.toString(),
                                           style: GoogleFonts.inter(
@@ -470,7 +476,9 @@ class AddLeadSidebar extends ConsumerWidget {
                           decoration: BoxDecoration(
                             color:
                                 isPlanActive
-                                    ? const Color(0xFF4338CA).withOpacity(0.05)
+                                    ? const Color(
+                                      0xFF4338CA,
+                                    ).withValues(alpha: 0.05)
                                     : Colors.transparent,
                             borderRadius: BorderRadius.circular(4),
                           ),
@@ -485,7 +493,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                     decoration: BoxDecoration(
                                       color: const Color(
                                         0xFF4338CA,
-                                      ).withOpacity(0.8),
+                                      ).withValues(alpha: 0.8),
                                       borderRadius: const BorderRadius.only(
                                         topLeft: Radius.circular(20),
                                         bottomLeft: Radius.circular(20),
@@ -504,7 +512,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                               ? const Color(0xFF4338CA)
                                               : const Color(
                                                 0xFF4338CA,
-                                              ).withOpacity(0.1),
+                                              ).withValues(alpha: 0.1),
                                       child: Text(
                                         step.number.toString(),
                                         style: TextStyle(
@@ -600,7 +608,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                                 isActive
                                                     ? const Color(
                                                       0xFF4338CA,
-                                                    ).withOpacity(0.1)
+                                                    ).withValues(alpha: 0.1)
                                                     : Colors.transparent,
                                             borderRadius: BorderRadius.circular(
                                               isActive ? 12 : 4,
@@ -659,7 +667,9 @@ class AddLeadSidebar extends ConsumerWidget {
                           decoration: BoxDecoration(
                             color:
                                 isActive
-                                    ? const Color(0xFF4338CA).withOpacity(0.05)
+                                    ? const Color(
+                                      0xFF4338CA,
+                                    ).withValues(alpha: 0.05)
                                     : Colors.transparent,
                             borderRadius: BorderRadius.circular(4),
                           ),
@@ -674,7 +684,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                     decoration: BoxDecoration(
                                       color: const Color(
                                         0xFF4338CA,
-                                      ).withOpacity(0.8),
+                                      ).withValues(alpha: 0.8),
                                       borderRadius: const BorderRadius.only(
                                         topLeft: Radius.circular(20),
                                         bottomLeft: Radius.circular(20),
@@ -696,7 +706,7 @@ class AddLeadSidebar extends ConsumerWidget {
                                             ? const Color(0xFF4338CA)
                                             : const Color(
                                               0xFF4338CA,
-                                            ).withOpacity(0.1),
+                                            ).withValues(alpha: 0.1),
                                     child: Text(
                                       step.number.toString(),
                                       style: GoogleFonts.inter(

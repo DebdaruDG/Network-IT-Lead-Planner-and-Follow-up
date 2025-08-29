@@ -142,7 +142,7 @@ class _AddLeadScreenState extends ConsumerState<AddLeadScreen> {
         extraActions: [
           FilledButton.tonal(
             style: FilledButton.styleFrom(
-              backgroundColor: Colors.white.withOpacity(0.15),
+              backgroundColor: Colors.white.withValues(alpha: 0.15),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),

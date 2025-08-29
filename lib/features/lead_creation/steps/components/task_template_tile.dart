@@ -179,7 +179,7 @@ class _TaskTemplateTileState extends State<TaskTemplateTile>
       height: MediaQuery.of(context).size.height * 0.35,
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: Colors.white.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade500, width: 0.3),
       ),
@@ -190,7 +190,7 @@ class _TaskTemplateTileState extends State<TaskTemplateTile>
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.15),
+                color: Colors.grey.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(6),
                   topRight: Radius.circular(6),

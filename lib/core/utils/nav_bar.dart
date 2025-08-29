@@ -43,7 +43,7 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
               height: isMobile ? 32 : 36,
               width: isMobile ? 32 : 36,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
+                color: Colors.white.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
               alignment: Alignment.center,
@@ -113,7 +113,7 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
         if (showAddLead && !isMobile)
           FilledButton.tonal(
             style: FilledButton.styleFrom(
-              backgroundColor: Colors.white.withOpacity(0.15),
+              backgroundColor: Colors.white.withValues(alpha: 0.15),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -152,7 +152,10 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
           vertical: isMobile ? 6 : 8,
         ),
         decoration: BoxDecoration(
-          color: isSelected ? themeColor.withOpacity(0.01) : Colors.transparent,
+          color:
+              isSelected
+                  ? themeColor.withValues(alpha: 0.01)
+                  : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
@@ -199,7 +202,7 @@ class NetworkItAppBar extends ConsumerWidget implements PreferredSizeWidget {
         padding: const EdgeInsets.all(8.0),
         child: FilledButton.tonal(
           style: FilledButton.styleFrom(
-            backgroundColor: Colors.white.withOpacity(0.15),
+            backgroundColor: Colors.white.withValues(alpha: 0.15),
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
